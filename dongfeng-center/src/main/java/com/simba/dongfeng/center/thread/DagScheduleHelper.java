@@ -5,10 +5,10 @@ import com.simba.dongfeng.center.core.ScheduleServiceFacade;
 import com.simba.dongfeng.center.enums.DagStatusEnum;
 import com.simba.dongfeng.center.enums.DagTriggerTypeEnum;
 import com.simba.dongfeng.common.enums.JobStatusEnum;
-import com.simba.dongfeng.common.pojo.DagDto;
-import com.simba.dongfeng.common.pojo.DagTriggerLogDto;
-import com.simba.dongfeng.common.pojo.JobDto;
-import com.simba.dongfeng.common.pojo.JobTriggerLogDto;
+import com.simba.dongfeng.center.pojo.DagDto;
+import com.simba.dongfeng.center.pojo.DagTriggerLogDto;
+import com.simba.dongfeng.center.pojo.JobDto;
+import com.simba.dongfeng.center.pojo.JobTriggerLogDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -2,7 +2,7 @@ package com.simba.dongfeng.center.thread;
 
 import com.simba.dongfeng.center.core.DagQueue;
 import com.simba.dongfeng.center.core.ScheduleServiceFacade;
-import com.simba.dongfeng.common.pojo.DagDto;
+import com.simba.dongfeng.center.pojo.DagDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +53,7 @@ public class DagFetchHelper {
                         }
                         TimeUnit.SECONDS.sleep(interval);
                     }catch (InterruptedException e) {
-                        logger.error(e.getMessage(),e);
+                        logger.error("DagFetchHelper#dagFetchThread error.", e);
                         //TODO  ALARM
                     } catch (Exception e) {
                         logger.error("DagFetchHelper#dagFetchThread error.", e);

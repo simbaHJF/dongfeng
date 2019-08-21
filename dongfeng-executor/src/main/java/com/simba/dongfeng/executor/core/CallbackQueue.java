@@ -1,4 +1,4 @@
-package com.simba.dongfeng.center.core;
+package com.simba.dongfeng.executor.core;
 
 import com.simba.dongfeng.common.pojo.Callback;
 
@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.concurrent.LinkedBlockingDeque;
 
 /**
- * DATE:   2019-08-19 20:51
+ * DATE:   2019-08-21 14:17
  * AUTHOR: simba.hjf
  * DESC:
  **/
@@ -42,17 +42,8 @@ public class CallbackQueue {
         callbackQueue.addFirst(callBack);
     }
 
-    public synchronized void addTailIfNotEnqueue(Callback callBack) {
-        boolean hasEnqueue = false;
-        for (Callback cur : callbackQueue) {
-            if (callBack.getJobTriggerLogId() == cur.getJobTriggerLogId()) {
-                hasEnqueue = true;
-                break;
-            }
-        }
-        if (!hasEnqueue) {
-            callbackQueue.addLast(callBack);
-        }
+    public synchronized void addTail(Callback callBack) {
+        callbackQueue.addLast(callBack);
     }
 
     public synchronized void addAllToTail(List<Callback> callbacks) {
@@ -62,6 +53,5 @@ public class CallbackQueue {
     public synchronized int queueSize() {
         return callbackQueue.size();
     }
-
 
 }

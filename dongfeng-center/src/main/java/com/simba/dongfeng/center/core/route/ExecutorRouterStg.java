@@ -1,7 +1,7 @@
 package com.simba.dongfeng.center.core.route;
 
-import com.simba.dongfeng.common.pojo.JobDto;
-import com.simba.dongfeng.common.pojo.ExecutorDto;
+import com.simba.dongfeng.center.pojo.JobDto;
+import com.simba.dongfeng.center.pojo.ExecutorDto;
 
 import java.util.List;
 

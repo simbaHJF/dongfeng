@@ -4,6 +4,9 @@ import com.simba.dongfeng.center.core.CallbackQueue;
 import com.simba.dongfeng.center.core.ScheduleServiceFacade;
 import com.simba.dongfeng.center.enums.DagStatusEnum;
 import com.simba.dongfeng.center.enums.JobTypeEnum;
+import com.simba.dongfeng.center.pojo.DagTriggerLogDto;
+import com.simba.dongfeng.center.pojo.JobDto;
+import com.simba.dongfeng.center.pojo.JobTriggerLogDto;
 import com.simba.dongfeng.common.enums.JobStatusEnum;
 import com.simba.dongfeng.common.pojo.*;
 import org.slf4j.Logger;
@@ -39,10 +42,10 @@ public class CallbackHandleHelper {
             public void run() {
                 while (isRunning) {
                     try {
-                        CallbackDto callbackDto = callbackQueue.takeHead();
-                        JobTriggerLogDto jobTriggerLog = scheduleServiceFacade.selectJobTriggerLogDtoById(callbackDto.getJobTriggerLogId());
+                        Callback callback = callbackQueue.takeHead();
+                        JobTriggerLogDto jobTriggerLog = scheduleServiceFacade.selectJobTriggerLogDtoById(callback.getJobTriggerLogId());
                         jobTriggerLog.setEndTime(new Date());
-                        jobTriggerLog.setStatus(callbackDto.getJobExecRs());
+                        jobTriggerLog.setStatus(callback.getJobExecRs());
                         scheduleServiceFacade.updateJobTriggerLogDto(jobTriggerLog);
                         DagTriggerLogDto dagTriggerLog = scheduleServiceFacade.selectDagTriggerLogById(jobTriggerLog.getDagTriggerId());
                         List<JobDto> childJobList = scheduleServiceFacade.selectChildJobList(jobTriggerLog.getJobId());

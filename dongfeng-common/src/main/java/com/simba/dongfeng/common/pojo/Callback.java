@@ -1,11 +1,13 @@
 package com.simba.dongfeng.common.pojo;
 
+import java.io.Serializable;
+
 /**
  * DATE:   2019-08-19 20:42
  * AUTHOR: simba.hjf
  * DESC:
  **/
-public class CallbackDto {
+public class Callback implements Serializable {
     private long jobTriggerLogId;
     private int jobExecRs;
     private int shardingIdx;
@@ -36,7 +38,7 @@ public class CallbackDto {
 
     @Override
     public String toString() {
-        return "CallbackDto{" +
+        return "Callback{" +
                 "jobTriggerLogId=" + jobTriggerLogId +
                 ", jobExecRs=" + jobExecRs +
                 ", shardingIdx=" + shardingIdx +

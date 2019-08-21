@@ -1,6 +1,6 @@
 package com.simba.dongfeng.center.dao;
 
-import com.simba.dongfeng.common.pojo.DagDto;
+import com.simba.dongfeng.center.pojo.DagDto;
 import org.apache.ibatis.annotations.*;
 
 import java.util.Date;

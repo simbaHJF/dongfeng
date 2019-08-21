@@ -4,8 +4,8 @@ import com.simba.dongfeng.center.core.route.ExecutorRouterStg;
 import com.simba.dongfeng.center.dao.*;
 import com.simba.dongfeng.center.enums.DagStatusEnum;
 import com.simba.dongfeng.center.enums.ExecutorRouterStgEnum;
+import com.simba.dongfeng.center.pojo.*;
 import com.simba.dongfeng.common.enums.JobStatusEnum;
-import com.simba.dongfeng.common.pojo.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -99,7 +99,7 @@ public class ScheduleServiceFacade {
      * @param jobStatusEnum
      * @param jobScheduleRetryTime
      */
-    public void scheduleJob(JobDto jobDto, DagTriggerLogDto dagTriggerLogDto,JobStatusEnum jobStatusEnum,int jobScheduleRetryTime) {
+    public void scheduleJob(JobDto jobDto, DagTriggerLogDto dagTriggerLogDto, JobStatusEnum jobStatusEnum, int jobScheduleRetryTime) {
         int scheduleCnt = 0;
         ExecutorDto executor = null;
         JobTriggerLogDto curChildJobTriggerLog = generateJobTriggerLogDto(jobDto.getId(), dagTriggerLogDto.getDagId(), dagTriggerLogDto.getId(), jobStatusEnum.getValue(), null,dagTriggerLogDto.getParam());

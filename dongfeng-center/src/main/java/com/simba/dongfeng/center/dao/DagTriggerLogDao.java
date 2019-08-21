@@ -1,6 +1,6 @@
 package com.simba.dongfeng.center.dao;
 
-import com.simba.dongfeng.common.pojo.DagTriggerLogDto;
+import com.simba.dongfeng.center.pojo.DagTriggerLogDto;
 import org.apache.ibatis.annotations.*;
 
 /**

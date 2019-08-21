@@ -1,4 +1,4 @@
-package com.simba.dongfeng.common.pojo;
+package com.simba.dongfeng.center.pojo;
 
 /**
  * DATE:   2019-08-15 16:16

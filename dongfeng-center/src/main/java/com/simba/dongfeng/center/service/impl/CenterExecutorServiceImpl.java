@@ -2,7 +2,7 @@ package com.simba.dongfeng.center.service.impl;
 
 import com.simba.dongfeng.center.dao.ExecutorDao;
 import com.simba.dongfeng.center.service.CenterExecutorService;
-import com.simba.dongfeng.common.pojo.ExecutorDto;
+import com.simba.dongfeng.center.pojo.ExecutorDto;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

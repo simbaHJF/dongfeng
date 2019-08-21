@@ -1,4 +1,4 @@
-package com.simba.dongfeng.common.pojo;
+package com.simba.dongfeng.center.pojo;
 
 import java.util.Date;
 

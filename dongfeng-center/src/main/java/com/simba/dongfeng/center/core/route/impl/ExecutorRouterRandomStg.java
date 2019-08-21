@@ -1,8 +1,8 @@
 package com.simba.dongfeng.center.core.route.impl;
 
 import com.simba.dongfeng.center.core.route.ExecutorRouterStg;
-import com.simba.dongfeng.common.pojo.JobDto;
-import com.simba.dongfeng.common.pojo.ExecutorDto;
+import com.simba.dongfeng.center.pojo.JobDto;
+import com.simba.dongfeng.center.pojo.ExecutorDto;
 
 import java.util.List;
 import java.util.Random;

@@ -4,8 +4,8 @@ import com.simba.dongfeng.center.enums.DagTriggerTypeEnum;
 import com.simba.dongfeng.center.thread.CallbackHandleHelper;
 import com.simba.dongfeng.center.thread.DagFetchHelper;
 import com.simba.dongfeng.center.thread.DagScheduleHelper;
-import com.simba.dongfeng.common.pojo.CallbackDto;
-import com.simba.dongfeng.common.pojo.DagDto;
+import com.simba.dongfeng.common.pojo.Callback;
+import com.simba.dongfeng.center.pojo.DagDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -58,8 +58,8 @@ public class ScheduleCenter {
         }
     }
 
-    public void callback(CallbackDto callBackDto) {
-        callbackQueue.addTail(callBackDto);
+    public void callback(Callback callBack) {
+        callbackQueue.addTailIfNotEnqueue(callBack);
     }
 
     public void manualTrigger(long dagId, String param) {

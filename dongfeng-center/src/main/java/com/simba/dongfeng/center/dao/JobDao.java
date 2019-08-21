@@ -1,6 +1,6 @@
 package com.simba.dongfeng.center.dao;
 
-import com.simba.dongfeng.common.pojo.JobDto;
+import com.simba.dongfeng.center.pojo.JobDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;

@@ -1,6 +1,6 @@
 package com.simba.dongfeng.center.core;
 
-import com.simba.dongfeng.common.pojo.DagDto;
+import com.simba.dongfeng.center.pojo.DagDto;
 
 import java.util.List;
 import java.util.concurrent.LinkedBlockingDeque;
