@@ -11,43 +11,24 @@ import java.util.concurrent.LinkedBlockingDeque;
  * DESC:
  **/
 public class JobQueue {
-    private LinkedBlockingDeque<JobInfo> jobInfoQueue = new LinkedBlockingDeque<>();
+    private LinkedBlockingDeque<JobInfo> jobInfoQueue = new LinkedBlockingDeque<>(5);
 
 
-    public JobInfo takeHead() throws InterruptedException {
+    public synchronized JobInfo takeHead() throws InterruptedException {
         return jobInfoQueue.takeFirst();
     }
 
-    public JobInfo takeTail() throws InterruptedException {
-        return jobInfoQueue.takeLast();
-    }
-
-    public synchronized JobInfo peekHead() {
-        return jobInfoQueue.peekFirst();
-    }
-
-    public synchronized JobInfo peekTail() {
-        return jobInfoQueue.peekLast();
-    }
-
-    public synchronized JobInfo pollHead() {
-        return jobInfoQueue.pollFirst();
-    }
-
-    public synchronized JobInfo pollTail() {
-        return jobInfoQueue.peekLast();
-    }
-
-    public synchronized void addHead(JobInfo jobInfo) {
-        jobInfoQueue.addFirst(jobInfo);
-    }
-
-    public synchronized void addTail(JobInfo jobInfo) {
-        jobInfoQueue.addLast(jobInfo);
-    }
-
-    public synchronized void addAllToTail(List<JobInfo> jobInfos) {
-        jobInfoQueue.addAll(jobInfos);
+    public synchronized void addTailIfNotEnqueue(JobInfo jobInfo) {
+        boolean hasEnqueue = false;
+        for (JobInfo cur : jobInfoQueue) {
+            if (jobInfo.getJobTriggerLogId() == cur.getJobTriggerLogId()) {
+                hasEnqueue = true;
+                break;
+            }
+        }
+        if (!hasEnqueue) {
+            jobInfoQueue.addLast(jobInfo);
+        }
     }
 
     public synchronized int queueSize() {

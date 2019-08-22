@@ -8,10 +8,19 @@ import java.io.Serializable;
  * DESC:
  **/
 public class JobInfo implements Serializable {
+    private String jobName;
     private long jobTriggerLogId;
     private int shardingIdx;
     private String launchCommand;
 
+
+    public String getJobName() {
+        return jobName;
+    }
+
+    public void setJobName(String jobName) {
+        this.jobName = jobName;
+    }
 
     public long getJobTriggerLogId() {
         return jobTriggerLogId;
@@ -37,10 +46,12 @@ public class JobInfo implements Serializable {
         this.launchCommand = launchCommand;
     }
 
+
     @Override
     public String toString() {
         return "JobInfo{" +
-                "jobTriggerLogId=" + jobTriggerLogId +
+                "jobName='" + jobName + '\'' +
+                ", jobTriggerLogId=" + jobTriggerLogId +
                 ", shardingIdx=" + shardingIdx +
                 ", launchCommand='" + launchCommand + '\'' +
                 '}';

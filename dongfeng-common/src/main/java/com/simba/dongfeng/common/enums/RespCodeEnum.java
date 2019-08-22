@@ -8,7 +8,8 @@ package com.simba.dongfeng.common.enums;
 public enum RespCodeEnum {
     SUCC(200,"SUCC"),
     BAD_REQUEST(400,"请求错误"),
-    INTERNAL_SERVER_ERROR(500,"服务异常");
+    INTERNAL_SERVER_ERROR(500,"服务异常"),
+    SERVER_RESOURCE_LACK(600, "服务资源不足");
     private int code;
     private String msg;
 

@@ -44,6 +44,10 @@ public class CallbackHandleHelper {
                     try {
                         Callback callback = callbackQueue.takeHead();
                         JobTriggerLogDto jobTriggerLog = scheduleServiceFacade.selectJobTriggerLogDtoById(callback.getJobTriggerLogId());
+                        if (jobTriggerLog.getStatus() != JobStatusEnum.RUNNING.getValue()) {
+                            logger.info("job callback has been handled.jobTriggerLog:" + jobTriggerLog);
+                            continue;
+                        }
                         jobTriggerLog.setEndTime(new Date());
                         jobTriggerLog.setStatus(callback.getJobExecRs());
                         scheduleServiceFacade.updateJobTriggerLogDto(jobTriggerLog);

@@ -14,29 +14,15 @@ public class DagQueue {
     private LinkedBlockingDeque<DagDto> dagQueue = new LinkedBlockingDeque<>();
 
 
-    public DagDto takeHead() throws InterruptedException {
+    public synchronized DagDto takeHead() throws InterruptedException {
         return dagQueue.takeFirst();
     }
 
-    public DagDto takeTail() throws InterruptedException {
-        return dagQueue.takeLast();
-    }
-
-    public synchronized DagDto peekHead() {
-        return dagQueue.peekFirst();
-    }
 
     public synchronized DagDto peekTail() {
         return dagQueue.peekLast();
     }
 
-    public synchronized DagDto pollHead() {
-        return dagQueue.pollFirst();
-    }
-
-    public synchronized DagDto pollTail() {
-        return dagQueue.peekLast();
-    }
 
     public synchronized void addHead(DagDto dagDto) {
         dagQueue.addFirst(dagDto);

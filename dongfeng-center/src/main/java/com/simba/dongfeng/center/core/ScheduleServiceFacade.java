@@ -46,10 +46,10 @@ public class ScheduleServiceFacade {
     private JobTriggerLogDao jobTriggerLogDao;
 
 
-
     /**
      * 拉取60秒时间窗口内需要被调度的dag,更新下次调度时间
      * 事务只是为了操作期间锁表
+     *
      * @return
      */
     @Transactional(value = "transactionManager")
@@ -71,6 +71,7 @@ public class ScheduleServiceFacade {
 
     /**
      * 选取执行器
+     *
      * @param jobDto
      * @return
      */
@@ -84,16 +85,19 @@ public class ScheduleServiceFacade {
 
     /**
      * 任务分发到执行器
+     *
      * @param jobTriggerLogDto
      * @param executorDto
      */
     public void dispatch(JobTriggerLogDto jobTriggerLogDto, ExecutorDto executorDto) {
 
+        throw new RuntimeException("dispatch err.jobTriggerLogDto:" + jobTriggerLogDto + ",executorDto:" + executorDto);
     }
 
 
     /**
      * 写调度日志,调度job(TASK_NODE节点)
+     *
      * @param jobDto
      * @param dagTriggerLogDto
      * @param jobStatusEnum
@@ -102,7 +106,7 @@ public class ScheduleServiceFacade {
     public void scheduleJob(JobDto jobDto, DagTriggerLogDto dagTriggerLogDto, JobStatusEnum jobStatusEnum, int jobScheduleRetryTime) {
         int scheduleCnt = 0;
         ExecutorDto executor = null;
-        JobTriggerLogDto curChildJobTriggerLog = generateJobTriggerLogDto(jobDto.getId(), dagTriggerLogDto.getDagId(), dagTriggerLogDto.getId(), jobStatusEnum.getValue(), null,dagTriggerLogDto.getParam());
+        JobTriggerLogDto curChildJobTriggerLog = generateJobTriggerLogDto(jobDto.getId(), dagTriggerLogDto.getDagId(), dagTriggerLogDto.getId(), jobStatusEnum.getValue(), null, dagTriggerLogDto.getParam());
         while (true) {
             try {
                 /**
@@ -142,6 +146,7 @@ public class ScheduleServiceFacade {
 
     /**
      * 手动触发dag
+     *
      * @param dagId
      */
     public DagDto selectDagById(long dagId) {
@@ -149,9 +154,9 @@ public class ScheduleServiceFacade {
     }
 
 
-
     /**
      * 获取dag流的开始任务
+     *
      * @param dagDto
      * @return
      */
@@ -161,6 +166,7 @@ public class ScheduleServiceFacade {
 
     /**
      * 获取子job列表
+     *
      * @param jobId
      * @return
      */
@@ -172,6 +178,7 @@ public class ScheduleServiceFacade {
 
     /**
      * 获取父job列表
+     *
      * @param jobId
      * @return
      */
@@ -184,6 +191,7 @@ public class ScheduleServiceFacade {
 
     /**
      * 根据dagTriggerId获取DagTriggerLogDto
+     *
      * @param dagTriggerId
      * @return
      */
@@ -194,6 +202,7 @@ public class ScheduleServiceFacade {
 
     /**
      * 写入dag触发日志
+     *
      * @param dagTriggerLogDto
      * @return
      */
@@ -203,6 +212,7 @@ public class ScheduleServiceFacade {
 
     /**
      * 更新dagTriggerLog
+     *
      * @param dagTriggerLogDto
      * @return
      */
@@ -212,6 +222,7 @@ public class ScheduleServiceFacade {
 
     /**
      * 写入job触发日志
+     *
      * @param jobTriggerLogDto
      * @return
      */
@@ -221,6 +232,7 @@ public class ScheduleServiceFacade {
 
     /**
      * 根据id查询JobTriggerLog
+     *
      * @param id
      * @return
      */
@@ -230,6 +242,7 @@ public class ScheduleServiceFacade {
 
     /**
      * 根据jobId和dagTriggerId获取JobTriggerLogDto
+     *
      * @param jobId
      * @param dagTriggerId
      * @return
@@ -240,6 +253,7 @@ public class ScheduleServiceFacade {
 
     /**
      * 更新JobTriggerLog
+     *
      * @param jobTriggerLogDto
      */
     public int updateJobTriggerLogDto(JobTriggerLogDto jobTriggerLogDto) {
@@ -247,7 +261,7 @@ public class ScheduleServiceFacade {
     }
 
 
-    public JobTriggerLogDto generateJobTriggerLogDto(long jobId,long dagId, long dagTriggerId, int status, String executorIp,String param) {
+    public JobTriggerLogDto generateJobTriggerLogDto(long jobId, long dagId, long dagTriggerId, int status, String executorIp, String param) {
         JobTriggerLogDto jobTriggerLogDto = new JobTriggerLogDto();
         jobTriggerLogDto.setDagId(dagId);
         jobTriggerLogDto.setDagTriggerId(dagTriggerId);

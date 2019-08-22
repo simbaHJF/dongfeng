@@ -1,50 +1,42 @@
 package com.simba.dongfeng.executor.core;
 
 import com.simba.dongfeng.common.pojo.ExecutorHeartbeatInfo;
+import com.simba.dongfeng.common.pojo.JobInfo;
+import com.simba.dongfeng.executor.cfg.ExecutorCfg;
 import com.simba.dongfeng.executor.thread.HeartbeatHelper;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * DATE:   2019-08-21 14:25
  * AUTHOR: simba.hjf
- * DESC:
+ * DESC:    执行器控制中心
  **/
 @Service
 public class ExecutorCtrlCenter {
-    @Value("dongfeng.center.addr")
-    private String dongfengCenterAddr;
-    @Value("dongfeng.executor.jar.repo.path")
-    private String jarRepoPath;
-    @Value("dongfeng.executor.sh.repo.path")
-    private String shRepoPath;
-    @Value("dongfeng.executor.name")
-    private String executorName;
-    @Value("dongfeng.executor.port")
-    private String executorPort;
-    @Value("dongfeng.executor.group")
-    private String group;
 
+    @Resource
+    private ExecutorCfg executorCfg;
     @Resource
     private ExecutorServiceFacade executorServiceFacade;
 
-    private List<String> dongfengCenterAddrList = new ArrayList<>();
+    private JobQueue jobQueue = new JobQueue();
+
+    private List<String> dongfengCenterAddrList;
     private ExecutorHeartbeatInfo executorHeartbeatInfo;
 
     private HeartbeatHelper heartbeatHelper;
 
     @PostConstruct
     public void init() throws Exception {
-        initDongfengCenterAddrList();
-        initExecutorHeartbeatInfo();
+        initDongfengCenterAddrList(executorCfg);
+        initExecutorHeartbeatInfo(executorCfg);
         heartbeatHelper = new HeartbeatHelper(dongfengCenterAddrList, executorHeartbeatInfo, executorServiceFacade);
         heartbeatHelper.start();
     }
@@ -57,18 +49,24 @@ public class ExecutorCtrlCenter {
         }
     }
 
-    private void initDongfengCenterAddrList() {
-        String[] addrs = dongfengCenterAddr.split(",");
+
+    public void jobTrigger(JobInfo jobInfo) {
+        jobQueue.addTailIfNotEnqueue(jobInfo);
+    }
+
+    private void initDongfengCenterAddrList(ExecutorCfg executorCfg) {
+        dongfengCenterAddrList = new ArrayList<>();
+        String[] addrs = executorCfg.getDongfengCenterAddr().split(",");
         for (String addr : addrs) {
             dongfengCenterAddrList.add(addr);
         }
     }
 
-    private void initExecutorHeartbeatInfo() throws Exception{
+    private void initExecutorHeartbeatInfo(ExecutorCfg executorCfg) throws Exception {
         executorHeartbeatInfo = new ExecutorHeartbeatInfo();
-        executorHeartbeatInfo.setExecutorName(executorName);
-        executorHeartbeatInfo.setExecutorPort(executorPort);
-        executorHeartbeatInfo.setExecutorGroup(group);
+        executorHeartbeatInfo.setExecutorName(executorCfg.getExecutorName());
+        executorHeartbeatInfo.setExecutorPort(executorCfg.getExecutorPort());
+        executorHeartbeatInfo.setExecutorGroup(executorCfg.getGroup());
         executorHeartbeatInfo.setExecutorIp(InetAddress.getLocalHost().getHostAddress());
     }
 }

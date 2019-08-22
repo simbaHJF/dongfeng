@@ -14,33 +14,10 @@ public class CallbackQueue {
     private LinkedBlockingDeque<Callback> callbackQueue = new LinkedBlockingDeque<>();
 
 
-    public Callback takeHead() throws InterruptedException {
+    public synchronized Callback takeHead() throws InterruptedException {
         return callbackQueue.takeFirst();
     }
 
-    public Callback takeTail() throws InterruptedException {
-        return callbackQueue.takeLast();
-    }
-
-    public synchronized Callback peekHead() {
-        return callbackQueue.peekFirst();
-    }
-
-    public synchronized Callback peekTail() {
-        return callbackQueue.peekLast();
-    }
-
-    public synchronized Callback pollHead() {
-        return callbackQueue.pollFirst();
-    }
-
-    public synchronized Callback pollTail() {
-        return callbackQueue.peekLast();
-    }
-
-    public synchronized void addHead(Callback callBack) {
-        callbackQueue.addFirst(callBack);
-    }
 
     public synchronized void addTailIfNotEnqueue(Callback callBack) {
         boolean hasEnqueue = false;
@@ -54,14 +31,5 @@ public class CallbackQueue {
             callbackQueue.addLast(callBack);
         }
     }
-
-    public synchronized void addAllToTail(List<Callback> callbacks) {
-        callbackQueue.addAll(callbacks);
-    }
-
-    public synchronized int queueSize() {
-        return callbackQueue.size();
-    }
-
 
 }

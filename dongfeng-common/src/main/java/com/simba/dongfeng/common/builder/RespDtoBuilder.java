@@ -35,6 +35,11 @@ public class RespDtoBuilder<T> {
         return this;
     }
 
+    public RespDtoBuilder<T> serverResourceLackResp() {
+        respDto = new RespDto<T>(RespCodeEnum.SERVER_RESOURCE_LACK.getCode(), RespCodeEnum.SERVER_RESOURCE_LACK.getMsg());
+        return this;
+    }
+
 
     public RespDto<T> build() {
         return this.respDto;
