@@ -11,26 +11,45 @@ import org.apache.ibatis.annotations.*;
 public interface JobTriggerLogDao {
 
 
-    @Select("select id,job_id,dag_id,dag_trigger_id,start_time,end_time,status,executor_ip,sharding_idx,sharding_cnt,param " +
+    @Select("select id,job_id,dag_id,dag_trigger_id,start_time,end_time,status,center_ip,executor_ip,sharding_idx,sharding_cnt,param " +
             "from job_trigger_log where id = #{id}")
     JobTriggerLogDto selectJobTriggerLogDtoById(@Param("id") long id);
 
-    @Select("select id,job_id,dag_id,dag_trigger_id,start_time,end_time,status,executor_ip,sharding_idx,sharding_cnt,param  " +
-            "from job_trigger_log where job_id = #{jobId} and dag_trigger_id = #{dagTriggerId}")
-    JobTriggerLogDto selectJobTriggerLogDtoByJobAndDag(@Param("jobId") long jobId,@Param("dagTriggerId") long dagTriggerId);
+    @Select("select id,job_id,dag_id,dag_trigger_id,start_time,end_time,status,center_ip,executor_ip,sharding_idx,sharding_cnt,param  " +
+            "from job_trigger_log where job_id = #{jobId} and dag_trigger_id = #{dagTriggerId} " +
+            "<when test='lock = true'> for update</when>")
+    JobTriggerLogDto selectJobTriggerLogDtoByJobAndDag(@Param("jobId") long jobId,@Param("dagTriggerId") long dagTriggerId,@Param("lock") boolean lock);
 
-    @Insert("insert into job_trigger_log(job_id,dag_id,dag_trigger_id,start_time,status,executor_ip,sharding_idx,sharding_cnt,param) " +
+    @Insert("insert into job_trigger_log(job_id,dag_id,dag_trigger_id,start_time,status,center_ip,executor_ip,sharding_idx,sharding_cnt,param) " +
             "values(#{jobTriggerLog.jobId},#{jobTriggerLog.dagId},#{jobTriggerLog.dagTriggerId},#{jobTriggerLog.startTime}," +
-            "#{jobTriggerLog.status},#{jobTriggerLog.executor_ip},#{jobTriggerLog.shardingIdx},#{jobTriggerLog.shardingCnt},#{jobTriggerLog.param})")
+            "#{jobTriggerLog.status},#{jobTriggerLog.centerIp},#{jobTriggerLog.executorIp},#{jobTriggerLog.shardingIdx}," +
+            "#{jobTriggerLog.shardingCnt},#{jobTriggerLog.param})")
     @Options(useGeneratedKeys=true, keyProperty="id", keyColumn="id")
-    void inserJobTriggerLog(@Param("jobTriggerLog") JobTriggerLogDto jobTriggerLogDto);
+    int inserJobTriggerLog(@Param("jobTriggerLog") JobTriggerLogDto jobTriggerLogDto);
 
     @Update("<script>update job_trigger_log set status = #{jobTriggerLogDto.status}  " +
             "<when test='#{jobTriggerLogDto.executorIp} != null'> and executor_ip = #{jobTriggerLogDto.executorIp} </when>" +
             "<when test='#{jobTriggerLogDto.endTime} != null'> and end_time = #{jobTriggerLogDto.endTime} </when>" +
-            "where id = #{jobTriggerLogDto.id} " +
+            "where id = #{jobTriggerLogDto.id}" +
             "</script>")
     @Options(useGeneratedKeys=true, keyProperty="id", keyColumn="id")
     int updateJobTriggerLog(@Param("jobTriggerLog") JobTriggerLogDto jobTriggerLogDto);
+
+    @Update("<script>update job_trigger_log set status = #{jobTriggerLogDto.status}  " +
+            "<when test='#{jobTriggerLogDto.executorIp} != null'> and executor_ip = #{jobTriggerLogDto.executorIp} </when>" +
+            "<when test='#{jobTriggerLogDto.endTime} != null'> and end_time = #{jobTriggerLogDto.endTime} </when>" +
+            "where id = #{jobTriggerLogDto.id} and center_ip = #{jobTriggerLog.centerIp}" +
+            "</script>")
+    @Options(useGeneratedKeys=true, keyProperty="id", keyColumn="id")
+    int updateJobTriggerLogWithAssignedCenter(@Param("jobTriggerLog") JobTriggerLogDto jobTriggerLogDto);
+
+
+    @Update("<script>update job_trigger_log set status = #{jobTriggerLogDto.status}  " +
+            "<when test='#{jobTriggerLogDto.endTime} != null'> and end_time = #{jobTriggerLogDto.endTime} </when>" +
+            "where id = #{jobTriggerLogDto.id} and status = #{expectStatus}" +
+            "</script>")
+    @Options(useGeneratedKeys=true, keyProperty="id", keyColumn="id")
+    int updateJobTriggerLogWithAssignedStatus(@Param("jobTriggerLog") JobTriggerLogDto jobTriggerLogDto,@Param("expectStatus") int expectStatus);
+
 
 }

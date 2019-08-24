@@ -15,6 +15,7 @@ public class JobTriggerLogDto {
     private Date startTime;
     private Date endTime;
     private int status;
+    private String centerIp;
     private String executorIp;
     private int shardingIdx;
     private int shardingCnt;
@@ -76,6 +77,14 @@ public class JobTriggerLogDto {
         this.status = status;
     }
 
+    public String getCenterIp() {
+        return centerIp;
+    }
+
+    public void setCenterIp(String centerIp) {
+        this.centerIp = centerIp;
+    }
+
     public String getExecutorIp() {
         return executorIp;
     }
@@ -108,6 +117,7 @@ public class JobTriggerLogDto {
         this.param = param;
     }
 
+
     @Override
     public String toString() {
         return "JobTriggerLogDto{" +
@@ -118,6 +128,7 @@ public class JobTriggerLogDto {
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +
                 ", status=" + status +
+                ", centerIp='" + centerIp + '\'' +
                 ", executorIp='" + executorIp + '\'' +
                 ", shardingIdx=" + shardingIdx +
                 ", shardingCnt=" + shardingCnt +

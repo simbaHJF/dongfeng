@@ -12,6 +12,7 @@ public class JobInfo implements Serializable {
     private long jobTriggerLogId;
     private int shardingIdx;
     private String launchCommand;
+    private String param;
 
 
     public String getJobName() {
@@ -46,6 +47,13 @@ public class JobInfo implements Serializable {
         this.launchCommand = launchCommand;
     }
 
+    public String getParam() {
+        return param;
+    }
+
+    public void setParam(String param) {
+        this.param = param;
+    }
 
     @Override
     public String toString() {
@@ -54,6 +62,7 @@ public class JobInfo implements Serializable {
                 ", jobTriggerLogId=" + jobTriggerLogId +
                 ", shardingIdx=" + shardingIdx +
                 ", launchCommand='" + launchCommand + '\'' +
+                ", param='" + param + '\'' +
                 '}';
     }
 }

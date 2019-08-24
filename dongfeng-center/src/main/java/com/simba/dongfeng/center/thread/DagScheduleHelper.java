@@ -58,13 +58,13 @@ public class DagScheduleHelper {
                         DagTriggerLogDto dagTriggerLogDto = generateDagTriggerLogDto(dagDto.getId(), dagDto.getParam(),dagDto.getTriggerType());
                         scheduleServiceFacade.insertDagTriggerLog(dagTriggerLogDto);
                         InetAddress addr = InetAddress.getLocalHost();
-                        JobTriggerLogDto startJobTriggerLog = scheduleServiceFacade.generateJobTriggerLogDto(startJob.getId(),dagDto.getId(), dagTriggerLogDto.getId(),JobStatusEnum.SUCC.getValue(), addr.getHostAddress(),dagDto.getParam());
+                        JobTriggerLogDto startJobTriggerLog = scheduleServiceFacade.generateJobTriggerLogDto(startJob.getId(),dagDto.getId(), dagTriggerLogDto.getId(),JobStatusEnum.SUCC.getValue(), addr.getHostAddress(), addr.getHostAddress(),dagDto.getParam());
                         scheduleServiceFacade.insertJobTriggerLog(startJobTriggerLog);
 
                         List<JobDto> childJobList = Optional.ofNullable(scheduleServiceFacade.selectChildJobList(startJob.getId())).orElse(new ArrayList<>());
 
                         for (JobDto jobDto : childJobList) {
-                            scheduleServiceFacade.scheduleJob(jobDto,dagTriggerLogDto,JobStatusEnum.RUNNING,2);
+                            scheduleServiceFacade.scheduleJob(jobDto,dagTriggerLogDto,2,addr.getHostAddress());
                         }
 
                     } catch (InterruptedException e) {

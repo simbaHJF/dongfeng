@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.Resource;
+import java.util.concurrent.RejectedExecutionException;
 
 /**
  * DATE:   2019-08-22 10:25
@@ -33,7 +34,7 @@ public class ExecutorController {
         }
         try {
             executorCtrlCenter.jobTrigger(jobInfo);
-        } catch (IllegalStateException e) {
+        } catch (RejectedExecutionException e) {
             logger.error("server resource lacking,reject.jobInfo:" + jobInfo);
             return RespDtoBuilder.createBuilder().serverResourceLackResp().build();
         } catch (Exception e) {

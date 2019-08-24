@@ -3,6 +3,7 @@ package com.simba.dongfeng.executor.core;
 import com.simba.dongfeng.common.pojo.ExecutorHeartbeatInfo;
 import com.simba.dongfeng.common.pojo.JobInfo;
 import com.simba.dongfeng.executor.cfg.ExecutorCfg;
+import com.simba.dongfeng.executor.thread.CallbackNotifyHelper;
 import com.simba.dongfeng.executor.thread.HeartbeatHelper;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,10 @@ import javax.annotation.Resource;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * DATE:   2019-08-21 14:25
@@ -26,12 +31,14 @@ public class ExecutorCtrlCenter {
     @Resource
     private ExecutorServiceFacade executorServiceFacade;
 
-    private JobQueue jobQueue = new JobQueue();
+    private CallbackQueue callbackQueue = new CallbackQueue();
+    private ExecutorService threadPoolExecutor = new ThreadPoolExecutor(3, 3, 1, TimeUnit.MINUTES, new LinkedBlockingQueue<>(2));
 
     private List<String> dongfengCenterAddrList;
     private ExecutorHeartbeatInfo executorHeartbeatInfo;
 
     private HeartbeatHelper heartbeatHelper;
+    private CallbackNotifyHelper callbackNotifyHelper;
 
     @PostConstruct
     public void init() throws Exception {
@@ -39,6 +46,8 @@ public class ExecutorCtrlCenter {
         initExecutorHeartbeatInfo(executorCfg);
         heartbeatHelper = new HeartbeatHelper(dongfengCenterAddrList, executorHeartbeatInfo, executorServiceFacade);
         heartbeatHelper.start();
+        callbackNotifyHelper = new CallbackNotifyHelper(callbackQueue, dongfengCenterAddrList);
+        callbackNotifyHelper.start();
     }
 
 
@@ -47,11 +56,15 @@ public class ExecutorCtrlCenter {
         if (heartbeatHelper != null) {
             heartbeatHelper.stop();
         }
+        if (callbackNotifyHelper != null) {
+            callbackNotifyHelper.stop();
+        }
     }
 
 
     public void jobTrigger(JobInfo jobInfo) {
-        jobQueue.addTailIfNotEnqueue(jobInfo);
+        WorkWarpper workWarpper = new WorkWarpper(jobInfo, callbackQueue);
+        threadPoolExecutor.execute(workWarpper);
     }
 
     private void initDongfengCenterAddrList(ExecutorCfg executorCfg) {

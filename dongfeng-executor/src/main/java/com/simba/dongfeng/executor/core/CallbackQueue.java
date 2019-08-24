@@ -18,40 +18,8 @@ public class CallbackQueue {
         return callbackQueue.takeFirst();
     }
 
-    public Callback takeTail() throws InterruptedException {
-        return callbackQueue.takeLast();
-    }
-
-    public synchronized Callback peekHead() {
-        return callbackQueue.peekFirst();
-    }
-
-    public synchronized Callback peekTail() {
-        return callbackQueue.peekLast();
-    }
-
-    public synchronized Callback pollHead() {
-        return callbackQueue.pollFirst();
-    }
-
-    public synchronized Callback pollTail() {
-        return callbackQueue.peekLast();
-    }
-
-    public synchronized void addHead(Callback callBack) {
-        callbackQueue.addFirst(callBack);
-    }
-
-    public synchronized void addTail(Callback callBack) {
+    public void addTail(Callback callBack) {
         callbackQueue.addLast(callBack);
-    }
-
-    public synchronized void addAllToTail(List<Callback> callbacks) {
-        callbackQueue.addAll(callbacks);
-    }
-
-    public synchronized int queueSize() {
-        return callbackQueue.size();
     }
 
 }

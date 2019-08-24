@@ -40,9 +40,17 @@ public class CallbackHandleHelper {
         callBackHandleThread = new Thread(){
             @Override
             public void run() {
+                InetAddress addr = null;
+                try {
+                    addr = InetAddress.getLocalHost();
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                }
                 while (isRunning) {
                     try {
                         Callback callback = callbackQueue.takeHead();
+
+
                         JobTriggerLogDto jobTriggerLog = scheduleServiceFacade.selectJobTriggerLogDtoById(callback.getJobTriggerLogId());
                         if (jobTriggerLog.getStatus() != JobStatusEnum.RUNNING.getValue()) {
                             logger.info("job callback has been handled.jobTriggerLog:" + jobTriggerLog);
@@ -50,15 +58,25 @@ public class CallbackHandleHelper {
                         }
                         jobTriggerLog.setEndTime(new Date());
                         jobTriggerLog.setStatus(callback.getJobExecRs());
-                        scheduleServiceFacade.updateJobTriggerLogDto(jobTriggerLog);
+
+                        int updateRs = scheduleServiceFacade.updateJobTriggerLogWithAssignedStatus(jobTriggerLog,JobStatusEnum.RUNNING.getValue());
+                        if (updateRs != 1) {
+                            logger.info("job callback has been handled.jobTriggerLog:" + jobTriggerLog);
+                            continue;
+                        }
+
                         DagTriggerLogDto dagTriggerLog = scheduleServiceFacade.selectDagTriggerLogById(jobTriggerLog.getDagTriggerId());
+                        if (dagTriggerLog.getStatus() == DagStatusEnum.FAIL.getValue()) {
+                            logger.error("dag trigger has failed due to other failed job.it will not trigger subsequent job");
+                            continue;
+                        }
                         List<JobDto> childJobList = scheduleServiceFacade.selectChildJobList(jobTriggerLog.getJobId());
                         for (JobDto childJobDto : childJobList) {
                             List<JobDto> parentJobList = scheduleServiceFacade.selectParentJobList(childJobDto.getId());
                             boolean allParentJobsCompleteFlag = true;
                             boolean allParentJobsSuccFlag = true;
                             for (JobDto parentJob : parentJobList) {
-                                JobTriggerLogDto parentJobTriggerLog = scheduleServiceFacade.selectJobTriggerLogDtoByJobAndDag(parentJob.getId(), dagTriggerLog.getId());
+                                JobTriggerLogDto parentJobTriggerLog = scheduleServiceFacade.selectJobTriggerLogDtoByJobAndDag(parentJob.getId(), dagTriggerLog.getId(),false);
                                 if (parentJobTriggerLog.getStatus() == JobStatusEnum.RUNNING.getValue()) {
                                     allParentJobsCompleteFlag = false;
                                     break;
@@ -79,19 +97,14 @@ public class CallbackHandleHelper {
                                         dagTriggerLog.setEndTime(new Date());
                                         dagTriggerLog.setStatus(DagStatusEnum.SUCC.getValue());
                                         scheduleServiceFacade.updateDagTriggerLog(dagTriggerLog);
-                                        InetAddress addr = null;
-                                        try {
-                                            addr = InetAddress.getLocalHost();
-                                        } catch (UnknownHostException e) {
-                                            e.printStackTrace();
-                                        }
-                                        JobTriggerLogDto endJobTriggerLog = scheduleServiceFacade.generateJobTriggerLogDto(childJobDto.getId(), dagTriggerLog.getDagId(), dagTriggerLog.getId(), JobStatusEnum.SUCC.getValue(), addr.getHostAddress(), dagTriggerLog.getParam());
+
+                                        JobTriggerLogDto endJobTriggerLog = scheduleServiceFacade.generateJobTriggerLogDto(childJobDto.getId(), dagTriggerLog.getDagId(), dagTriggerLog.getId(), JobStatusEnum.SUCC.getValue(), addr.getHostAddress(),addr.getHostAddress(), dagTriggerLog.getParam());
                                         scheduleServiceFacade.insertJobTriggerLog(endJobTriggerLog);
 
                                         logger.info("callBackHandle,dag complete succ.dagTriggerLog:" + dagTriggerLog);
                                     } else {
                                         //子job不是结束node
-                                        scheduleServiceFacade.scheduleJob(childJobDto, dagTriggerLog, JobStatusEnum.RUNNING, 2);
+                                        scheduleServiceFacade.scheduleJob(childJobDto, dagTriggerLog, 2,addr.getHostAddress());
                                         logger.info("callBackHandle,schedule childJob:" + childJobDto);
                                     }
                                 } else {
@@ -104,13 +117,12 @@ public class CallbackHandleHelper {
                                         dagTriggerLog.setEndTime(new Date());
                                         dagTriggerLog.setStatus(DagStatusEnum.FAIL.getValue());
                                         scheduleServiceFacade.updateDagTriggerLog(dagTriggerLog);
-                                        InetAddress addr = null;
                                         try {
                                             addr = InetAddress.getLocalHost();
                                         } catch (UnknownHostException e) {
                                             e.printStackTrace();
                                         }
-                                        JobTriggerLogDto endJobTriggerLog = scheduleServiceFacade.generateJobTriggerLogDto(childJobDto.getId(), dagTriggerLog.getDagId(), dagTriggerLog.getId(), JobStatusEnum.FAIL.getValue(), addr.getHostAddress(), dagTriggerLog.getParam());
+                                        JobTriggerLogDto endJobTriggerLog = scheduleServiceFacade.generateJobTriggerLogDto(childJobDto.getId(), dagTriggerLog.getDagId(), dagTriggerLog.getId(), JobStatusEnum.FAIL.getValue(), addr.getHostAddress(),addr.getHostAddress(), dagTriggerLog.getParam());
                                         scheduleServiceFacade.insertJobTriggerLog(endJobTriggerLog);
 
                                         logger.info("callBackHandle,dag complete with failed job.dagTriggerLog:" + dagTriggerLog);

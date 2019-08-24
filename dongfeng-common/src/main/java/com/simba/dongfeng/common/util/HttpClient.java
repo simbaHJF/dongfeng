@@ -29,19 +29,19 @@ public class HttpClient {
      * @param host    地址
      * @param api     接口路径
      * @param entity  请求体
-     * @param timeout 超时时间,毫秒
+     * @param timeoutMillisecond 超时时间,毫秒
      * @throws IOException
      */
-    public static HttpResponse sendPost(String host, String api, Object entity, int timeout){
+    public static HttpResponse sendPost(String host, String api, Object entity, int timeoutMillisecond){
         try {
             HttpPost httpPost = new HttpPost(host + api);
             String jsonStr = JSON.toJSONString(entity);
             StringEntity requestEntity = new StringEntity(jsonStr, "application/json; charset=UTF-8");
             httpPost.setEntity(requestEntity);
             RequestConfig requestConfig = RequestConfig.custom()
-                    .setConnectTimeout(timeout)
-                    .setConnectionRequestTimeout(timeout)
-                    .setSocketTimeout(timeout)
+                    .setConnectTimeout(timeoutMillisecond)
+                    .setConnectionRequestTimeout(timeoutMillisecond)
+                    .setSocketTimeout(timeoutMillisecond)
                     .build();
             httpPost.setConfig(requestConfig);
 

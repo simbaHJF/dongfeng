@@ -6,7 +6,8 @@ package com.simba.dongfeng.common.enums;
  * DESC:
  **/
 public enum JobStatusEnum {
-    RUNNING(1, "运行中"),
+    INITIAL(0,"初始化"),
+    RUNNING(1, "已调度,运行中"),
     SUCC(2, "成功"),
     FAIL(3, "失败");
     private int value;

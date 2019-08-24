@@ -23,6 +23,9 @@ public class DagFetchHelper {
 
     private long interval = 30;
 
+    //dag预读拉取,时间窗口,秒
+    private int fetchTimeWindow = 60;
+
     private DagQueue dagQueue;
 
     private ScheduleServiceFacade scheduleServiceFacade;
@@ -39,7 +42,7 @@ public class DagFetchHelper {
             public void run() {
                 while (isRunning) {
                     try {
-                        List<DagDto> dagDtoList = Optional.ofNullable(scheduleServiceFacade.fetchNeedTriggerDag()).orElse(new ArrayList<>());
+                        List<DagDto> dagDtoList = Optional.ofNullable(scheduleServiceFacade.fetchNeedTriggerDag(fetchTimeWindow)).orElse(new ArrayList<>());
                         DagDto lastDag = dagQueue.peekTail();
                         if (lastDag == null) {
                             dagQueue.addAllToTail(dagDtoList);
