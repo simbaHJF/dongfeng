@@ -143,6 +143,7 @@ public class CallbackHandleHelper {
                     } catch (InterruptedException e) {
                         logger.error("callBackHandleThread err.", e);
                         e.printStackTrace();
+                        return;
                     }
                 }
             }

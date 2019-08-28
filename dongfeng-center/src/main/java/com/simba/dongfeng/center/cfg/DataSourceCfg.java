@@ -25,40 +25,40 @@ import java.sql.SQLException;
 @MapperScan(basePackages = {"com.simba.dongfeng.center.dao"},sqlSessionFactoryRef = "sqlSessionFactory",sqlSessionTemplateRef = "sqlSessionTemplate")
 public class DataSourceCfg {
 
-    @Value("dongfeng.datasource.druid.url")
+    @Value("${dongfeng.datasource.druid.url}")
     private String url;
 
-    @Value("dongfeng.datasource.username")
+    @Value("${dongfeng.datasource.username}")
     private String username;
 
-    @Value("dongfeng.datasource.password")
+    @Value("${dongfeng.datasource.password}")
     private String password;
 
-    @Value("dongfeng.datasource.driver-class-name")
+    @Value("${dongfeng.datasource.driver-class-name}")
     private String driverClassName;
 
-    @Value("dongfeng.datasource.druid.max-active")
+    @Value("${dongfeng.datasource.druid.max-active}")
     private int maxActive;
 
-    @Value("dongfeng.datasource.druid.initial-size")
+    @Value("${dongfeng.datasource.druid.initial-size}")
     private int initialSize;
 
-    @Value("dongfeng.datasource.druid.min-idle")
+    @Value("${dongfeng.datasource.druid.min-idle}")
     private int minIdle;
 
-    @Value("dongfeng.datasource.druid.max-wait")
+    @Value("${dongfeng.datasource.druid.max-wait}")
     private int maxWait;
 
-    @Value("dongfeng.datasource.druid.time-between-eviction-runs-millis")
+    @Value("${dongfeng.datasource.druid.time-between-eviction-runs-millis}")
     private int timeBetweenEvictionRunsMillis;
 
-    @Value("dongfeng.datasource.druid.min-evictable-idle-time-millis")
+    @Value("${dongfeng.datasource.druid.min-evictable-idle-time-millis}")
     private int minEvictableIdleTimeMillis;
 
-    @Value("dongfeng.datasource.druid.validation-query")
+    @Value("${dongfeng.datasource.druid.validation-query}")
     private String validationQuery;
 
-    @Value("dongfeng.datasource.druid.test-while-idle")
+    @Value("${dongfeng.datasource.druid.test-while-idle}")
     private boolean testWhileIdle;
 
     /**

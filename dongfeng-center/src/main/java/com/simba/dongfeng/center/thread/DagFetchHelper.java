@@ -57,9 +57,11 @@ public class DagFetchHelper {
                         TimeUnit.SECONDS.sleep(interval);
                     }catch (InterruptedException e) {
                         logger.error("DagFetchHelper#dagFetchThread error.", e);
+                        return;
                         //TODO  ALARM
                     } catch (Exception e) {
                         logger.error("DagFetchHelper#dagFetchThread error.", e);
+                        return;
                         //TODO  ALARM
                     }
                 }
@@ -72,7 +74,7 @@ public class DagFetchHelper {
 
     public void stop() {
         isRunning = false;
-        if (dagFetchThread != null && dagFetchThread.getState() != Thread.State.TERMINATED){
+        if (dagFetchThread != null){
             // interrupt and wait
             dagFetchThread.interrupt();
             try {

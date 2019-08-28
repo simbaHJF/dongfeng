@@ -39,9 +39,12 @@ public class ExecutorCheckHelper {
                         executorDao.deleteExpiredExecutor(deadlineTime);
                         TimeUnit.SECONDS.sleep(interval);
                     } catch (InterruptedException e) {
+                        e.printStackTrace();
                         logger.error(e.getMessage(),e);
+                        return;
                     } catch (Exception e) {
                         logger.error("ExecutorCheckHelper#checkThread error.", e);
+                        return;
                     }
                 }
             }
@@ -53,7 +56,7 @@ public class ExecutorCheckHelper {
 
     public void stop() {
         isRunning = false;
-        if (checkThread != null && checkThread.getState() != Thread.State.TERMINATED){
+        if (checkThread != null){
             checkThread.interrupt();
             try {
                 checkThread.join();
