@@ -28,7 +28,7 @@
 <nav class="navbar navbar-inverse">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" title="logoTitle" href="#">Neo Yang</a>
+            <a class="navbar-brand" title="logoTitle" href="#">Dong Feng</a>
         </div>
         <div class="collapse navbar-collapse">
             <#--<ul class="nav navbar-nav navbar-right">
@@ -52,7 +52,7 @@
                 <a href="dagIndex" target="mainFrame" >dag配置</a>
             </li>
             <li role="presentation">
-                <a href="testPath2" target="mainFrame">job配置</a>
+                <a href="jobIndex" target="mainFrame">job配置</a>
             </li>
             <li role="presentation">
                 <a href="nav3.html" target="mainFrame">导航链接3</a>

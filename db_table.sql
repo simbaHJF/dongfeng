@@ -7,7 +7,7 @@ CREATE TABLE `dag` (
   `trigger_time` datetime DEFAULT NULL COMMENT '下次触发时间',
   `param` varchar(200) DEFAULT '' COMMENT '任务参数',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Dag表';
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COMMENT='Dag表';
 
 
 CREATE TABLE `dag_trigger_log` (
@@ -23,13 +23,13 @@ CREATE TABLE `dag_trigger_log` (
 
 
 CREATE TABLE `dependency` (
-  `id` bigint(20) NOT NULL COMMENT '自增id',
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '自增id',
   `job_id` bigint(20) NOT NULL COMMENT 'job表id',
   `parent_job_id` bigint(20) NOT NULL COMMENT '依赖父job的id',
   PRIMARY KEY (`id`),
   KEY `idx_job_id` (`job_id`),
   KEY `idx_parent_id` (`parent_job_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='任务依赖表';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='任务依赖表';
 
 
 CREATE TABLE `executor` (
@@ -53,8 +53,9 @@ CREATE TABLE `job` (
   `dag_id` bigint(20) NOT NULL COMMENT '对应dag流id',
   `schedule_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '调度策略',
   `launch_command` varchar(200) NOT NULL COMMENT '任务启动命令',
+  `assign_ip` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT '' COMMENT '指定的执行ip',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='任务表';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COMMENT='任务表';
 
 
 CREATE TABLE `job_trigger_log` (
@@ -66,10 +67,10 @@ CREATE TABLE `job_trigger_log` (
   `end_time` datetime DEFAULT NULL COMMENT '任务结束时间',
   `status` int(11) NOT NULL COMMENT '任务状态',
   `center_ip` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '调度中心ip',
-  `executor_ip` varchar(20) NOT NULL COMMENT '任务执行节点ip',
+  `executor_ip` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '任务执行节点ip',
   `sharding_idx` int(11) NOT NULL COMMENT '分片序号',
   `sharding_cnt` int(11) NOT NULL COMMENT '分片总数',
   `param` varchar(200) DEFAULT '' COMMENT '执行参数',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uniq_job_dag_trigger` (`job_id`,`dag_trigger_id`)
+  UNIQUE KEY `uniq_job_dag_trigger` (`job_id`,`dag_trigger_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Job触发日志表';

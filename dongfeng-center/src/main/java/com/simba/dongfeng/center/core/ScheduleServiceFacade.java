@@ -16,10 +16,7 @@ import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * DATE:   2019-08-15 17:04
@@ -56,15 +53,23 @@ public class ScheduleServiceFacade{
      */
     @Transactional(value = "transactionManager")
     public List<DagDto> fetchNeedTriggerDag(int fetchTimeWindow) {
-        Timestamp timeline = Timestamp.valueOf(LocalDateTime.now().plusSeconds(fetchTimeWindow));
-        List<DagDto> dagDtoList = Optional.ofNullable(dagDao.selectNeedTriggerDagWithLock(timeline)).orElse(new ArrayList<>());
-        for (DagDto dagDto : dagDtoList) {
+        Timestamp endTimeline = Timestamp.valueOf(LocalDateTime.now().plusSeconds(fetchTimeWindow));
+        Timestamp nowTimeline = Timestamp.valueOf(LocalDateTime.now());
+        List<DagDto> dagDtoList = Optional.ofNullable(dagDao.selectNeedTriggerDagWithLock(endTimeline)).orElse(new ArrayList<>());
+        Iterator<DagDto> iterator = dagDtoList.iterator();
+        while (iterator.hasNext()) {
+            DagDto dagDto = iterator.next();
             try {
+                System.out.println(dagDto);
+                if (dagDto.getTriggerTime() != null && dagDto.getTriggerTime().before(nowTimeline)) {
+                    iterator.remove();
+                }
                 CronExpression cronExpression = new CronExpression(dagDto.getDagCron());
-                dagDao.updateDagTriggerTime(dagDto.getId(), cronExpression.getNextValidTimeAfter(timeline));
+                Date nextValidTime = cronExpression.getNextValidTimeAfter(endTimeline);
+                dagDao.updateDagTriggerTime(dagDto.getId(), cronExpression.getNextValidTimeAfter(endTimeline));
+                System.out.println(nextValidTime);
             } catch (ParseException e) {
                 logger.error("parse dag trigger cron err", e);
-
                 //TODO:  ALARM,  DO NOT THROW EXCEPTION
             }
         }
@@ -162,7 +167,7 @@ public class ScheduleServiceFacade{
 
 
     /**
-     * 手动触发dag
+     * 根据dagId获取dag
      *
      * @param dagId
      */

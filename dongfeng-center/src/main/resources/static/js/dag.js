@@ -10,7 +10,7 @@ $(function () {
                 '  </button>\n' +
                 '  <ul class="dropdown-menu">\n' +
                 '    <li><a href="#" onclick="edit_click(this)">编辑</a></li>\n' +
-                '    <li><a href="#">删除</a></li>\n' +
+                '    <li><a href="#" onclick="delete_click(this)">删除</a></li>\n' +
                 '    <li><a href="#">手动触发</a></li>\n' +
                 '  </ul>\n' +
                 '</div>';
@@ -30,7 +30,7 @@ function edit_click(data)
     var dagId = $(data).parent().parent().parent().parent().parent().children().first().html();
 
     $.ajax({
-        url: '/dongfeng/dagData',
+        url: '/dongfeng/updatePage',
         type: 'get',
         data:{
             'dagId':dagId
@@ -38,7 +38,25 @@ function edit_click(data)
         success: function (data) {
             $("#updateDagModal").empty();
             $("#updateDagModal").append(data);
-            $("#updateDagModal").attr("aria-hidden", true);
+            $("#updateDagModal").modal({
+                show: true,
+                backdrop:'static'
+            })
+        }
+    })
+}
+
+
+function delete_click(data) {
+    var dagId = $(data).parent().parent().parent().parent().parent().children().first().html();
+    $.ajax({
+        url: '/dongfeng/deleteDagInfo',
+        type: 'get',
+        data:{
+            'dagId':dagId
+        },
+        success: function (data) {
+            self.location.reload();
         }
     })
 }

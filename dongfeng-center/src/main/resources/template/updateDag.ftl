@@ -7,30 +7,34 @@
 
 
             <div id="modal-div" style="margin: 50px">
-                <form>
+                <form method="post" action="updateDagInfo">
+                    <div class="form-group">
+                        <label for="id">Dag id</label>
+                        <input type="text" class="form-control" id="updateDagId" name="id" placeholder="Dag id" value="${dagInfo.id}" readonly>
+                    </div>
                     <div class="form-group">
                         <label for="dagName">Dag name</label>
-                        <input type="text" class="form-control" id="updateDagName" name="dagName" placeholder="Dag name" value="${dag.}">
+                        <input type="text" class="form-control" id="updateDagName" name="dagName" placeholder="Dag name" value="${dagInfo.dagName}">
                     </div>
                     <div class="form-group">
                         <label for="dagGroup">Dag group</label>
-                        <input type="text" class="form-control" id="updateDagGroup" name="dagGroup" placeholder="Dag group">
+                        <input type="text" class="form-control" id="updateDagGroup" name="dagGroup" placeholder="Dag group" value="${dagInfo.dagGroup}">
                     </div>
                     <div class="form-group">
                         <label for="dagCron">Dag cron</label>
-                        <input type="text" class="form-control" id="updateDagCron" name="dagCron" placeholder="Dag cron">
+                        <input type="text" class="form-control" id="updateDagCron" name="dagCron" placeholder="Dag cron" value="${dagInfo.dagCron}">
                     </div>
                     <div class="form-group">
                         <label for="dagParam">Dag param</label>
-                        <input type="text" class="form-control" id="updateDagParam" name="dagParam" placeholder="Dag param">
+                        <input type="text" class="form-control" id="updateDagParam" name="param" placeholder="Dag param" value="${dagInfo.param}">
                     </div>
                     <div class="radio">
                         <label>
-                            <input type="radio" name="status" id="updateDagStatusOn" value="1" checked> 关闭
+                            <input type="radio" name="status" id="updateDagStatusOn" value="1" <#if  dagInfo.status== 1>checked </#if>> 关闭
                         </label>
                         &emsp;&emsp;
                         <label>
-                            <input type="radio" name="status" id="updateDagStatusOff" value="2"> 开启
+                            <input type="radio" name="status" id="updateDagStatusOn" value="2" <#if  dagInfo.status== 2>checked </#if>> 开启
                         </label>
                     </div>
 

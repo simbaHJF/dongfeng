@@ -13,6 +13,10 @@ public class JobDto {
     private long dagId;
     private String scheduleType;
     private String launchCommand;
+    private String assignIp;
+
+    //admin中crud辅助字段,非表字段
+    private String parentJobIds;
 
     public long getId() {
         return id;
@@ -70,6 +74,22 @@ public class JobDto {
         this.launchCommand = launchCommand;
     }
 
+    public String getAssignIp() {
+        return assignIp;
+    }
+
+    public void setAssignIp(String assignIp) {
+        this.assignIp = assignIp;
+    }
+
+    public String getParentJobIds() {
+        return parentJobIds;
+    }
+
+    public void setParentJobIds(String parentJobIds) {
+        this.parentJobIds = parentJobIds;
+    }
+
     @Override
     public String toString() {
         return "JobDto{" +
@@ -80,6 +100,8 @@ public class JobDto {
                 ", dagId=" + dagId +
                 ", scheduleType='" + scheduleType + '\'' +
                 ", launchCommand='" + launchCommand + '\'' +
+                ", assignIp='" + assignIp + '\'' +
+                ", parentJobIds='" + parentJobIds + '\'' +
                 '}';
     }
 }

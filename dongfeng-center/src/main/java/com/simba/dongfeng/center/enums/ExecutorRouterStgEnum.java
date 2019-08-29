@@ -31,13 +31,9 @@ public enum ExecutorRouterStgEnum {
     }
 
     public static ExecutorRouterStgEnum getExecutorRouterStgEnum(String scheduleType) {
-        if (scheduleType.startsWith(ASSIGN.getRouterName())) {
-            return ASSIGN;
-        } else {
-            return Stream.of(ExecutorRouterStgEnum.values())
-                    .filter(ele -> ele.getRouterName().equals(scheduleType))
-                    .findFirst()
-                    .orElse(null);
-        }
+        return Stream.of(ExecutorRouterStgEnum.values())
+                .filter(ele -> ele.getRouterName().equals(scheduleType))
+                .findFirst()
+                .orElse(null);
     }
 }

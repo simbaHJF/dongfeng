@@ -34,7 +34,7 @@
 
 
             <div id="modal-div" style="margin: 50px">
-                <form>
+                <form method="post" action="addDag">
                     <div class="form-group">
                         <label for="dagName">Dag name</label>
                         <input type="text" class="form-control" id="addDagName" name="dagName" placeholder="Dag name">
@@ -49,7 +49,7 @@
                     </div>
                     <div class="form-group">
                         <label for="dagParam">Dag param</label>
-                        <input type="text" class="form-control" id="addDagParam" name="dagParam" placeholder="Dag param">
+                        <input type="text" class="form-control" id="addDagParam" name="param" placeholder="Dag param">
                     </div>
                     <div class="radio">
                         <label>
@@ -62,7 +62,7 @@
                     </div>
 
 
-                    <button type="submit" class="btn btn-default">Submit</button>
+                    <button type="submit" class="btn btn-default" id="addDag">Submit</button>
                     <button type="reset" class="btn btn-default">Reset</button>
                 </form>
             </div>
@@ -86,7 +86,7 @@
             <h3 class="box-title">Dag列表</h3>
         </div>
         <div class="box-body">
-            <table id="job_list" class="table table-bordered table-striped" width="100%">
+            <table id="dag_list" class="table table-bordered table-striped" width="100%">
                 <thead>
                 <tr>
                     <th name="id">id</th>

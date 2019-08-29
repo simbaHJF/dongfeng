@@ -16,6 +16,7 @@ public class DagDto {
     private Date triggerTime;
     private String param;
 
+    //非数据库字段,只在调度和手动触发时,区分队列中的dagDto的触发方式
     private int triggerType;
 
     public long getId() {

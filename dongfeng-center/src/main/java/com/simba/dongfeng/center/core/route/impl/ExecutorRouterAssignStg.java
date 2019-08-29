@@ -16,7 +16,7 @@ import java.util.Optional;
 public class ExecutorRouterAssignStg implements ExecutorRouterStg {
     @Override
     public ExecutorDto route(JobDto jobDto, List<ExecutorDto> executors) {
-        String ip = jobDto.getScheduleType().split(":")[1];
+        String ip = jobDto.getAssignIp();
         return Optional.ofNullable(executors)
                 .orElse(new ArrayList<>())
                 .stream()

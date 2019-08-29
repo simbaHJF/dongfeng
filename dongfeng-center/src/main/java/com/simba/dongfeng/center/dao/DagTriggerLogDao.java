@@ -23,7 +23,7 @@ public interface DagTriggerLogDao {
 
 
     @Update("<script>update dag_trigger_log set status = #{dagTrigerLog.status} " +
-            "<when test='#{dagTrigerLog.endTime} != null'> and end_time = #{dagTrigerLog.endTime} </when>" +
+            "<when test='#{dagTrigerLog.endTime} != null'> , end_time = #{dagTrigerLog.endTime} </when>" +
             "where id =#{dagTrigerLog.id}" +
             "</script>")
     int updateDagTriggerLog(@Param("dagTrigerLog") DagTriggerLogDto dagTrigerLog);

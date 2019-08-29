@@ -28,16 +28,16 @@ public interface JobTriggerLogDao {
     int inserJobTriggerLog(@Param("jobTriggerLog") JobTriggerLogDto jobTriggerLogDto);
 
     @Update("<script>update job_trigger_log set status = #{jobTriggerLogDto.status}  " +
-            "<when test='#{jobTriggerLogDto.executorIp} != null'> and executor_ip = #{jobTriggerLogDto.executorIp} </when>" +
-            "<when test='#{jobTriggerLogDto.endTime} != null'> and end_time = #{jobTriggerLogDto.endTime} </when>" +
+            "<when test='#{jobTriggerLogDto.executorIp} != null'> , executor_ip = #{jobTriggerLogDto.executorIp} </when>" +
+            "<when test='#{jobTriggerLogDto.endTime} != null'> , end_time = #{jobTriggerLogDto.endTime} </when>" +
             "where id = #{jobTriggerLogDto.id}" +
             "</script>")
     @Options(useGeneratedKeys=true, keyProperty="id", keyColumn="id")
     int updateJobTriggerLog(@Param("jobTriggerLog") JobTriggerLogDto jobTriggerLogDto);
 
     @Update("<script>update job_trigger_log set status = #{jobTriggerLogDto.status}  " +
-            "<when test='#{jobTriggerLogDto.executorIp} != null'> and executor_ip = #{jobTriggerLogDto.executorIp} </when>" +
-            "<when test='#{jobTriggerLogDto.endTime} != null'> and end_time = #{jobTriggerLogDto.endTime} </when>" +
+            "<when test='#{jobTriggerLogDto.executorIp} != null'> , executor_ip = #{jobTriggerLogDto.executorIp} </when>" +
+            "<when test='#{jobTriggerLogDto.endTime} != null'> , end_time = #{jobTriggerLogDto.endTime} </when>" +
             "where id = #{jobTriggerLogDto.id} and center_ip = #{jobTriggerLog.centerIp}" +
             "</script>")
     @Options(useGeneratedKeys=true, keyProperty="id", keyColumn="id")
@@ -45,7 +45,7 @@ public interface JobTriggerLogDao {
 
 
     @Update("<script>update job_trigger_log set status = #{jobTriggerLogDto.status}  " +
-            "<when test='#{jobTriggerLogDto.endTime} != null'> and end_time = #{jobTriggerLogDto.endTime} </when>" +
+            "<when test='#{jobTriggerLogDto.endTime} != null'> , end_time = #{jobTriggerLogDto.endTime} </when>" +
             "where id = #{jobTriggerLogDto.id} and status = #{expectStatus}" +
             "</script>")
     @Options(useGeneratedKeys=true, keyProperty="id", keyColumn="id")
