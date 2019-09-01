@@ -8,7 +8,7 @@
 
 
         <div id="modal-div" style="margin: 50px">
-            <form method="post" action="updateJobInfo" onsubmit="return checkDisable();">
+            <form method="post" action="updateJobInfo" id="updateJobForm">
                 <div class="form-group">
                     <label for="id">* Job id</label>
                     <input type="text" class="form-control" name="id" placeholder="Job id" value="${jobInfo.id}" readonly>
@@ -67,7 +67,7 @@
                 </div>
 
 
-                <button type="submit" class="btn btn-default">Submit</button>
+                <button type="button" class="btn btn-default" onclick="update_job_submit()">Submit</button>
             </form>
         </div>
     </div>

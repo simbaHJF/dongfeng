@@ -55,10 +55,10 @@
                 <a href="jobIndex" target="mainFrame">job配置</a>
             </li>
             <li role="presentation">
-                <a href="nav3.html" target="mainFrame">导航链接3</a>
+                <a href="dagLogIndex" target="mainFrame">dagLog记录</a>
             </li>
             <li role="presentation">
-                <a href="nav4.html" target="mainFrame">导航链接5</a>
+                <a href="nav4.html" target="mainFrame">jobLog记录</a>
             </li>
         </ul>
     </div>
@@ -69,6 +69,8 @@
         <iframe id="mainFrame" name="mainFrame" frameborder="0" width="100%"  height="100%" frameBorder="0"></iframe>
     </div>
 </div>
+
+
 <!-- 底部页脚部分 -->
 <div class="footer">
     <p class="text-center">

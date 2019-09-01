@@ -4,7 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
 import com.simba.dongfeng.center.enums.ExecutorRouterStgEnum;
 import com.simba.dongfeng.center.pojo.DagDto;
+import com.simba.dongfeng.center.pojo.DagTriggerLogDto;
 import com.simba.dongfeng.center.pojo.JobDto;
+import com.simba.dongfeng.center.service.CenterDagLogService;
 import com.simba.dongfeng.center.service.CenterDagService;
 import com.simba.dongfeng.center.service.CenterDependencyService;
 import com.simba.dongfeng.center.service.CenterJobService;
@@ -39,6 +41,8 @@ public class DongfengCenterAdminController {
     private CenterJobService centerJobService;
     @Resource
     private CenterDependencyService centerDependencyService;
+    @Resource
+    private CenterDagLogService centerDagLogService;
 
     @RequestMapping("/index")
     public String index() {
@@ -61,10 +65,12 @@ public class DongfengCenterAdminController {
     }
 
     @RequestMapping("/addDag")
+    @ResponseBody
     public String addDag(DagDto dagDto) {
         centerDagService.insertDag(dagDto);
         System.out.println(dagDto);
-        return "dag";
+        RespDto respDto = new RespDto<>(RespCodeEnum.SUCC.getCode(), RespCodeEnum.SUCC.getMsg());
+        return JSON.toJSONString(respDto);
     }
 
     @RequestMapping("/updateDagPage")
@@ -76,10 +82,11 @@ public class DongfengCenterAdminController {
 
 
     @RequestMapping("/updateDagInfo")
-    public String updateDagInfo(DagDto dagDto) {
+    @ResponseBody
+    public RespDto updateDagInfo(DagDto dagDto) {
         System.out.println(dagDto);
         centerDagService.updateDagInfo(dagDto);
-        return "redirect:/dagIndex";
+        return RespDtoBuilder.createBuilder().succResp().build();
     }
 
     @RequestMapping("/deleteDagInfo")
@@ -109,10 +116,18 @@ public class DongfengCenterAdminController {
     }
 
     @RequestMapping("/addJob")
-    public String addJob(JobDto jobDto) {
+    @ResponseBody
+    public RespDto addJob(JobDto jobDto) {
         System.out.println(jobDto);
+        DagDto dagDto = centerDagService.selectDagById(jobDto.getDagId());
+        if (dagDto == null) {
+            RespDto respDto = RespDtoBuilder.createBuilder().badReqResp().build();
+            respDto.setMsg("对应dag不存在");
+            return respDto;
+        }
         centerJobService.insertJobAndDependency(jobDto);
-        return "job";
+        RespDto respDto = new RespDto<>(RespCodeEnum.SUCC.getCode(), RespCodeEnum.SUCC.getMsg());
+        return respDto;
     }
 
     @RequestMapping("/updateJobPage")
@@ -126,7 +141,8 @@ public class DongfengCenterAdminController {
     }
 
     @RequestMapping("/updateJobInfo")
-    public String updateJobInfo(JobDto jobDto) {
+    @ResponseBody
+    public RespDto updateJobInfo(JobDto jobDto) {
         System.out.println(jobDto);
         if (StringUtils.isBlank(jobDto.getAssignIp())) {
             jobDto.setAssignIp("");
@@ -136,7 +152,7 @@ public class DongfengCenterAdminController {
             jobDto.setAssignIp("");
         }
         centerJobService.updateJob(jobDto);
-        return "redirect:/jobIndex";
+        return RespDtoBuilder.createBuilder().succResp().build();
     }
 
 
@@ -152,5 +168,19 @@ public class DongfengCenterAdminController {
             return respDto;
         }
         return RespDtoBuilder.createBuilder().succResp().build();
+    }
+
+
+    @RequestMapping("/dagLogIndex")
+    public String dagLogIndex() {
+        return "dagLog";
+    }
+
+    @RequestMapping("/dagLogData")
+    @ResponseBody
+    public String dagLogData(int page) {
+        PageInfo<DagTriggerLogDto> pageInfo = centerDagLogService.selectDagLogByPage(page, pageSize);
+        RespDto<PageInfo> respDto = new RespDto<>(RespCodeEnum.SUCC.getCode(), RespCodeEnum.SUCC.getMsg(), pageInfo);
+        return JSON.toJSONString(respDto);
     }
 }

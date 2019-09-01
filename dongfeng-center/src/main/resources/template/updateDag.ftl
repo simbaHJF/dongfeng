@@ -7,7 +7,7 @@
 
 
         <div id="modal-div" style="margin: 50px">
-            <form method="post" action="updateDagInfo">
+            <form method="post" action="updateDagInfo" id="updateDagForm">
                 <div class="form-group">
                     <label for="id">Dag id</label>
                     <input type="text" class="form-control" id="updateDagId" name="id" placeholder="Dag id"
@@ -49,7 +49,7 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-default">Submit</button>
+                <button type="button" class="btn btn-default" onclick="edit_dag_submit()">Submit</button>
             </form>
         </div>
     </div>

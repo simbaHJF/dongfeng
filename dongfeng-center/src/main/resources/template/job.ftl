@@ -34,7 +34,7 @@
 
 
             <div id="modal-div" style="margin: 50px">
-                <form method="post" action="addJob">
+                <form method="post" action="addJob" id="addJobForm">
                     <div class="form-group">
                         <label for="jobName" class="text-danger">* Job name</label>
                         <input type="text" class="form-control" name="jobName" placeholder="Job name">
@@ -89,7 +89,7 @@
                     </div>
 
 
-                    <button type="submit" class="btn btn-default" id="addDag">Submit</button>
+                    <button type="button" class="btn btn-default" id="addDag" onclick="add_job_submit()">Submit</button>
                     <button type="reset" class="btn btn-default">Reset</button>
                 </form>
             </div>
@@ -133,6 +133,12 @@
             </table>
         </div>
     </div>
+</div>
+<div style="padding-left: 50px;padding-right: 50px;">
+    <nav aria-label="Page navigation">
+        <ul class="pagination" id="pagination">
+        </ul>
+    </nav>
 </div>
 </div>
 <script type="text/javascript" src="js/job.js"></script>

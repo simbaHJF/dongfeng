@@ -1,30 +1,4 @@
 $(function () {
-    /*$.ajax({
-        url: '/dongfeng/dagData',
-        type: 'get',
-        data:{
-            'page':1
-        },
-        dataType: 'json',
-        success: function (data) {
-            var button = '<div class="btn-group">\n' +
-                '  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">\n' +
-                '    操作 <span class="caret"></span>\n' +
-                '  </button>\n' +
-                '  <ul class="dropdown-menu">\n' +
-                '    <li><a href="#" onclick="edit_click(this)">编辑</a></li>\n' +
-                '    <li><a href="#" onclick="delete_click(this)">删除</a></li>\n' +
-                '    <li><a href="#">手动触发</a></li>\n' +
-                '  </ul>\n' +
-                '</div>';
-            $.each(data.respDto.list, function (index, item) {
-                var tr;
-                tr = '<td>' + item.id + '</td>' + '<td>' + item.dagName + '</td>' + '<td>' + item.dagGroup + '</td>' + '<td>' + item.dagCron + '</td>'
-                    + '<td>' + item.status + '</td>' + '<td>' + item.param + '</td>' + '<td>' + button + '</td>';
-                $("#tbody").append('<tr>' + tr + '</tr>')
-            })
-        }
-    })*/
     getTableDate(1);
 })
 
@@ -42,8 +16,8 @@ function getTableDate(pageNum) {
                 '    操作 <span class="caret"></span>\n' +
                 '  </button>\n' +
                 '  <ul class="dropdown-menu">\n' +
-                '    <li><a href="#" onclick="edit_click(this)">编辑</a></li>\n' +
-                '    <li><a href="#" onclick="delete_click(this)">删除</a></li>\n' +
+                '    <li><a href="#" onclick="edit_dag_page(this)">编辑</a></li>\n' +
+                '    <li><a href="#" onclick="delete_dag_submit(this)">删除</a></li>\n' +
                 '    <li><a href="#">手动触发</a></li>\n' +
                 '  </ul>\n' +
                 '</div>';
@@ -77,8 +51,42 @@ function page_on_click(data) {
     getTableDate(page);
 }
 
+function add_dag_submit() {
+    $.ajax({
+        type: "get",   //提交的方法
+        url:"/dongfeng/addDag", //提交的地址
+        data:$('#addDagForm').serialize(),// 序列化表单值
+        async: false,
+        error: function(request) {  //失败的话
+            alert("Connection error");
+        },
+        success: function(data) {  //成功
+            self.location.reload();
+        }
+    });
+}
 
-function edit_click(data)
+function edit_dag_submit() {
+    $.ajax({
+        type: "get",   //提交的方法
+        url:"/dongfeng/updateDagInfo", //提交的地址
+        data:$('#updateDagForm').serialize(),// 序列化表单值
+        async: false,
+        error: function(request) {  //失败的话
+            alert("Connection error");
+        },
+        success: function(data) {  //成功
+            if (data.code === 200) {
+                self.location.reload();
+            } else {
+                alert(data.msg);
+            }
+        }
+    });
+
+}
+
+function edit_dag_page(data)
 {
     var dagId = $(data).parent().parent().parent().parent().parent().children().first().html();
 
@@ -100,7 +108,7 @@ function edit_click(data)
 }
 
 
-function delete_click(data) {
+function delete_dag_submit(data) {
     var dagId = $(data).parent().parent().parent().parent().parent().children().first().html();
     $.ajax({
         url: '/dongfeng/deleteDagInfo',

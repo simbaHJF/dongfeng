@@ -35,7 +35,7 @@
 
 
             <div id="modal-div" style="margin: 50px">
-                <form method="post" action="addDag">
+                <form method="post" action="addDag" id="addDagForm">
                     <div class="form-group">
                         <label for="dagName" class="text-danger">* Dag name</label>
                         <input type="text" class="form-control" id="addDagName" name="dagName" placeholder="Dag name">
@@ -67,7 +67,7 @@
                     </div>
 
 
-                    <button type="submit" class="btn btn-default" id="addDag">Submit</button>
+                    <button type="button" class="btn btn-default" id="addDag" onclick="add_dag_submit()">Submit</button>
                     <button type="reset" class="btn btn-default">Reset</button>
                 </form>
             </div>
