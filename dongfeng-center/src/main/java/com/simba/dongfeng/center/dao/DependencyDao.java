@@ -1,5 +1,7 @@
 package com.simba.dongfeng.center.dao;
 
+import com.simba.dongfeng.center.pojo.DependencyDto;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -19,4 +21,7 @@ public interface DependencyDao {
 
     @Select("select parent_job_id from dependency where job_id = #{jobId}")
     List<Long> selectParentJobIdList(@Param("jobId") long jobId);
+
+    @Insert("insert into dependency(job_id,parent_job_id) values(#{dependency.jobId},#{dependency.parentJobId})")
+    int insertDependency(@Param("dependency") DependencyDto dependency);
 }

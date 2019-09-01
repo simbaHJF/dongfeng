@@ -30,7 +30,7 @@ function edit_click(data)
     var dagId = $(data).parent().parent().parent().parent().parent().children().first().html();
 
     $.ajax({
-        url: '/dongfeng/updatePage',
+        url: '/dongfeng/updateDagPage',
         type: 'get',
         data:{
             'dagId':dagId

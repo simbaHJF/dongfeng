@@ -7,7 +7,7 @@ CREATE TABLE `dag` (
   `trigger_time` datetime DEFAULT NULL COMMENT '下次触发时间',
   `param` varchar(200) DEFAULT '' COMMENT '任务参数',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COMMENT='Dag表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Dag表';
 
 
 CREATE TABLE `dag_trigger_log` (
@@ -29,7 +29,7 @@ CREATE TABLE `dependency` (
   PRIMARY KEY (`id`),
   KEY `idx_job_id` (`job_id`),
   KEY `idx_parent_id` (`parent_job_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='任务依赖表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='任务依赖表';
 
 
 CREATE TABLE `executor` (
@@ -55,7 +55,7 @@ CREATE TABLE `job` (
   `launch_command` varchar(200) NOT NULL COMMENT '任务启动命令',
   `assign_ip` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT '' COMMENT '指定的执行ip',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COMMENT='任务表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='任务表';
 
 
 CREATE TABLE `job_trigger_log` (

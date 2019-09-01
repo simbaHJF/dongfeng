@@ -36,51 +36,56 @@
             <div id="modal-div" style="margin: 50px">
                 <form method="post" action="addJob">
                     <div class="form-group">
-                        <label for="jobName">Job name</label>
+                        <label for="jobName" class="text-danger">* Job name</label>
                         <input type="text" class="form-control" name="jobName" placeholder="Job name">
                     </div>
-                    <div class="radio">
-                        <label>
-                            <input type="radio" name="jobType" value="1" checked> 开始节点
-                        </label>
-                        &emsp;&emsp;
-                        <label>
-                            <input type="radio" name="jobType" value="2" > 任务节点
-                        </label>
-
-                        <label>
-                            <input type="radio" name="jobType" value="3" > 结束节点
-                        </label>
+                    <div class="form-group">
+                        <label for="jobType" class="text-danger">* 任务节点类型</label>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="jobType" value="1" checked> 开始节点
+                            </label>
+                            &emsp;&emsp;
+                            <label>
+                                <input type="radio" name="jobType" value="2" > 任务节点
+                            </label>
+                            &emsp;&emsp;
+                            <label>
+                                <input type="radio" name="jobType" value="3" > 结束节点
+                            </label>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="shardingCnt">Sharding cnt</label>
+                        <label for="shardingCnt" class="text-danger">* Sharding cnt</label>
                         <input type="text" class="form-control" name="shardingCnt" value="1" readonly>
                     </div>
                     <div class="form-group">
-                        <label for="dagId">Dag id</label>
+                        <label for="dagId" class="text-danger">* Dag id</label>
                         <input type="text" class="form-control" name="dagId" placeholder="所属dag的id">
                     </div>
-                    <div class="radio">
-                        <label for="scheduleType">调度方式</label>
-                        <label>
-                            <input type="radio" name="scheduleType"  value="random" checked> 随机
-                        </label>
-                        &emsp;&emsp;
-                        <label>
-                            <input type="radio" name="scheduleType"  value="assign"> 指定ip
-                        </label>
+                    <div class="form-group">
+                        <label for="scheduleType" class="text-danger">* 调度方式</label>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="scheduleType"  value="random" checked> 随机
+                            </label>
+                            &emsp;&emsp;
+                            <label>
+                                <input type="radio" name="scheduleType"  value="assign"> 指定ip
+                            </label>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="assignIp">Assign ip</label>
                         <input type="text" class="form-control" name="assignIp" placeholder="指定ip">
                     </div>
                     <div class="form-group">
-                        <label for="launchCommand">Launch command</label>
+                        <label for="launchCommand" class="text-danger">* Launch command</label>
                         <input type="text" class="form-control" name="launchCommand" placeholder="启动命令">
                     </div>
                     <div class="form-group">
                         <label for="parentJobIds">Parent job ids</label>
-                        <input type="text" class="form-control" name="parentJobIds" placeholder="父job的id,多个用英文逗号分割">
+                        <input type="text" class="form-control" name="parentJobIds" placeholder="父job的id,多个用英文逗号分割;开始节点没有父job">
                     </div>
 
 

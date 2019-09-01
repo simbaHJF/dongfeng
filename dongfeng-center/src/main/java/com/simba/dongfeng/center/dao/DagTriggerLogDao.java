@@ -26,5 +26,6 @@ public interface DagTriggerLogDao {
             "<when test='#{dagTrigerLog.endTime} != null'> , end_time = #{dagTrigerLog.endTime} </when>" +
             "where id =#{dagTrigerLog.id}" +
             "</script>")
+    @Options(useGeneratedKeys=true, keyProperty="id", keyColumn="id")
     int updateDagTriggerLog(@Param("dagTrigerLog") DagTriggerLogDto dagTrigerLog);
 }

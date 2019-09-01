@@ -36,29 +36,32 @@
             <div id="modal-div" style="margin: 50px">
                 <form method="post" action="addDag">
                     <div class="form-group">
-                        <label for="dagName">Dag name</label>
+                        <label for="dagName" class="text-danger">* Dag name</label>
                         <input type="text" class="form-control" id="addDagName" name="dagName" placeholder="Dag name">
                     </div>
                     <div class="form-group">
-                        <label for="dagGroup">Dag group</label>
+                        <label for="dagGroup" class="text-danger">* Dag group</label>
                         <input type="text" class="form-control" id="addDagGroup" name="dagGroup" placeholder="Dag group">
                     </div>
                     <div class="form-group">
-                        <label for="dagCron">Dag cron</label>
+                        <label for="dagCron" class="text-danger">* Dag cron</label>
                         <input type="text" class="form-control" id="addDagCron" name="dagCron" placeholder="Dag cron">
                     </div>
                     <div class="form-group">
                         <label for="dagParam">Dag param</label>
                         <input type="text" class="form-control" id="addDagParam" name="param" placeholder="Dag param">
                     </div>
-                    <div class="radio">
-                        <label>
-                            <input type="radio" name="status" id="addDagstatusOn" value="1" checked> 关闭
-                        </label>
-                        &emsp;&emsp;
-                        <label>
-                            <input type="radio" name="status" id="addDagstatusOff" value="2"> 开启
-                        </label>
+                    <div class="form-group">
+                        <label for="status" class="text-danger">* dag开关</label>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="status" id="addDagstatusOn" value="1" checked> 关闭
+                            </label>
+                            &emsp;&emsp;
+                            <label>
+                                <input type="radio" name="status" id="addDagstatusOff" value="2"> 开启
+                            </label>
+                        </div>
                     </div>
 
 

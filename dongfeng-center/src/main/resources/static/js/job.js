@@ -9,7 +9,7 @@ $(function () {
                 '    操作 <span class="caret"></span>\n' +
                 '  </button>\n' +
                 '  <ul class="dropdown-menu">\n' +
-                '    <li><a href="#" >编辑</a></li>\n' +
+                '    <li><a href="#" onclick="edit_click(this)">编辑</a></li>\n' +
                 '    <li><a href="#" >删除</a></li>\n' +
                 '  </ul>\n' +
                 '</div>';
@@ -23,3 +23,32 @@ $(function () {
         }
     })
 })
+
+
+function edit_click(data)
+{
+    var jobId = $(data).parent().parent().parent().parent().parent().children().first().html();
+    $.ajax({
+        url: '/dongfeng/updateJobPage',
+        type: 'get',
+        data:{
+            'jobId':jobId
+        },
+        success: function (data) {
+            $("#updateJobModal").empty();
+            $("#updateJobModal").append(data);
+            $("#updateJobModal").modal({
+                show: true,
+                backdrop:'static'
+            })
+        }
+    })
+}
+
+
+function checkDisable() {
+    $(":radio").each(function() {
+        $(this).attr("disabled", false);
+    });
+    return true;
+}

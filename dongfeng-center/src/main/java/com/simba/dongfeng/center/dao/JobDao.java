@@ -1,9 +1,7 @@
 package com.simba.dongfeng.center.dao;
 
 import com.simba.dongfeng.center.pojo.JobDto;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -15,6 +13,9 @@ import java.util.List;
 @Mapper
 public interface JobDao {
 
+    @Select("select id,job_name,job_type,sharding_cnt,dag_id,schedule_type,launch_command,assign_ip from job " +
+            "where id = #{jobId}")
+    JobDto selectJobById(@Param("jobId") long jobId);
 
     @Select("select id,job_name,job_type,sharding_cnt,dag_id,schedule_type,launch_command from job " +
             "where job_type = 1 and dag_id = #{dagId}")
@@ -30,5 +31,16 @@ public interface JobDao {
             "</foreach>" +
             "</script>")
     List<JobDto> selectJobDtoListByJobIds(@Param("jobIdList") List<Long> jobIdList);
+
+    @Insert("insert into job(job_name,job_type,sharding_cnt,dag_id,schedule_type,launch_command,assign_ip) " +
+            "values(#{job.jobName},#{job.jobType},#{job.shardingCnt},#{job.dagId},#{job.scheduleType}," +
+            "#{job.launchCommand},#{job.assignIp})")
+    @Options(useGeneratedKeys=true, keyProperty="id", keyColumn="id")
+    int insertJob(@Param("job") JobDto jobDto);
+
+    @Update("update job set job_name = #{job.jobName},job_type = #{job.jobType},sharding_cnt = #{job.shardingCnt},dag_id = #{job.dagId}," +
+            "schedule_type = #{job.scheduleType},launch_command = #{job.launchCommand},assign_ip = #{job.assignIp} " +
+            "where id = #{job.id}")
+    int updateJob(@Param("job") JobDto jobDto);
 
 }
