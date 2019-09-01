@@ -1,6 +1,7 @@
 package com.simba.dongfeng.center.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.github.pagehelper.PageInfo;
 import com.simba.dongfeng.center.enums.ExecutorRouterStgEnum;
 import com.simba.dongfeng.center.pojo.DagDto;
 import com.simba.dongfeng.center.pojo.JobDto;
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
  **/
 @Controller
 public class DongfengCenterAdminController {
+    public static final int pageSize = 20;
 
     @Resource
     private CenterDagService centerDagService;
@@ -51,10 +53,10 @@ public class DongfengCenterAdminController {
 
     @RequestMapping("/dagData")
     @ResponseBody
-    public String dagData() {
-        List<DagDto> dagDtoList = Optional.ofNullable(centerDagService.selectAllDag())
-                .orElse(new ArrayList<>());
-        RespDto<List<DagDto>> respDto = new RespDto<>(RespCodeEnum.SUCC.getCode(), RespCodeEnum.SUCC.getMsg(), dagDtoList);
+    public String dagData(int page) {
+        PageInfo<DagDto> pageInfo =  centerDagService.selectDagByPage(page, pageSize);
+
+        RespDto<PageInfo<DagDto>> respDto = new RespDto<>(RespCodeEnum.SUCC.getCode(), RespCodeEnum.SUCC.getMsg(), pageInfo);
         return JSON.toJSONString(respDto);
     }
 
@@ -95,15 +97,14 @@ public class DongfengCenterAdminController {
 
     @RequestMapping("/jobData")
     @ResponseBody
-    public String jobData() {
-        List<JobDto> jobDtoList = Optional.ofNullable(centerJobService.selectAllJob())
-                .orElse(new ArrayList<>());
-        for (JobDto jobDto : jobDtoList) {
+    public String jobData(int page) {
+        PageInfo<JobDto> pageInfo =  centerJobService.selectJobByPage(page, pageSize);
+        for (JobDto jobDto : pageInfo.getList()) {
             List<Long> parentJobIds = Optional.ofNullable(centerDependencyService.selectParentJobIdList(jobDto.getId())).orElse(new ArrayList<>());
 
             jobDto.setParentJobIds(parentJobIds.stream().map(ele -> String.valueOf(ele)).collect(Collectors.joining(",")));
         }
-        RespDto<List<JobDto>> respDto = new RespDto<>(RespCodeEnum.SUCC.getCode(), RespCodeEnum.SUCC.getMsg(), jobDtoList);
+        RespDto<PageInfo> respDto = new RespDto<>(RespCodeEnum.SUCC.getCode(), RespCodeEnum.SUCC.getMsg(), pageInfo);
         return JSON.toJSONString(respDto);
     }
 
@@ -136,5 +137,20 @@ public class DongfengCenterAdminController {
         }
         centerJobService.updateJob(jobDto);
         return "redirect:/jobIndex";
+    }
+
+
+    @RequestMapping("/deleteJobInfo")
+    @ResponseBody
+    public RespDto deleteJobInfo(@RequestParam("jobId") long jobId) {
+        System.out.println(jobId);
+        int rs = centerJobService.deleteJob(jobId);
+
+        if (rs == 0) {
+            RespDto respDto = RespDtoBuilder.createBuilder().badReqResp().build();
+            respDto.setMsg("删除有误,请检查被删除job是否有子job.");
+            return respDto;
+        }
+        return RespDtoBuilder.createBuilder().succResp().build();
     }
 }

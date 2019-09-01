@@ -1,5 +1,6 @@
 package com.simba.dongfeng.center.service;
 
+import com.github.pagehelper.PageInfo;
 import com.simba.dongfeng.center.pojo.DagDto;
 
 import java.util.List;
@@ -12,12 +13,12 @@ import java.util.List;
 public interface CenterDagService {
     int insertDag(DagDto dagDto);
 
-    List<DagDto> selectAllDag();
+    PageInfo<DagDto> selectDagByPage(int page, int pageSize);
 
     int updateDagInfo(DagDto dagDto);
 
     DagDto selectDagById(long dagId);
 
-    int deleteDagInfo(long dagId);
+    void deleteDagInfo(long dagId);
 
 }

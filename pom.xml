@@ -124,6 +124,7 @@
     <modules>
         <module>dongfeng-center</module>
         <module>dongfeng-executor</module>
+        <module>dongfeng-common</module>
     </modules>
 
 </project>

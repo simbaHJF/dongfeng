@@ -43,4 +43,6 @@ public interface JobDao {
             "where id = #{job.id}")
     int updateJob(@Param("job") JobDto jobDto);
 
+    @Delete("delete from job where id =#{jobId}")
+    int deleteJob(@Param("jobId") long jobId);
 }

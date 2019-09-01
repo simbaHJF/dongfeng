@@ -9,6 +9,7 @@ public class DependencyDto {
     private long id;
     private long jobId;
     private long parentJobId;
+    private long dagId;
 
     public long getId() {
         return id;
@@ -34,12 +35,21 @@ public class DependencyDto {
         this.parentJobId = parentJobId;
     }
 
+    public long getDagId() {
+        return dagId;
+    }
+
+    public void setDagId(long dagId) {
+        this.dagId = dagId;
+    }
+
     @Override
     public String toString() {
         return "DependencyDto{" +
                 "id=" + id +
                 ", jobId=" + jobId +
                 ", parentJobId=" + parentJobId +
+                ", dagId=" + dagId +
                 '}';
     }
 }

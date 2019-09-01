@@ -1,5 +1,6 @@
 package com.simba.dongfeng.center.service;
 
+import com.github.pagehelper.PageInfo;
 import com.simba.dongfeng.center.pojo.DependencyDto;
 import com.simba.dongfeng.center.pojo.JobDto;
 import org.apache.ibatis.annotations.Param;
@@ -12,11 +13,13 @@ import java.util.List;
  * DESC:
  **/
 public interface CenterJobService {
-    List<JobDto> selectAllJob();
+    PageInfo<JobDto> selectJobByPage(int page, int pageSize);
 
     void insertJobAndDependency(JobDto jobDto);
 
     JobDto selectJobById(long jobId);
 
     int updateJob(JobDto jobDto);
+
+    int deleteJob(long jobId);
 }

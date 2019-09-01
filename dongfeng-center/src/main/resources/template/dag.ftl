@@ -22,7 +22,8 @@
     <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#addDagModal">新增dag配置</button>
 </div>
 
-<div class="modal fade bs-example-modal-lg" id="addDagModal" tabindex="-1" role="dialog" aria-labelledby="addDagModalLabel"
+<div class="modal fade bs-example-modal-lg" id="addDagModal" tabindex="-1" role="dialog"
+     aria-labelledby="addDagModalLabel"
      aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content modal-div">
@@ -41,7 +42,8 @@
                     </div>
                     <div class="form-group">
                         <label for="dagGroup" class="text-danger">* Dag group</label>
-                        <input type="text" class="form-control" id="addDagGroup" name="dagGroup" placeholder="Dag group">
+                        <input type="text" class="form-control" id="addDagGroup" name="dagGroup"
+                               placeholder="Dag group">
                     </div>
                     <div class="form-group">
                         <label for="dagCron" class="text-danger">* Dag cron</label>
@@ -74,15 +76,14 @@
 </div>
 
 
-
-<div class="modal fade bs-example-modal-lg" id="updateDagModal" tabindex="-1" role="dialog" aria-labelledby="updateDagModalLabel"
+<div class="modal fade bs-example-modal-lg" id="updateDagModal" tabindex="-1" role="dialog"
+     aria-labelledby="updateDagModalLabel"
      aria-hidden="true">
 
 </div>
 
 
-
-<div class="row" style="padding: 50px;">
+<div class="row" style="padding-left: 50px;padding-right: 50px;">
 
     <div class="col-xs-12">
         <div class="box">
@@ -106,6 +107,12 @@
             </table>
         </div>
     </div>
+</div>
+<div style="padding-left: 50px;padding-right: 50px;">
+    <nav aria-label="Page navigation">
+        <ul class="pagination" id="pagination">
+        </ul>
+    </nav>
 </div>
 </div>
 <script type="text/javascript" src="js/dag.js"></script>

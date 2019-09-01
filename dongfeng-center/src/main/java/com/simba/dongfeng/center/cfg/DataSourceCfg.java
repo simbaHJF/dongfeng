@@ -1,6 +1,7 @@
 package com.simba.dongfeng.center.cfg;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.github.pagehelper.PageInterceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -14,6 +15,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
+import java.util.Properties;
 
 /**
  * DATE:   2019-08-14 14:59
@@ -95,6 +97,19 @@ public class DataSourceCfg {
         return new DataSourceTransactionManager(dataSource);
     }
 
+    @Bean(name = "pageInterceptor")
+    public PageInterceptor pageInterceptor() {
+        PageInterceptor pageInterceptor = new PageInterceptor();
+        Properties properties = new Properties();
+        properties.setProperty("helperDialect", "mysql");
+        properties.setProperty("reasonable", "true");
+        properties.setProperty("supportMethodsArguments", "true");
+
+        pageInterceptor.setProperties(properties);
+        return pageInterceptor;
+
+    }
+
     /**
      * Mybatis的连接会话工厂实例
      * @param dataSource
@@ -102,10 +117,11 @@ public class DataSourceCfg {
      * @throws Exception
      */
     @Bean(name = "sqlSessionFactory")
-    public SqlSessionFactory bossSqlSessionFactory(@Qualifier("dataSource") DataSource dataSource) throws Exception {
+    public SqlSessionFactory bossSqlSessionFactory(@Qualifier("dataSource") DataSource dataSource,@Qualifier("pageInterceptor")PageInterceptor pageInterceptor) throws Exception {
         SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
         sessionFactory.setDataSource(dataSource);
         sessionFactory.getObject().getConfiguration().setMapUnderscoreToCamelCase(true);
+        sessionFactory.setPlugins(pageInterceptor);
         return sessionFactory.getObject();
     }
 

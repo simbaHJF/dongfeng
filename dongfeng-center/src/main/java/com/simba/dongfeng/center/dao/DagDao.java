@@ -19,7 +19,7 @@ public interface DagDao {
     DagDto selectDagById(@Param("dagId") long dagId);
 
     @Select("select id,dag_name,dag_group,dag_cron,status,trigger_time,param from dag " +
-            " where status = 1 and (trigger_time < #{endTimeline} or trigger_time is null) order by trigger_time for update")
+            " where status = 2 and (trigger_time < #{endTimeline} or trigger_time is null) order by trigger_time for update")
     List<DagDto> selectNeedTriggerDagWithLock(@Param("endTimeline") Date endTimeline);
 
     @Select("select id,dag_name,dag_group,dag_cron,status,trigger_time,param from dag")

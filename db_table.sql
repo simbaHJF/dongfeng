@@ -26,6 +26,7 @@ CREATE TABLE `dependency` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '自增id',
   `job_id` bigint(20) NOT NULL COMMENT 'job表id',
   `parent_job_id` bigint(20) NOT NULL COMMENT '依赖父job的id',
+  `dag_id` bigint(20) NOT NULL COMMENT '所属dagId',
   PRIMARY KEY (`id`),
   KEY `idx_job_id` (`job_id`),
   KEY `idx_parent_id` (`parent_job_id`)
