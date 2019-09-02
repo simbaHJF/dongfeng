@@ -1,15 +1,14 @@
 package com.simba.dongfeng.center.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
+import com.simba.dongfeng.center.enums.DagSwitchStatusEnum;
 import com.simba.dongfeng.center.enums.ExecutorRouterStgEnum;
+import com.simba.dongfeng.center.enums.JobTypeEnum;
 import com.simba.dongfeng.center.pojo.DagDto;
 import com.simba.dongfeng.center.pojo.DagTriggerLogDto;
 import com.simba.dongfeng.center.pojo.JobDto;
-import com.simba.dongfeng.center.service.CenterDagLogService;
-import com.simba.dongfeng.center.service.CenterDagService;
-import com.simba.dongfeng.center.service.CenterDependencyService;
-import com.simba.dongfeng.center.service.CenterJobService;
+import com.simba.dongfeng.center.pojo.JobTriggerLogDto;
+import com.simba.dongfeng.center.service.*;
 import com.simba.dongfeng.common.builder.RespDtoBuilder;
 import com.simba.dongfeng.common.enums.RespCodeEnum;
 import com.simba.dongfeng.common.pojo.RespDto;
@@ -43,6 +42,8 @@ public class DongfengCenterAdminController {
     private CenterDependencyService centerDependencyService;
     @Resource
     private CenterDagLogService centerDagLogService;
+    @Resource
+    private CenterJobLogService centerJobLogService;
 
     @RequestMapping("/index")
     public String index() {
@@ -57,20 +58,23 @@ public class DongfengCenterAdminController {
 
     @RequestMapping("/dagData")
     @ResponseBody
-    public String dagData(int page) {
-        PageInfo<DagDto> pageInfo =  centerDagService.selectDagByPage(page, pageSize);
+    public RespDto dagData(int page) {
+        PageInfo<DagDto> pageInfo = centerDagService.selectDagByPage(page, pageSize);
 
         RespDto<PageInfo<DagDto>> respDto = new RespDto<>(RespCodeEnum.SUCC.getCode(), RespCodeEnum.SUCC.getMsg(), pageInfo);
-        return JSON.toJSONString(respDto);
+        return respDto;
     }
 
     @RequestMapping("/addDag")
     @ResponseBody
-    public String addDag(DagDto dagDto) {
+    public RespDto addDag(DagDto dagDto) {
+        if (dagDto.getStatus() == DagSwitchStatusEnum.ON.getValue()) {
+            dagDto.setStatus(DagSwitchStatusEnum.OFF.getValue());
+        }
         centerDagService.insertDag(dagDto);
         System.out.println(dagDto);
         RespDto respDto = new RespDto<>(RespCodeEnum.SUCC.getCode(), RespCodeEnum.SUCC.getMsg());
-        return JSON.toJSONString(respDto);
+        return respDto;
     }
 
     @RequestMapping("/updateDagPage")
@@ -104,21 +108,36 @@ public class DongfengCenterAdminController {
 
     @RequestMapping("/jobData")
     @ResponseBody
-    public String jobData(int page) {
-        PageInfo<JobDto> pageInfo =  centerJobService.selectJobByPage(page, pageSize);
+    public RespDto jobData(int page) {
+        PageInfo<JobDto> pageInfo = centerJobService.selectJobByPage(page, pageSize);
         for (JobDto jobDto : pageInfo.getList()) {
             List<Long> parentJobIds = Optional.ofNullable(centerDependencyService.selectParentJobIdList(jobDto.getId())).orElse(new ArrayList<>());
 
             jobDto.setParentJobIds(parentJobIds.stream().map(ele -> String.valueOf(ele)).collect(Collectors.joining(",")));
         }
         RespDto<PageInfo> respDto = new RespDto<>(RespCodeEnum.SUCC.getCode(), RespCodeEnum.SUCC.getMsg(), pageInfo);
-        return JSON.toJSONString(respDto);
+        return respDto;
     }
 
     @RequestMapping("/addJob")
     @ResponseBody
     public RespDto addJob(JobDto jobDto) {
         System.out.println(jobDto);
+        if (jobDto.getJobType() == JobTypeEnum.TASK_NODE.getValue() && StringUtils.isBlank(jobDto.getLaunchCommand())) {
+            RespDto respDto = RespDtoBuilder.createBuilder().badReqResp().build();
+            respDto.setMsg("任务节点类型为:任务节点 时,Launch command不能为空");
+            return respDto;
+        }
+        if (jobDto.getJobType() != JobTypeEnum.START_NODE.getValue() && StringUtils.isBlank(jobDto.getParentJobIds())) {
+            RespDto respDto = RespDtoBuilder.createBuilder().badReqResp().build();
+            respDto.setMsg("任务节点类型非开始节点时,Parent job ids不能为空");
+            return respDto;
+        }
+        if (jobDto.getScheduleType() == ExecutorRouterStgEnum.ASSIGN.getRouterName() && StringUtils.isBlank(jobDto.getAssignIp())) {
+            RespDto respDto = RespDtoBuilder.createBuilder().badReqResp().build();
+            respDto.setMsg("调度方式为:指定ip 时,Assign ip不能为空");
+            return respDto;
+        }
         DagDto dagDto = centerDagService.selectDagById(jobDto.getDagId());
         if (dagDto == null) {
             RespDto respDto = RespDtoBuilder.createBuilder().badReqResp().build();
@@ -178,9 +197,22 @@ public class DongfengCenterAdminController {
 
     @RequestMapping("/dagLogData")
     @ResponseBody
-    public String dagLogData(int page) {
+    public RespDto dagLogData(int page) {
         PageInfo<DagTriggerLogDto> pageInfo = centerDagLogService.selectDagLogByPage(page, pageSize);
         RespDto<PageInfo> respDto = new RespDto<>(RespCodeEnum.SUCC.getCode(), RespCodeEnum.SUCC.getMsg(), pageInfo);
-        return JSON.toJSONString(respDto);
+        return respDto;
+    }
+
+    @RequestMapping("/jobLogIndex")
+    public String jobLogIndex() {
+        return "jobLog";
+    }
+
+    @RequestMapping("/jobLogData")
+    @ResponseBody
+    public RespDto jobLogData(int page) {
+        PageInfo<JobTriggerLogDto> pageInfo = centerJobLogService.selectJobLogByPage(page, pageSize);
+        RespDto<PageInfo> respDto = new RespDto<>(RespCodeEnum.SUCC.getCode(), RespCodeEnum.SUCC.getMsg(), pageInfo);
+        return respDto;
     }
 }

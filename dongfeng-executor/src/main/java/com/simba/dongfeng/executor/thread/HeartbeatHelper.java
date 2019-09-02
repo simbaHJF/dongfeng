@@ -39,16 +39,20 @@ public class HeartbeatHelper {
                             executorServiceFacade.sendHeartbeat(executorHeartbeatInfo, host);
                             break;
                         } catch (Exception e) {
+                            e.printStackTrace();
                             logger.error("heartbeatThread sendHeartbeat err,host:" + host, e);
                         }
                     }
+                    try {
+                        TimeUnit.SECONDS.sleep(interval);
+                        System.out.println("sleep over send heartbeat");
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                        logger.error("HeartbeatHelper#heartbeatThread error.", e);
+                        //TODO ALARM
+                    }
                 }
-                try {
-                    TimeUnit.SECONDS.sleep(interval);
-                } catch (InterruptedException e) {
-                    logger.error("HeartbeatHelper#heartbeatThread error.", e);
-                    //TODO ALARM
-                }
+
             }
         };
 

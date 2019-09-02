@@ -5,14 +5,14 @@ package com.simba.dongfeng.center.enums;
  * AUTHOR: simba.hjf
  * DESC:
  **/
-public enum DagStatusEnum {
+public enum DagExecStatusEnum {
     RUNNINT(1,"运行中"),
     SUCC(2,"成功"),
     FAIL(3,"失败");
     private int value;
     private String desc;
 
-    DagStatusEnum(int value, String desc) {
+    DagExecStatusEnum(int value, String desc) {
         this.value = value;
         this.desc = desc;
     }
@@ -23,4 +23,5 @@ public enum DagStatusEnum {
 
     public String getDesc() {
         return desc;
-    }}
+    }
+}

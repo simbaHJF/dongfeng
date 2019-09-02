@@ -2,7 +2,7 @@ package com.simba.dongfeng.center.thread;
 
 import com.simba.dongfeng.center.core.CallbackQueue;
 import com.simba.dongfeng.center.core.ScheduleServiceFacade;
-import com.simba.dongfeng.center.enums.DagStatusEnum;
+import com.simba.dongfeng.center.enums.DagExecStatusEnum;
 import com.simba.dongfeng.center.enums.JobTypeEnum;
 import com.simba.dongfeng.center.pojo.DagTriggerLogDto;
 import com.simba.dongfeng.center.pojo.JobDto;
@@ -66,7 +66,7 @@ public class CallbackHandleHelper {
                         }
 
                         DagTriggerLogDto dagTriggerLog = scheduleServiceFacade.selectDagTriggerLogById(jobTriggerLog.getDagTriggerId());
-                        if (dagTriggerLog.getStatus() == DagStatusEnum.FAIL.getValue()) {
+                        if (dagTriggerLog.getStatus() == DagExecStatusEnum.FAIL.getValue()) {
                             logger.error("dag trigger has failed due to other failed job.it will not trigger subsequent job");
                             continue;
                         }
@@ -95,7 +95,7 @@ public class CallbackHandleHelper {
                                         //子job是结束node
 
                                         dagTriggerLog.setEndTime(new Date());
-                                        dagTriggerLog.setStatus(DagStatusEnum.SUCC.getValue());
+                                        dagTriggerLog.setStatus(DagExecStatusEnum.SUCC.getValue());
                                         scheduleServiceFacade.updateDagTriggerLog(dagTriggerLog);
 
                                         JobTriggerLogDto endJobTriggerLog = scheduleServiceFacade.generateJobTriggerLogDto(childJobDto.getId(), dagTriggerLog.getDagId(), dagTriggerLog.getId(), JobStatusEnum.SUCC.getValue(), addr.getHostAddress(),addr.getHostAddress(), dagTriggerLog.getParam());
@@ -115,7 +115,7 @@ public class CallbackHandleHelper {
                                         //子job是结束node
 
                                         dagTriggerLog.setEndTime(new Date());
-                                        dagTriggerLog.setStatus(DagStatusEnum.FAIL.getValue());
+                                        dagTriggerLog.setStatus(DagExecStatusEnum.FAIL.getValue());
                                         scheduleServiceFacade.updateDagTriggerLog(dagTriggerLog);
                                         try {
                                             addr = InetAddress.getLocalHost();
@@ -129,7 +129,7 @@ public class CallbackHandleHelper {
                                     } else {
                                         //子job不是结束node,不再调度子job,dagTriggerLog设置失败状态
                                         dagTriggerLog.setEndTime(new Date());
-                                        dagTriggerLog.setStatus(DagStatusEnum.FAIL.getValue());
+                                        dagTriggerLog.setStatus(DagExecStatusEnum.FAIL.getValue());
                                         scheduleServiceFacade.updateDagTriggerLog(dagTriggerLog);
 
                                     }

@@ -10,6 +10,7 @@ import com.simba.dongfeng.common.pojo.ExecutorHeartbeatInfo;
 import com.simba.dongfeng.common.pojo.RespDto;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -31,7 +32,8 @@ public class DongfengCenterController {
 
     @RequestMapping("/executor/heartbeat")
     @ResponseBody
-    public RespDto heartbeat(ExecutorHeartbeatInfo executorHeartbeatInfo) {
+    public RespDto heartbeat(@RequestBody ExecutorHeartbeatInfo executorHeartbeatInfo) {
+        System.out.println(executorHeartbeatInfo);
         if (executorHeartbeatInfo == null || StringUtils.isBlank(executorHeartbeatInfo.getExecutorName()) ||
                 StringUtils.isBlank(executorHeartbeatInfo.getExecutorIp()) ||
                 StringUtils.isBlank(executorHeartbeatInfo.getExecutorPort()) ||
@@ -40,6 +42,7 @@ public class DongfengCenterController {
         }
         try {
             ExecutorDto executorDto = PojoConverter.convertExecutorHeartbeatInfo(executorHeartbeatInfo);
+            System.out.println(executorDto);
             centerExecutorService.replaceExecutor(executorDto);
             return RespDtoBuilder.createBuilder().succResp().build();
         } catch (Exception e) {
@@ -49,7 +52,7 @@ public class DongfengCenterController {
 
     @RequestMapping("/callback")
     @ResponseBody
-    public RespDto callback(Callback callback) {
+    public RespDto callback(@RequestBody Callback callback) {
         if (callback == null) {
             return RespDtoBuilder.createBuilder().badReqResp().build();
         }
@@ -59,11 +62,12 @@ public class DongfengCenterController {
 
     @RequestMapping("/manualTrigger")
     @ResponseBody
-    public RespDto manualTrigger(long dagId, String param) {
+    public RespDto manualTrigger(long dagId, String manualTriggerDagParam) {
+        System.out.println("dagId:" + dagId + "#####manualTriggerDagParam:" + manualTriggerDagParam);
         if (dagId == 0) {
             return RespDtoBuilder.createBuilder().badReqResp().build();
         }
-        scheduleCenter.manualTrigger(dagId, param);
+        scheduleCenter.manualTrigger(dagId, manualTriggerDagParam);
         return RespDtoBuilder.createBuilder().succResp().build();
     }
 

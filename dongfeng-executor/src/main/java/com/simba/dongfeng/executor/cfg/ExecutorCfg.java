@@ -12,17 +12,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class ExecutorCfg {
 
-    @Value("dongfeng.center.addr")
+    @Value("${dongfeng.center.addr}")
     private String dongfengCenterAddr;
-    @Value("dongfeng.executor.jar.repo.path")
+    @Value("${dongfeng.executor.jar.repo.path}")
     private String jarRepoPath;
-    @Value("dongfeng.executor.sh.repo.path")
+    @Value("${dongfeng.executor.sh.repo.path}")
     private String shRepoPath;
-    @Value("dongfeng.executor.name")
+    @Value("${dongfeng.executor.name}")
     private String executorName;
-    @Value("dongfeng.executor.port")
+    @Value("${dongfeng.executor.port}")
     private String executorPort;
-    @Value("dongfeng.executor.group")
+    @Value("${dongfeng.executor.group}")
     private String group;
 
     public String getDongfengCenterAddr() {

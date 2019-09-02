@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>asdfghj</title>
+    <title>dongfeng admin</title>
 
     <link rel="stylesheet" type="text/css" href="css/index.css">
     <script type="text/javascript" src="js/jquery-3.4.1.js"></script>
@@ -58,7 +58,7 @@
                 <a href="dagLogIndex" target="mainFrame">dagLog记录</a>
             </li>
             <li role="presentation">
-                <a href="nav4.html" target="mainFrame">jobLog记录</a>
+                <a href="jobLogIndex" target="mainFrame">jobLog记录</a>
             </li>
         </ul>
     </div>

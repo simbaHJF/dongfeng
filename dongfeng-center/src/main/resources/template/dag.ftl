@@ -79,7 +79,34 @@
 <div class="modal fade bs-example-modal-lg" id="updateDagModal" tabindex="-1" role="dialog"
      aria-labelledby="updateDagModalLabel"
      aria-hidden="true">
+</div>
 
+<div class="modal fade bs-example-modal-lg" id="manualTriggerDagModal" tabindex="-1" role="dialog"
+     aria-labelledby="manualTriggerDagModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content modal-div">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="manualTriggerDagModalLabel">手动触发dag</h4>
+            </div>
+
+
+            <div id="modal-div" style="margin: 50px">
+                <form method="post" id="manualTriggerDagForm">
+                    <div class="form-group">
+                        <label for="id">Dag id</label>
+                        <input type="text" class="form-control" id="manualTriggerDagId" name="dagId" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="manualTriggerDagParam" class="text-danger">Param</label>
+                        <input type="text" class="form-control" id="manualTriggerDagParam" name="manualTriggerDagParam" >
+                    </div>
+                    <button type="button" class="btn btn-default" onclick="manual_trigger_submit()">launch</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 
@@ -98,6 +125,7 @@
                     <th name="dagGroup">dagGroup</th>
                     <th name="dagCron">dagCron</th>
                     <th name="status">status</th>
+                    <th name="triggerTime">triggerTime</th>
                     <th name="param">param</th>
                     <th name="operation">operation</th>
                 </tr>

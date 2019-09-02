@@ -59,7 +59,7 @@ public class ScheduleCenter {
     }
 
     public void callback(Callback callBack) {
-        callbackQueue.addTailIfNotEnqueue(callBack);
+        callbackQueue.addTail(callBack);
     }
 
     public void manualTrigger(long dagId, String param) {

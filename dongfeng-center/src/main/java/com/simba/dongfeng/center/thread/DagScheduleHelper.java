@@ -2,7 +2,7 @@ package com.simba.dongfeng.center.thread;
 
 import com.simba.dongfeng.center.core.DagQueue;
 import com.simba.dongfeng.center.core.ScheduleServiceFacade;
-import com.simba.dongfeng.center.enums.DagStatusEnum;
+import com.simba.dongfeng.center.enums.DagExecStatusEnum;
 import com.simba.dongfeng.center.enums.DagTriggerTypeEnum;
 import com.simba.dongfeng.center.pojo.DagDto;
 import com.simba.dongfeng.center.pojo.DagTriggerLogDto;
@@ -106,7 +106,7 @@ public class DagScheduleHelper {
         DagTriggerLogDto dagTriggerLogDto = new DagTriggerLogDto();
         dagTriggerLogDto.setDagId(dagId);
         dagTriggerLogDto.setStartTime(new Date());
-        dagTriggerLogDto.setStatus(DagStatusEnum.RUNNINT.getValue());
+        dagTriggerLogDto.setStatus(DagExecStatusEnum.RUNNINT.getValue());
         dagTriggerLogDto.setTriggerType(dagTriggerType);
         dagTriggerLogDto.setParam(param);
         return dagTriggerLogDto;

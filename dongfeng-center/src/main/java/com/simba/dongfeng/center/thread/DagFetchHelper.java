@@ -43,6 +43,7 @@ public class DagFetchHelper {
                 while (isRunning) {
                     try {
                         List<DagDto> dagDtoList = Optional.ofNullable(scheduleServiceFacade.fetchNeedTriggerDag(fetchTimeWindow)).orElse(new ArrayList<>());
+                        System.out.println("fetch dag list:" + dagDtoList);
                         DagDto lastDag = dagQueue.peekTail();
                         if (lastDag == null) {
                             dagQueue.addAllToTail(dagDtoList);
@@ -54,12 +55,15 @@ public class DagFetchHelper {
                                 dagQueue.addTail(dagDto);
                             }
                         }
+                        System.out.println("sleep 30s to wait next fetch dag");
                         TimeUnit.SECONDS.sleep(interval);
                     }catch (InterruptedException e) {
+                        e.printStackTrace();
                         logger.error("DagFetchHelper#dagFetchThread error.", e);
                         return;
                         //TODO  ALARM
                     } catch (Exception e) {
+                        e.printStackTrace();
                         logger.error("DagFetchHelper#dagFetchThread error.", e);
                         return;
                         //TODO  ALARM

@@ -27,7 +27,7 @@ public class CallbackNotifyHelper {
     }
 
     public void start() {
-        callbackNotifyThread = new Thread(){
+        callbackNotifyThread = new Thread() {
             @Override
             public void run() {
                 while (isRunning) {
@@ -35,7 +35,7 @@ public class CallbackNotifyHelper {
                         Callback callback = callbackQueue.takeHead();
                         for (String host : dongfengCenterAddrList) {
                             try {
-                                HttpClient.sendPost(host, "/callback", callback, 3000);
+                                HttpClient.sendPost(host, "/callback", callback, 5000);
                             } catch (Exception e) {
                                 logger.error("send callback request err.host:" + host + ",callback:" + callback);
                                 continue;
@@ -48,17 +48,15 @@ public class CallbackNotifyHelper {
                 }
             }
         };
-
         callbackNotifyThread.setDaemon(true);
         callbackNotifyThread.setName("CallbackNotifyHelper#callbackNotifyThread");
         callbackNotifyThread.start();
-
     }
 
 
     public void stop() {
         isRunning = false;
-        if (callbackNotifyThread != null && callbackNotifyThread.getState() != Thread.State.TERMINATED){
+        if (callbackNotifyThread != null && callbackNotifyThread.getState() != Thread.State.TERMINATED) {
             // interrupt and wait
             callbackNotifyThread.interrupt();
             try {

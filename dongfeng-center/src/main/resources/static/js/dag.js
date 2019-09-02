@@ -18,14 +18,14 @@ function getTableDate(pageNum) {
                 '  <ul class="dropdown-menu">\n' +
                 '    <li><a href="#" onclick="edit_dag_page(this)">编辑</a></li>\n' +
                 '    <li><a href="#" onclick="delete_dag_submit(this)">删除</a></li>\n' +
-                '    <li><a href="#">手动触发</a></li>\n' +
+                '    <li><a href="#" onclick="manual_trigger_click(this)">手动触发</a></li>\n' +
                 '  </ul>\n' +
                 '</div>';
             var tableStr = '';
             $.each(data.respDto.list, function (index, item) {
                 var tr;
                 tr = '<td>' + item.id + '</td>' + '<td>' + item.dagName + '</td>' + '<td>' + item.dagGroup + '</td>' + '<td>' + item.dagCron + '</td>'
-                    + '<td>' + item.status + '</td>' + '<td>' + item.param + '</td>' + '<td>' + button + '</td>';
+                    + '<td>' + item.status + '</td>'+ '<td>' + item.triggerTime + '</td>' + '<td>' + item.param + '</td>' + '<td>' + button + '</td>';
                 tableStr = tableStr + '<tr>' + tr + '</tr>';
             })
             $("#tbody").empty();
@@ -116,8 +116,37 @@ function delete_dag_submit(data) {
         data:{
             'dagId':dagId
         },
-        success: function (data) {
-            self.location.reload();
+        success: function(data) {  //成功
+            if (data.code === 200) {
+                self.location.reload();
+            } else {
+                alert(data.msg);
+            }
+        }
+    })
+}
+
+function manual_trigger_click(data) {
+    var dagId = $(data).parent().parent().parent().parent().parent().children().first().html();
+    $("#manualTriggerDagId").val(dagId);
+    $("#manualTriggerDagParam").val('');
+    $("#manualTriggerDagModal").modal({
+        show: true,
+        backdrop:'static'
+    })
+}
+
+function manual_trigger_submit() {
+    $.ajax({
+        url: '/dongfeng/manualTrigger',
+        type: 'get',
+        data:$('#manualTriggerDagForm').serialize(),
+        success: function(data) {  //成功
+            if (data.code === 200) {
+                self.location.reload();
+            } else {
+                alert(data.msg);
+            }
         }
     })
 }

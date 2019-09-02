@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.Resource;
@@ -26,8 +27,9 @@ public class ExecutorController {
     private ExecutorCtrlCenter executorCtrlCenter;
 
     @RequestMapping("/job/trigger")
-    public RespDto jobTrigger(JobInfo jobInfo) {
+    public RespDto jobTrigger(@RequestBody JobInfo jobInfo) {
         logger.info("receive job trigger request.jobInfo:" + jobInfo);
+        System.out.println("receive job trigger request.jobInfo:" + jobInfo);
         if (jobInfo == null || StringUtils.isBlank(jobInfo.getLaunchCommand())) {
             logger.error("ExecutorController#jobTrigger err,bad request.");
             return RespDtoBuilder.createBuilder().badReqResp().build();

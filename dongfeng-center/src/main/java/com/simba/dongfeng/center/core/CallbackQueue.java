@@ -14,22 +14,13 @@ public class CallbackQueue {
     private LinkedBlockingDeque<Callback> callbackQueue = new LinkedBlockingDeque<>();
 
 
-    public synchronized Callback takeHead() throws InterruptedException {
+    public Callback takeHead() throws InterruptedException {
         return callbackQueue.takeFirst();
     }
 
 
-    public synchronized void addTailIfNotEnqueue(Callback callBack) {
-        boolean hasEnqueue = false;
-        for (Callback cur : callbackQueue) {
-            if (callBack.getJobTriggerLogId() == cur.getJobTriggerLogId()) {
-                hasEnqueue = true;
-                break;
-            }
-        }
-        if (!hasEnqueue) {
-            callbackQueue.addLast(callBack);
-        }
+    public void addTail(Callback callBack) {
+        callbackQueue.addLast(callBack);
     }
 
 }

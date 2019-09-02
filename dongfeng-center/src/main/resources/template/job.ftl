@@ -80,7 +80,7 @@
                         <input type="text" class="form-control" name="assignIp" placeholder="指定ip">
                     </div>
                     <div class="form-group">
-                        <label for="launchCommand" class="text-danger">* Launch command</label>
+                        <label for="launchCommand">Launch command</label>
                         <input type="text" class="form-control" name="launchCommand" placeholder="启动命令">
                     </div>
                     <div class="form-group">
