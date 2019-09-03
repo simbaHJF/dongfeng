@@ -46,6 +46,7 @@ public class DagScheduleHelper {
                 while (isRunning) {
                     try {
                         DagDto dagDto = dagQueue.takeHead();
+                        System.out.println("dagQueue head dag:" + dagDto);
                         if (dagDto.getTriggerType() == DagTriggerTypeEnum.CRON.getValue()) {
                             Date now = new Date();
                             if (now.before(dagDto.getTriggerTime())) {
@@ -58,6 +59,7 @@ public class DagScheduleHelper {
                         scheduleServiceFacade.insertDagTriggerLog(dagTriggerLogDto);
                         InetAddress addr = InetAddress.getLocalHost();
                         JobTriggerLogDto startJobTriggerLog = scheduleServiceFacade.generateJobTriggerLogDto(startJob.getId(), dagDto.getId(), dagTriggerLogDto.getId(), JobStatusEnum.SUCC.getValue(), addr.getHostAddress(), addr.getHostAddress(), dagDto.getParam());
+                        startJobTriggerLog.setEndTime(new Date());
                         scheduleServiceFacade.insertJobTriggerLog(startJobTriggerLog);
 
                         List<JobDto> childJobList = Optional.ofNullable(scheduleServiceFacade.selectChildJobList(startJob.getId())).orElse(new ArrayList<>());
@@ -69,13 +71,11 @@ public class DagScheduleHelper {
                     } catch (InterruptedException e) {
                         //TODO alarm
                         logger.error("dagScheduleThread err.", e);
-                        System.out.println("12345");
                         e.printStackTrace();
                         return;
                     } catch (Exception e) {
                         //TODO alarm
                         logger.error("dagScheduleThread err,get local ip err.", e);
-                        System.out.println("54321");
                         e.printStackTrace();
                         return;
                     }

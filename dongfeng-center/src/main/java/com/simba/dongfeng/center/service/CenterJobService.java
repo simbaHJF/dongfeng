@@ -21,5 +21,5 @@ public interface CenterJobService {
 
     int updateJob(JobDto jobDto);
 
-    int deleteJob(long jobId);
+    boolean deleteJob(long jobId);
 }

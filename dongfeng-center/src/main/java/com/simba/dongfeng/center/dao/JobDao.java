@@ -45,4 +45,7 @@ public interface JobDao {
 
     @Delete("delete from job where id =#{jobId}")
     int deleteJob(@Param("jobId") long jobId);
+
+    @Delete("delete from job where dag_id = #{dagId}")
+    int deleteJobByDagId(@Param("dagId") long dagId);
 }

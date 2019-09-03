@@ -28,20 +28,19 @@ public interface JobTriggerLogDao {
             "</script>")
     JobTriggerLogDto selectJobTriggerLogDtoByJobAndDag(@Param("jobId") long jobId,@Param("dagTriggerId") long dagTriggerId,@Param("lock") boolean lock);
 
-    @Insert("insert into job_trigger_log(job_id,dag_id,dag_trigger_id,start_time,status,center_ip,executor_ip,sharding_idx,sharding_cnt,param) " +
-            "values(#{jobTriggerLog.jobId},#{jobTriggerLog.dagId},#{jobTriggerLog.dagTriggerId},#{jobTriggerLog.startTime}," +
+    @Insert("insert into job_trigger_log(job_id,dag_id,dag_trigger_id,start_time,end_time,status,center_ip,executor_ip,sharding_idx,sharding_cnt,param) " +
+            "values(#{jobTriggerLog.jobId},#{jobTriggerLog.dagId},#{jobTriggerLog.dagTriggerId},#{jobTriggerLog.startTime},#{jobTriggerLog.endTime}, " +
             "#{jobTriggerLog.status},#{jobTriggerLog.centerIp},#{jobTriggerLog.executorIp},#{jobTriggerLog.shardingIdx}," +
             "#{jobTriggerLog.shardingCnt},#{jobTriggerLog.param})")
     @Options(useGeneratedKeys=true, keyProperty="id", keyColumn="id")
     int inserJobTriggerLog(@Param("jobTriggerLog") JobTriggerLogDto jobTriggerLogDto);
 
     @Update("<script> " +
-            "update job_trigger_log set status = #{jobTriggerLogDto.status}  " +
-            "<when test='#{jobTriggerLogDto.executorIp} != null'> , executor_ip = #{jobTriggerLogDto.executorIp} </when>" +
-            "<when test='#{jobTriggerLogDto.endTime} != null'> , end_time = #{jobTriggerLogDto.endTime} </when>" +
-            "where id = #{jobTriggerLogDto.id} " +
+            "update job_trigger_log set status = #{jobTriggerLog.status}  " +
+            "<when test='#{jobTriggerLog.executorIp} != null'> , executor_ip = #{jobTriggerLog.executorIp} </when>" +
+            "<when test='#{jobTriggerLog.endTime} != null'> , end_time = #{jobTriggerLog.endTime} </when>" +
+            "where id = #{jobTriggerLog.id} " +
             "</script>")
-    @Options(useGeneratedKeys=true, keyProperty="id", keyColumn="id")
     int updateJobTriggerLog(@Param("jobTriggerLog") JobTriggerLogDto jobTriggerLogDto);
 
     @Update("<script>update job_trigger_log set status = #{jobTriggerLog.status}  " +
@@ -49,15 +48,13 @@ public interface JobTriggerLogDao {
             "<when test='#{jobTriggerLog.endTime} != null'> , end_time = #{jobTriggerLog.endTime} </when>" +
             "where id = #{jobTriggerLog.id} and center_ip = #{jobTriggerLog.centerIp}" +
             "</script>")
-    @Options(useGeneratedKeys=true, keyProperty="id", keyColumn="id")
     int updateJobTriggerLogWithAssignedCenter(@Param("jobTriggerLog") JobTriggerLogDto jobTriggerLogDto);
 
 
-    @Update("<script>update job_trigger_log set status = #{jobTriggerLogDto.status}  " +
-            "<when test='#{jobTriggerLogDto.endTime} != null'> , end_time = #{jobTriggerLogDto.endTime} </when>" +
-            "where id = #{jobTriggerLogDto.id} and status = #{expectStatus}" +
+    @Update("<script>update job_trigger_log set status = #{jobTriggerLog.status}  " +
+            "<when test='#{jobTriggerLog.endTime} != null'> , end_time = #{jobTriggerLog.endTime} </when>" +
+            "where id = #{jobTriggerLog.id} and status = #{expectStatus}" +
             "</script>")
-    @Options(useGeneratedKeys=true, keyProperty="id", keyColumn="id")
     int updateJobTriggerLogWithAssignedStatus(@Param("jobTriggerLog") JobTriggerLogDto jobTriggerLogDto,@Param("expectStatus") int expectStatus);
 
 

@@ -25,6 +25,7 @@ public class WorkWarpper implements Runnable {
     public void run() {
         try {
             Process process = Runtime.getRuntime().exec(jobInfo.getLaunchCommand() + " " + jobInfo.getParam());
+            System.out.println("workWarper exec");
             int exitValue = process.waitFor();
             Callback callback = new Callback();
             callback.setJobTriggerLogId(jobInfo.getJobTriggerLogId());
@@ -34,6 +35,7 @@ public class WorkWarpper implements Runnable {
             } else {
                 callback.setJobExecRs(JobStatusEnum.FAIL.getValue());
             }
+            System.out.println("callbackQueue.addTail");
             callbackQueue.addTail(callback);
         } catch (Exception e) {
             logger.error("job exec err.jobName:" + jobInfo.getJobName() + ",launchCommond:" + jobInfo.getLaunchCommand());

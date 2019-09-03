@@ -45,7 +45,6 @@ public class HeartbeatHelper {
                     }
                     try {
                         TimeUnit.SECONDS.sleep(interval);
-                        System.out.println("sleep over send heartbeat");
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                         logger.error("HeartbeatHelper#heartbeatThread error.", e);

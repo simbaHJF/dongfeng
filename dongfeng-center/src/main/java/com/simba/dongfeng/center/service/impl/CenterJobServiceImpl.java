@@ -9,13 +9,11 @@ import com.simba.dongfeng.center.pojo.DependencyDto;
 import com.simba.dongfeng.center.pojo.JobDto;
 import com.simba.dongfeng.center.service.CenterJobService;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,14 +47,14 @@ public class CenterJobServiceImpl implements CenterJobService {
             return;
         }
         String parentJobIds = jobDto.getParentJobIds();
-            String[] parentJobIdArr = parentJobIds.split(",");
-            for (String parentJobId : parentJobIdArr) {
-                DependencyDto dependencyDto = new DependencyDto();
-                dependencyDto.setJobId(jobDto.getId());
-                dependencyDto.setParentJobId(Long.parseLong(parentJobId));
-                dependencyDto.setDagId(jobDto.getDagId());
-                dependencyDao.insertDependency(dependencyDto);
-            }
+        String[] parentJobIdArr = parentJobIds.split(",");
+        for (String parentJobId : parentJobIdArr) {
+            DependencyDto dependencyDto = new DependencyDto();
+            dependencyDto.setJobId(jobDto.getId());
+            dependencyDto.setParentJobId(Long.parseLong(parentJobId));
+            dependencyDto.setDagId(jobDto.getDagId());
+            dependencyDao.insertDependency(dependencyDto);
+        }
     }
 
     @Override
@@ -70,12 +68,15 @@ public class CenterJobServiceImpl implements CenterJobService {
     }
 
     @Override
-    public int deleteJob(long jobId) {
+    @Transactional(value = "transactionManager")
+    public boolean deleteJob(long jobId) {
         List<Long> childDependencyList = dependencyDao.selectChildJobIdList(jobId);
         if (CollectionUtils.isNotEmpty(childDependencyList)) {
-            return 0;
+            return false;
         }
-        return jobDao.deleteJob(jobId);
+        dependencyDao.deleteDependencyByJobId(jobId);
+        jobDao.deleteJob(jobId);
+        return true;
     }
 
 }

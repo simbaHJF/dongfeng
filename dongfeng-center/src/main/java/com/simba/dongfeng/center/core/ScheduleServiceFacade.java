@@ -1,12 +1,15 @@
 package com.simba.dongfeng.center.core;
 
+import com.alibaba.fastjson.JSON;
 import com.simba.dongfeng.center.core.route.ExecutorRouterStg;
 import com.simba.dongfeng.center.dao.*;
 import com.simba.dongfeng.center.enums.DagExecStatusEnum;
+import com.simba.dongfeng.center.enums.DagTriggerTypeEnum;
 import com.simba.dongfeng.center.enums.ExecutorRouterStgEnum;
 import com.simba.dongfeng.center.pojo.*;
 import com.simba.dongfeng.common.enums.JobStatusEnum;
 import com.simba.dongfeng.common.pojo.JobInfo;
+import com.simba.dongfeng.common.pojo.RespDto;
 import com.simba.dongfeng.common.util.HttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,7 +68,6 @@ public class ScheduleServiceFacade {
         while (iterator.hasNext()) {
             DagDto dagDto = iterator.next();
             try {
-                System.out.println(dagDto);
                 CronExpression cronExpression = new CronExpression(dagDto.getDagCron());
                 Date nextValidTime = cronExpression.getNextValidTimeAfter(nowTimeline);
                 while (nextValidTime.before(endTimeline)) {
@@ -77,11 +79,11 @@ public class ScheduleServiceFacade {
                     tmp.setStatus(dagDto.getStatus());
                     tmp.setTriggerTime(nextValidTime);
                     tmp.setParam(dagDto.getParam());
+                    tmp.setTriggerType(DagTriggerTypeEnum.CRON.getValue());
                     dagsInFetchTimeWindow.add(tmp);
                     nextValidTime = cronExpression.getNextValidTimeAfter(nextValidTime);
                 }
                 dagDao.updateDagTriggerTime(dagDto.getId(), nextValidTime);
-                System.out.println("dagId:" + dagDto.getId() + ",nextValidTime:" + nextValidTime);
             } catch (ParseException e) {
                 logger.error("parse dag trigger cron err", e);
                 //TODO:  ALARM,  DO NOT THROW EXCEPTION
@@ -127,7 +129,9 @@ public class ScheduleServiceFacade {
     public void dispatch(JobInfo jobInfo, ExecutorDto executorDto) {
         try {
             String host = executorDto.getExecutorIp() + ":" + executorDto.getExecutorPort();
-            HttpClient.sendPost(host, "/dongfengexecutor/job/trigger", jobInfo, 5000);
+            String respStr = HttpClient.sendPost(host, "/dongfengexecutor/job/trigger", jobInfo, 5000);
+            RespDto respDto = JSON.parseObject(respStr, RespDto.class);
+            System.out.println("respDto:" + respDto);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("dispatch err.jobInfo:" + jobInfo + ",executorDto:" + executorDto);
@@ -162,6 +166,7 @@ public class ScheduleServiceFacade {
                 }
                 break;
             } catch (Exception e) {
+                e.printStackTrace();
                 if (scheduleCnt++ < jobScheduleRetryTime) {
                     logger.info("job schedule retry:" + scheduleCnt + ",job:" + jobDto.toString() + ",executor:" + executor.toString());
                     continue;
@@ -328,6 +333,7 @@ public class ScheduleServiceFacade {
         jobInfo.setJobTriggerLogId(jobTriggerLogDto.getId());
         jobInfo.setLaunchCommand(jobDto.getLaunchCommand());
         jobInfo.setParam(jobTriggerLogDto.getParam());
+        jobInfo.setShardingIdx(1);
         return jobInfo;
     }
 

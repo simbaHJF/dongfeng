@@ -33,7 +33,6 @@ public class DongfengCenterController {
     @RequestMapping("/executor/heartbeat")
     @ResponseBody
     public RespDto heartbeat(@RequestBody ExecutorHeartbeatInfo executorHeartbeatInfo) {
-        System.out.println(executorHeartbeatInfo);
         if (executorHeartbeatInfo == null || StringUtils.isBlank(executorHeartbeatInfo.getExecutorName()) ||
                 StringUtils.isBlank(executorHeartbeatInfo.getExecutorIp()) ||
                 StringUtils.isBlank(executorHeartbeatInfo.getExecutorPort()) ||
@@ -53,6 +52,8 @@ public class DongfengCenterController {
     @RequestMapping("/callback")
     @ResponseBody
     public RespDto callback(@RequestBody Callback callback) {
+        System.out.println("recv callback:" + callback);
+
         if (callback == null) {
             return RespDtoBuilder.createBuilder().badReqResp().build();
         }

@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.simba.dongfeng.center.core.CronExpression;
 import com.simba.dongfeng.center.dao.DagDao;
 import com.simba.dongfeng.center.dao.DependencyDao;
+import com.simba.dongfeng.center.dao.JobDao;
 import com.simba.dongfeng.center.enums.DagSwitchStatusEnum;
 import com.simba.dongfeng.center.pojo.DagDto;
 import com.simba.dongfeng.center.service.CenterDagService;
@@ -32,6 +33,8 @@ public class CenterDagServiceImpl implements CenterDagService {
     private DagDao dagDao;
     @Resource
     private DependencyDao dependencyDao;
+    @Resource
+    private JobDao jobDao;
 
     public int insertDag(DagDto dagDto) {
         return dagDao.insertDag(dagDto);
@@ -70,6 +73,7 @@ public class CenterDagServiceImpl implements CenterDagService {
     @Transactional("transactionManager")
     public void deleteDagInfo(long dagId) {
         dependencyDao.deleteDependencyByDagId(dagId);
+        jobDao.deleteJobByDagId(dagId);
         dagDao.deleteDagInfo(dagId);
     }
 }

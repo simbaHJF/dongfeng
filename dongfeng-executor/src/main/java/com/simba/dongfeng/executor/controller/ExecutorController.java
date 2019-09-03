@@ -37,9 +37,11 @@ public class ExecutorController {
         try {
             executorCtrlCenter.jobTrigger(jobInfo);
         } catch (RejectedExecutionException e) {
+            e.printStackTrace();
             logger.error("server resource lacking,reject.jobInfo:" + jobInfo);
             return RespDtoBuilder.createBuilder().serverResourceLackResp().build();
         } catch (Exception e) {
+            e.printStackTrace();
             logger.error("internal server err.jobInfo:" + jobInfo);
             return RespDtoBuilder.createBuilder().serverErrResp().build();
         }

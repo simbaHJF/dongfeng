@@ -2,6 +2,7 @@ package com.simba.dongfeng.center.dao;
 
 import com.simba.dongfeng.center.pojo.DependencyDto;
 import org.apache.ibatis.annotations.*;
+import sun.rmi.runtime.Log;
 
 import java.util.List;
 
@@ -25,4 +26,7 @@ public interface DependencyDao {
 
     @Delete("delete from dependency where dag_id = #{dagId}")
     int deleteDependencyByDagId(@Param("dagId") long dagId);
+
+    @Delete("delete from dependency where job_id = #{jobId}")
+    int deleteDependencyByJobId(@Param("jobId") long jobId);
 }

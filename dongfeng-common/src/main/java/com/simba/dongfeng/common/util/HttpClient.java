@@ -31,8 +31,8 @@ public class HttpClient {
     static {
         RequestConfig config = RequestConfig.custom()
                 .setConnectionRequestTimeout(1000)    //从连接池中获取连接的超时时间
-                .setConnectTimeout(500)               // 与服务器连接超时
-                .setSocketTimeout(500)                // 读取服务器返回的数据 超时
+                .setConnectTimeout(5000)               // 与服务器连接超时
+                .setSocketTimeout(5000)                // 读取服务器返回的数据 超时
                 .build();
         httpClient = HttpClientBuilder.create()
                 .setDefaultRequestConfig(config)

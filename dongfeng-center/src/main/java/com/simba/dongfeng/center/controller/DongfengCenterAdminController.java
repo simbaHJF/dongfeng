@@ -1,5 +1,6 @@
 package com.simba.dongfeng.center.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
 import com.simba.dongfeng.center.enums.DagSwitchStatusEnum;
 import com.simba.dongfeng.center.enums.ExecutorRouterStgEnum;
@@ -60,7 +61,6 @@ public class DongfengCenterAdminController {
     @ResponseBody
     public RespDto dagData(int page) {
         PageInfo<DagDto> pageInfo = centerDagService.selectDagByPage(page, pageSize);
-
         RespDto<PageInfo<DagDto>> respDto = new RespDto<>(RespCodeEnum.SUCC.getCode(), RespCodeEnum.SUCC.getMsg(), pageInfo);
         return respDto;
     }
@@ -179,9 +179,9 @@ public class DongfengCenterAdminController {
     @ResponseBody
     public RespDto deleteJobInfo(@RequestParam("jobId") long jobId) {
         System.out.println(jobId);
-        int rs = centerJobService.deleteJob(jobId);
+        boolean rs = centerJobService.deleteJob(jobId);
 
-        if (rs == 0) {
+        if (rs == false) {
             RespDto respDto = RespDtoBuilder.createBuilder().badReqResp().build();
             respDto.setMsg("删除有误,请检查被删除job是否有子job.");
             return respDto;

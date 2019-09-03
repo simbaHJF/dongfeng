@@ -33,10 +33,12 @@ public class CallbackNotifyHelper {
                 while (isRunning) {
                     try {
                         Callback callback = callbackQueue.takeHead();
+                        System.out.println("get callbackQueue head:" + callback);
                         for (String host : dongfengCenterAddrList) {
                             try {
-                                HttpClient.sendPost(host, "/callback", callback, 5000);
+                                HttpClient.sendPost(host, "/dongfeng/callback", callback, 5000);
                             } catch (Exception e) {
+                                e.printStackTrace();
                                 logger.error("send callback request err.host:" + host + ",callback:" + callback);
                                 continue;
                             }

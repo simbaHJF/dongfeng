@@ -1,5 +1,6 @@
 package com.simba.dongfeng.center.thread;
 
+import com.alibaba.fastjson.JSON;
 import com.simba.dongfeng.center.core.DagQueue;
 import com.simba.dongfeng.center.core.ScheduleServiceFacade;
 import com.simba.dongfeng.center.pojo.DagDto;
@@ -43,7 +44,8 @@ public class DagFetchHelper {
                 while (isRunning) {
                     try {
                         List<DagDto> dagDtoList = Optional.ofNullable(scheduleServiceFacade.fetchNeedTriggerDag(fetchTimeWindow)).orElse(new ArrayList<>());
-                        System.out.println("fetch dag list:" + dagDtoList);
+                        logger.info("fetch dag list:" + JSON.toJSONString(dagDtoList));
+                        System.out.println("fetch dag list:" + JSON.toJSONString(dagDtoList));
                         DagDto lastDag = dagQueue.peekTail();
                         if (lastDag == null) {
                             dagQueue.addAllToTail(dagDtoList);
@@ -55,7 +57,6 @@ public class DagFetchHelper {
                                 dagQueue.addTail(dagDto);
                             }
                         }
-                        System.out.println("sleep 30s to wait next fetch dag");
                         TimeUnit.SECONDS.sleep(interval);
                     }catch (InterruptedException e) {
                         e.printStackTrace();

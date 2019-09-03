@@ -64,6 +64,7 @@ public class ExecutorCtrlCenter {
 
     public void jobTrigger(JobInfo jobInfo) {
         WorkWarpper workWarpper = new WorkWarpper(jobInfo, callbackQueue);
+        System.out.println("构造完成,交由线程池处理");
         threadPoolExecutor.execute(workWarpper);
     }
 

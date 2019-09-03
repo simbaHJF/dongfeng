@@ -82,6 +82,7 @@ public class CallbackHandleHelper {
                                     break;
                                 } else if (parentJobTriggerLog.getStatus() == JobStatusEnum.FAIL.getValue()) {
                                     allParentJobsSuccFlag = false;
+                                    break;
                                 }
                             }
                             if (allParentJobsCompleteFlag) {
@@ -99,6 +100,7 @@ public class CallbackHandleHelper {
                                         scheduleServiceFacade.updateDagTriggerLog(dagTriggerLog);
 
                                         JobTriggerLogDto endJobTriggerLog = scheduleServiceFacade.generateJobTriggerLogDto(childJobDto.getId(), dagTriggerLog.getDagId(), dagTriggerLog.getId(), JobStatusEnum.SUCC.getValue(), addr.getHostAddress(),addr.getHostAddress(), dagTriggerLog.getParam());
+                                        endJobTriggerLog.setEndTime(new Date());
                                         scheduleServiceFacade.insertJobTriggerLog(endJobTriggerLog);
 
                                         logger.info("callBackHandle,dag complete succ.dagTriggerLog:" + dagTriggerLog);
@@ -123,6 +125,7 @@ public class CallbackHandleHelper {
                                             e.printStackTrace();
                                         }
                                         JobTriggerLogDto endJobTriggerLog = scheduleServiceFacade.generateJobTriggerLogDto(childJobDto.getId(), dagTriggerLog.getDagId(), dagTriggerLog.getId(), JobStatusEnum.FAIL.getValue(), addr.getHostAddress(),addr.getHostAddress(), dagTriggerLog.getParam());
+                                        endJobTriggerLog.setEndTime(new Date());
                                         scheduleServiceFacade.insertJobTriggerLog(endJobTriggerLog);
 
                                         logger.info("callBackHandle,dag complete with failed job.dagTriggerLog:" + dagTriggerLog);
@@ -140,7 +143,7 @@ public class CallbackHandleHelper {
                                 logger.info("callBackHandle,jobId:" + jobTriggerLog.getJobId() + ",childJob:" + childJobDto + ",parentJobs have not all completed.");
                             }
                         }
-                    } catch (InterruptedException e) {
+                    } catch (Exception e) {
                         logger.error("callBackHandleThread err.", e);
                         e.printStackTrace();
                         return;
