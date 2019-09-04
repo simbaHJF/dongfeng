@@ -7,7 +7,9 @@ import com.simba.dongfeng.center.pojo.DagDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -38,15 +40,16 @@ public class DagFetchHelper {
     }
 
     public void start() {
-        dagFetchThread = new Thread(){
+        dagFetchThread = new Thread() {
             @Override
             public void run() {
                 while (isRunning) {
                     try {
                         List<DagDto> dagDtoList = Optional.ofNullable(scheduleServiceFacade.fetchNeedTriggerDag(fetchTimeWindow)).orElse(new ArrayList<>());
-                        logger.info("fetch dag list:" + JSON.toJSONString(dagDtoList));
-                        System.out.println("fetch dag list:" + JSON.toJSONString(dagDtoList));
-                        DagDto lastDag = dagQueue.peekTail();
+                        logger.info("dagFetchThread ## fetch dag list:" + JSON.toJSONString(dagDtoList));
+                        System.out.println("dagFetchThread ## fetch dag list:" + JSON.toJSONString(dagDtoList));
+                        dagQueue.addAllToTail(dagDtoList);
+                        /*DagDto lastDag = dagQueue.peekTail();
                         if (lastDag == null) {
                             dagQueue.addAllToTail(dagDtoList);
                         } else {
@@ -56,17 +59,15 @@ public class DagFetchHelper {
                                 }
                                 dagQueue.addTail(dagDto);
                             }
-                        }
+                        }*/
                         TimeUnit.SECONDS.sleep(interval);
-                    }catch (InterruptedException e) {
+                    } catch (InterruptedException e) {
                         e.printStackTrace();
-                        logger.error("DagFetchHelper#dagFetchThread error.", e);
-                        return;
+                        logger.error("DagFetchHelper ## dagFetchThread error.", e);
                         //TODO  ALARM
                     } catch (Exception e) {
                         e.printStackTrace();
-                        logger.error("DagFetchHelper#dagFetchThread error.", e);
-                        return;
+                        logger.error("DagFetchHelper ## dagFetchThread error.", e);
                         //TODO  ALARM
                     }
                 }
@@ -79,12 +80,13 @@ public class DagFetchHelper {
 
     public void stop() {
         isRunning = false;
-        if (dagFetchThread != null){
+        if (dagFetchThread != null) {
             // interrupt and wait
             dagFetchThread.interrupt();
             try {
                 dagFetchThread.join();
             } catch (InterruptedException e) {
+                e.printStackTrace();
                 logger.error(e.getMessage(), e);
             }
         }

@@ -32,17 +32,20 @@ public class ExecutorController {
         System.out.println("receive job trigger request.jobInfo:" + jobInfo);
         if (jobInfo == null || StringUtils.isBlank(jobInfo.getLaunchCommand())) {
             logger.error("ExecutorController#jobTrigger err,bad request.");
+            System.out.println("ExecutorController#jobTrigger err,bad request.");
             return RespDtoBuilder.createBuilder().badReqResp().build();
         }
         try {
             executorCtrlCenter.jobTrigger(jobInfo);
         } catch (RejectedExecutionException e) {
             e.printStackTrace();
-            logger.error("server resource lacking,reject.jobInfo:" + jobInfo);
+            logger.error("server resource lacking,reject.jobInfo:" + jobInfo, e);
+            System.out.println("server resource lacking,reject.jobInfo:" + jobInfo);
             return RespDtoBuilder.createBuilder().serverResourceLackResp().build();
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error("internal server err.jobInfo:" + jobInfo);
+            logger.error("internal server err.jobInfo:" + jobInfo, e);
+            System.out.println("internal server err.jobInfo:" + jobInfo);
             return RespDtoBuilder.createBuilder().serverErrResp().build();
         }
         return RespDtoBuilder.createBuilder().succResp().build();

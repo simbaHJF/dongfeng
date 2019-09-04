@@ -52,13 +52,12 @@ public class HttpClient {
      * @throws IOException
      */
     public static String sendPost(String host, String api, Object entity, int timeoutMillisecond){
+        String urlStr = "http://" + host + api;
+        String entityJsonStr = JSON.toJSONString(entity);
         try {
-            String urlStr = "http://" + host + api;
             HttpPost httpPost = new HttpPost(urlStr);
-            String jsonStr = JSON.toJSONString(entity);
 
-
-            StringEntity requestEntity = new StringEntity(jsonStr, "UTF-8");
+            StringEntity requestEntity = new StringEntity(entityJsonStr, "UTF-8");
             httpPost.setEntity(requestEntity);
             httpPost.setHeader("Content-Type", "application/json;charset=utf8");
             RequestConfig requestConfig = RequestConfig.custom()
@@ -71,12 +70,12 @@ public class HttpClient {
             HttpResponse response = httpClient.execute(httpPost);
             HttpEntity httpEntity = response.getEntity();
             String resp = EntityUtils.toString(httpEntity);
-            httpPost.abort();
             //把 reponse 的流  消费一下
             EntityUtils.consumeQuietly(httpEntity);
+            httpPost.abort();
             return resp;
         } catch (Exception e) {
-            throw new RuntimeException("http request err.", e);
+            throw new RuntimeException("http request err.url:" + urlStr + ",entity:" + entityJsonStr, e);
         }
     }
 }

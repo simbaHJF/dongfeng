@@ -9,6 +9,8 @@ import com.simba.dongfeng.common.pojo.Callback;
 import com.simba.dongfeng.common.pojo.ExecutorHeartbeatInfo;
 import com.simba.dongfeng.common.pojo.RespDto;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +26,8 @@ import javax.annotation.Resource;
 
 @Controller
 public class DongfengCenterController {
+    private Logger logger = LoggerFactory.getLogger(DongfengCenterController.class);
+
     @Resource
     private CenterExecutorService centerExecutorService;
 
@@ -33,6 +37,7 @@ public class DongfengCenterController {
     @RequestMapping("/executor/heartbeat")
     @ResponseBody
     public RespDto heartbeat(@RequestBody ExecutorHeartbeatInfo executorHeartbeatInfo) {
+        logger.info("recv heartbeat info:" + executorHeartbeatInfo);
         if (executorHeartbeatInfo == null || StringUtils.isBlank(executorHeartbeatInfo.getExecutorName()) ||
                 StringUtils.isBlank(executorHeartbeatInfo.getExecutorIp()) ||
                 StringUtils.isBlank(executorHeartbeatInfo.getExecutorPort()) ||
@@ -45,6 +50,7 @@ public class DongfengCenterController {
             centerExecutorService.replaceExecutor(executorDto);
             return RespDtoBuilder.createBuilder().succResp().build();
         } catch (Exception e) {
+            logger.error("DongfengCenterController ## heartbeat err.", e);
             return RespDtoBuilder.createBuilder().serverErrResp().build();
         }
     }
@@ -52,7 +58,8 @@ public class DongfengCenterController {
     @RequestMapping("/callback")
     @ResponseBody
     public RespDto callback(@RequestBody Callback callback) {
-        System.out.println("recv callback:" + callback);
+        logger.info("recv callback info:" + callback);
+        System.out.println("recv callback info:" + callback);
 
         if (callback == null) {
             return RespDtoBuilder.createBuilder().badReqResp().build();
@@ -64,7 +71,8 @@ public class DongfengCenterController {
     @RequestMapping("/manualTrigger")
     @ResponseBody
     public RespDto manualTrigger(long dagId, String manualTriggerDagParam) {
-        System.out.println("dagId:" + dagId + "#####manualTriggerDagParam:" + manualTriggerDagParam);
+        logger.info("recv manualTrigger.dagId:" + dagId + ",manualTriggerDagParam:" + manualTriggerDagParam);
+        System.out.println("recv manualTrigger.dagId:" + dagId + ",manualTriggerDagParam:" + manualTriggerDagParam);
         if (dagId == 0) {
             return RespDtoBuilder.createBuilder().badReqResp().build();
         }

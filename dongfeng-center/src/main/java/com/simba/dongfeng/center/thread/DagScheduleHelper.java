@@ -44,40 +44,42 @@ public class DagScheduleHelper {
             @Override
             public void run() {
                 while (isRunning) {
+                    DagDto dagDto = null;
                     try {
-                        DagDto dagDto = dagQueue.takeHead();
-                        System.out.println("dagQueue head dag:" + dagDto);
+                        dagDto = dagQueue.takeHead();
+                        logger.info("dagScheduleThread ## dagQueue head dag:" + dagDto);
+                        System.out.println("dagScheduleThread ## dagQueue head dag:" + dagDto);
                         if (dagDto.getTriggerType() == DagTriggerTypeEnum.CRON.getValue()) {
                             Date now = new Date();
                             if (now.before(dagDto.getTriggerTime())) {
                                 TimeUnit.MILLISECONDS.sleep(dagDto.getTriggerTime().getTime() - now.getTime());
                             }
                         }
-
-                        JobDto startJob = scheduleServiceFacade.selectStartJobWithDagId(dagDto);
+                        // 写dag调度日志
                         DagTriggerLogDto dagTriggerLogDto = generateDagTriggerLogDto(dagDto.getId(), dagDto.getParam(), dagDto.getTriggerType());
                         scheduleServiceFacade.insertDagTriggerLog(dagTriggerLogDto);
+
+                        // 写start job触发日志
+                        JobDto startJob = scheduleServiceFacade.selectStartJobWithDagId(dagDto);
                         InetAddress addr = InetAddress.getLocalHost();
                         JobTriggerLogDto startJobTriggerLog = scheduleServiceFacade.generateJobTriggerLogDto(startJob.getId(), dagDto.getId(), dagTriggerLogDto.getId(), JobStatusEnum.SUCC.getValue(), addr.getHostAddress(), addr.getHostAddress(), dagDto.getParam());
                         startJobTriggerLog.setEndTime(new Date());
                         scheduleServiceFacade.insertJobTriggerLog(startJobTriggerLog);
 
+                        //  获取所有子任务,进行调度
                         List<JobDto> childJobList = Optional.ofNullable(scheduleServiceFacade.selectChildJobList(startJob.getId())).orElse(new ArrayList<>());
-
                         for (JobDto jobDto : childJobList) {
                             scheduleServiceFacade.scheduleJob(jobDto, dagTriggerLogDto, 2, addr.getHostAddress());
                         }
 
                     } catch (InterruptedException e) {
-                        //TODO alarm
-                        logger.error("dagScheduleThread err.", e);
+                        logger.error("DagScheduleHelper ## dagScheduleThread InterruptedException.dag:" + dagDto, e);
                         e.printStackTrace();
-                        return;
+                        //TODO alarm
                     } catch (Exception e) {
-                        //TODO alarm
-                        logger.error("dagScheduleThread err,get local ip err.", e);
+                        logger.error("DagScheduleHelper ## dagScheduleThread err.dag:" + dagDto, e);
                         e.printStackTrace();
-                        return;
+                        //TODO alarm
                     }
                 }
             }

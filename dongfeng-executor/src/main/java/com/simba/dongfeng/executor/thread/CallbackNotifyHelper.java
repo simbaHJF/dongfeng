@@ -33,19 +33,21 @@ public class CallbackNotifyHelper {
                 while (isRunning) {
                     try {
                         Callback callback = callbackQueue.takeHead();
-                        System.out.println("get callbackQueue head:" + callback);
+                        logger.info("callbackNotifyThread ## callbackQueue head callback:" + callback);
+                        System.out.println("callbackNotifyThread ## callbackQueue head callback:" + callback);
                         for (String host : dongfengCenterAddrList) {
                             try {
                                 HttpClient.sendPost(host, "/dongfeng/callback", callback, 5000);
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                logger.error("send callback request err.host:" + host + ",callback:" + callback);
+                                logger.error("send callback request err.host:" + host + ",callback:" + callback, e);
                                 continue;
                             }
                             break;
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
+                        logger.error("CallbackNotifyHelper ## callbackNotifyThread err.", e);
                     }
                 }
             }

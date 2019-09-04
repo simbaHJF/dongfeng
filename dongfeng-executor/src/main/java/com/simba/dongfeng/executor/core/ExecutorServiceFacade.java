@@ -5,6 +5,8 @@ import com.simba.dongfeng.common.util.HttpClient;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -16,9 +18,14 @@ import java.io.IOException;
  **/
 @Service
 public class ExecutorServiceFacade {
+    private Logger logger = LoggerFactory.getLogger(ExecutorServiceFacade.class);
+
     public void sendHeartbeat(ExecutorHeartbeatInfo executorHeartbeatInfo, String host) {
-        System.out.println("executorHeartbeatInfo:" + executorHeartbeatInfo);
+        logger.info("send executorHeartbeatInfo:" + executorHeartbeatInfo);
+        System.out.println("send executorHeartbeatInfo:" + executorHeartbeatInfo);
+
         String resp = HttpClient.sendPost(host,"/dongfeng/executor/heartbeat",executorHeartbeatInfo,5000);
-        System.out.println("resp info:" + resp);
+        logger.info("recv heartbeat resp:" + resp);
+        System.out.println("recv heartbeat resp:" + resp);
     }
 }

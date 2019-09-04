@@ -49,25 +49,30 @@ public class CallbackHandleHelper {
                 while (isRunning) {
                     try {
                         Callback callback = callbackQueue.takeHead();
-
+                        logger.info("callBackHandleThread ## callbackQueue head callback:" + callback);
+                        System.out.println("callBackHandleThread ## callbackQueue head callback:" + callback);
 
                         JobTriggerLogDto jobTriggerLog = scheduleServiceFacade.selectJobTriggerLogDtoById(callback.getJobTriggerLogId());
                         if (jobTriggerLog.getStatus() != JobStatusEnum.RUNNING.getValue()) {
                             logger.info("job callback has been handled.jobTriggerLog:" + jobTriggerLog);
+                            System.out.println("job callback has been handled.jobTriggerLog:" + jobTriggerLog);
                             continue;
                         }
                         jobTriggerLog.setEndTime(new Date());
                         jobTriggerLog.setStatus(callback.getJobExecRs());
 
+                        // 无锁化,更新回调任务执行结果.
                         int updateRs = scheduleServiceFacade.updateJobTriggerLogWithAssignedStatus(jobTriggerLog,JobStatusEnum.RUNNING.getValue());
                         if (updateRs != 1) {
                             logger.info("job callback has been handled.jobTriggerLog:" + jobTriggerLog);
+                            System.out.println("job callback has been handled.jobTriggerLog:" + jobTriggerLog);
                             continue;
                         }
 
                         DagTriggerLogDto dagTriggerLog = scheduleServiceFacade.selectDagTriggerLogById(jobTriggerLog.getDagTriggerId());
                         if (dagTriggerLog.getStatus() == DagExecStatusEnum.FAIL.getValue()) {
                             logger.error("dag trigger has failed due to other failed job.it will not trigger subsequent job");
+                            System.out.println("dag trigger has failed due to other failed job.it will not trigger subsequent job");
                             continue;
                         }
                         List<JobDto> childJobList = scheduleServiceFacade.selectChildJobList(jobTriggerLog.getJobId());
@@ -79,18 +84,22 @@ public class CallbackHandleHelper {
                                 JobTriggerLogDto parentJobTriggerLog = scheduleServiceFacade.selectJobTriggerLogDtoByJobAndDag(parentJob.getId(), dagTriggerLog.getId(),false);
                                 if (parentJobTriggerLog.getStatus() == JobStatusEnum.RUNNING.getValue()) {
                                     allParentJobsCompleteFlag = false;
-                                    break;
+
                                 } else if (parentJobTriggerLog.getStatus() == JobStatusEnum.FAIL.getValue()) {
                                     allParentJobsSuccFlag = false;
-                                    break;
+
                                 }
                             }
                             if (allParentJobsCompleteFlag) {
                                 //所有父任务执行完成(不论是否成功)
-                                logger.info("callBackHandle,jobId:" + jobTriggerLog.getJobId() + ",childJob:" + childJobDto + ",parentJobs have all completed.");
+
+                                logger.info("callBackHandle,jobId:" + jobTriggerLog.getJobId() + ",childJob:" + childJobDto + ",parentJobs all completed.");
+                                System.out.println("callBackHandle,jobId:" + jobTriggerLog.getJobId() + ",childJob:" + childJobDto + ",parentJobs all completed.");
                                 if (allParentJobsSuccFlag) {
                                     //父job全部成功
 
+                                    logger.info("callBackHandle,jobId:" + jobTriggerLog.getJobId() + ",childJob:" + childJobDto + ",parentJobs all succ,will trigge next job.");
+                                    System.out.println("callBackHandle,jobId:" + jobTriggerLog.getJobId() + ",childJob:" + childJobDto + ",parentJobs all succ,will trigge next job.");
                                     JobTypeEnum jobTypeEnum = JobTypeEnum.getJobTypeEnumByValue(childJobDto.getJobType());
                                     if (jobTypeEnum == JobTypeEnum.END_NODE) {
                                         //子job是结束node
@@ -104,10 +113,12 @@ public class CallbackHandleHelper {
                                         scheduleServiceFacade.insertJobTriggerLog(endJobTriggerLog);
 
                                         logger.info("callBackHandle,dag complete succ.dagTriggerLog:" + dagTriggerLog);
+                                        System.out.println("callBackHandle,dag complete succ.dagTriggerLog:" + dagTriggerLog);
                                     } else {
                                         //子job不是结束node
-                                        scheduleServiceFacade.scheduleJob(childJobDto, dagTriggerLog, 2,addr.getHostAddress());
                                         logger.info("callBackHandle,schedule childJob:" + childJobDto);
+                                        System.out.println("callBackHandle,schedule childJob:" + childJobDto);
+                                        scheduleServiceFacade.scheduleJob(childJobDto, dagTriggerLog, 2,addr.getHostAddress());
                                     }
                                 } else {
                                     //父job有失败
@@ -129,24 +140,24 @@ public class CallbackHandleHelper {
                                         scheduleServiceFacade.insertJobTriggerLog(endJobTriggerLog);
 
                                         logger.info("callBackHandle,dag complete with failed job.dagTriggerLog:" + dagTriggerLog);
+                                        System.out.println("callBackHandle,dag complete with failed job.dagTriggerLog:" + dagTriggerLog);
                                     } else {
                                         //子job不是结束node,不再调度子job,dagTriggerLog设置失败状态
                                         dagTriggerLog.setEndTime(new Date());
                                         dagTriggerLog.setStatus(DagExecStatusEnum.FAIL.getValue());
                                         scheduleServiceFacade.updateDagTriggerLog(dagTriggerLog);
-
                                     }
                                 }
 
                             } else {
                                 //父任务未全部执行完成
                                 logger.info("callBackHandle,jobId:" + jobTriggerLog.getJobId() + ",childJob:" + childJobDto + ",parentJobs have not all completed.");
+                                System.out.println("callBackHandle,jobId:" + jobTriggerLog.getJobId() + ",childJob:" + childJobDto + ",parentJobs have not all completed.");
                             }
                         }
                     } catch (Exception e) {
                         logger.error("callBackHandleThread err.", e);
                         e.printStackTrace();
-                        return;
                     }
                 }
             }

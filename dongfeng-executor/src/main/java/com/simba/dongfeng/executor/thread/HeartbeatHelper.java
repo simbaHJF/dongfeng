@@ -47,11 +47,10 @@ public class HeartbeatHelper {
                         TimeUnit.SECONDS.sleep(interval);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
-                        logger.error("HeartbeatHelper#heartbeatThread error.", e);
+                        logger.error("HeartbeatHelper#heartbeatThread InterruptedException.", e);
                         //TODO ALARM
                     }
                 }
-
             }
         };
 

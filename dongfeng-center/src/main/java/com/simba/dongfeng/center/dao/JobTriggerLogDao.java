@@ -43,7 +43,8 @@ public interface JobTriggerLogDao {
             "</script>")
     int updateJobTriggerLog(@Param("jobTriggerLog") JobTriggerLogDto jobTriggerLogDto);
 
-    @Update("<script>update job_trigger_log set status = #{jobTriggerLog.status}  " +
+    @Update("<script> " +
+            "update job_trigger_log set status = #{jobTriggerLog.status}  " +
             "<when test='#{jobTriggerLog.executorIp} != null'> , executor_ip = #{jobTriggerLog.executorIp} </when>" +
             "<when test='#{jobTriggerLog.endTime} != null'> , end_time = #{jobTriggerLog.endTime} </when>" +
             "where id = #{jobTriggerLog.id} and center_ip = #{jobTriggerLog.centerIp}" +

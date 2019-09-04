@@ -8,6 +8,7 @@ import com.simba.dongfeng.center.enums.DagTriggerTypeEnum;
 import com.simba.dongfeng.center.enums.ExecutorRouterStgEnum;
 import com.simba.dongfeng.center.pojo.*;
 import com.simba.dongfeng.common.enums.JobStatusEnum;
+import com.simba.dongfeng.common.enums.RespCodeEnum;
 import com.simba.dongfeng.common.pojo.JobInfo;
 import com.simba.dongfeng.common.pojo.RespDto;
 import com.simba.dongfeng.common.util.HttpClient;
@@ -85,7 +86,8 @@ public class ScheduleServiceFacade {
                 }
                 dagDao.updateDagTriggerTime(dagDto.getId(), nextValidTime);
             } catch (ParseException e) {
-                logger.error("parse dag trigger cron err", e);
+                System.out.println("parse dag trigger cron err.dag:" + dagDto);
+                logger.error("parse dag trigger cron err.dag:" + dagDto, e);
                 //TODO:  ALARM,  DO NOT THROW EXCEPTION
             }
         }
@@ -93,16 +95,18 @@ public class ScheduleServiceFacade {
         return dagsInFetchTimeWindow;
     }
 
-    public int insertOrUploadJobTriggerLogWhenTriggerNewJob(JobTriggerLogDto jobTriggerLog) {
+    public boolean insertOrUploadJobTriggerLogWhenTriggerNewJob(JobTriggerLogDto jobTriggerLog) {
         JobTriggerLogDto jobLog = jobTriggerLogDao.selectJobTriggerLogDtoByJobAndDag(jobTriggerLog.getJobId(), jobTriggerLog.getDagTriggerId(), false);
         if (jobLog == null) {
-            return jobTriggerLogDao.inserJobTriggerLog(jobTriggerLog);
+            jobTriggerLogDao.inserJobTriggerLog(jobTriggerLog);
+            return true;
         } else {
             if (jobLog.getStatus() != JobStatusEnum.INITIAL.getValue()) {
                 logger.info("jobTriggerLog has been handled.jobTriggerLog:" + jobTriggerLog);
-                return 0;
+                return false;
             }
-            return jobTriggerLogDao.updateJobTriggerLogWithAssignedCenter(jobTriggerLog);
+            jobTriggerLogDao.updateJobTriggerLogWithAssignedCenter(jobTriggerLog);
+            return true;
         }
     }
 
@@ -127,24 +131,22 @@ public class ScheduleServiceFacade {
      * @param executorDto
      */
     public void dispatch(JobInfo jobInfo, ExecutorDto executorDto) {
-        try {
-            String host = executorDto.getExecutorIp() + ":" + executorDto.getExecutorPort();
-            String respStr = HttpClient.sendPost(host, "/dongfengexecutor/job/trigger", jobInfo, 5000);
-            RespDto respDto = JSON.parseObject(respStr, RespDto.class);
-            System.out.println("respDto:" + respDto);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("dispatch err.jobInfo:" + jobInfo + ",executorDto:" + executorDto);
+        String host = executorDto.getExecutorIp() + ":" + executorDto.getExecutorPort();
+        String respStr = HttpClient.sendPost(host, "/dongfengexecutor/job/trigger", jobInfo, 5000);
+        RespDto respDto = JSON.parseObject(respStr, RespDto.class);
+        if (respDto.getCode() != RespCodeEnum.SUCC.getCode()) {
+            logger.error("dispatch err.jobInfo:" + jobInfo + ",executorDto:" + executorDto + ",respDto:" + respDto);
+            throw new RuntimeException("dispatch err.jobInfo:" + jobInfo + ",executorDto:" + executorDto + ",respDto:" + respDto);
         }
     }
 
 
     /**
      * 写调度日志,调度job(TASK_NODE节点)
-     *
      * @param jobDto
      * @param dagTriggerLogDto
      * @param jobScheduleRetryTime
+     * @param centerIp
      */
     public void scheduleJob(JobDto jobDto, DagTriggerLogDto dagTriggerLogDto, int jobScheduleRetryTime, String centerIp) {
         int scheduleCnt = 0;
@@ -157,8 +159,13 @@ public class ScheduleServiceFacade {
                  */
                 executor = this.route(jobDto);
                 curJobTriggerLog.setExecutorIp(executor.getExecutorIp());
-                int rs = self.insertOrUploadJobTriggerLogWhenTriggerNewJob(curJobTriggerLog);
-                if (rs == 1) {
+
+                //无锁化,db中job_trigger_log表限制job_id+dag_trigger_id的唯一索引,保证同一dag_trigger_id下不会重复插入某个job_trigger_log
+                // 多center节点时,由于网络原因,存在executor向每个center都发送了一遍任务处理回调结果,造成多个center想执行触发后续job任务,写jobLog的逻辑.
+                // 重复插入后会由于唯一索引冲突报错进入catch模块
+                // 再加上centerIp字段限制,只有成功写入后续任务的jobLog的center能够处理后续任务状态设置,时间设置等操作.
+                boolean rs = insertOrUploadJobTriggerLogWhenTriggerNewJob(curJobTriggerLog);
+                if (rs == true) {
                     JobInfo jobInfo = this.generateJobInfo(jobDto, curJobTriggerLog);
                     this.dispatch(jobInfo, executor);
                     curJobTriggerLog.setStatus(JobStatusEnum.RUNNING.getValue());
@@ -166,8 +173,9 @@ public class ScheduleServiceFacade {
                 }
                 break;
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.info("job schedule err.", e);
                 if (scheduleCnt++ < jobScheduleRetryTime) {
+                    System.out.println("job schedule retry:" + scheduleCnt + ",job:" + jobDto.toString() + ",executor:" + executor.toString());
                     logger.info("job schedule retry:" + scheduleCnt + ",job:" + jobDto.toString() + ",executor:" + executor.toString());
                     continue;
                 } else {
@@ -182,9 +190,13 @@ public class ScheduleServiceFacade {
                         dagTriggerLogDao.updateDagTriggerLog(dagTriggerLogDto);
 
                         //TODO alarm
-                        logger.error("job schedule failed.job:" + jobDto);
-                        break;
+                        logger.error("job schedule failed.job:" + jobDto, e);
                     }
+                    System.out.println("job schedule retry over.jobLog has been handled or jobLog is not belong to cur center." +
+                            "jobLog status:" + jobTriggerLog.getStatus() + ",corresponding centerIp:" + jobTriggerLog.getCenterIp());
+                    logger.info("job schedule retry over.jobLog has been handled or jobLog is not belong to cur center." +
+                            "jobLog status:" + jobTriggerLog.getStatus() + ",corresponding centerIp:" + jobTriggerLog.getCenterIp());
+                    break;
                 }
             }
         }

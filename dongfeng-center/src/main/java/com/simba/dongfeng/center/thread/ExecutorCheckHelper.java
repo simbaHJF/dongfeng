@@ -40,11 +40,9 @@ public class ExecutorCheckHelper {
                         TimeUnit.SECONDS.sleep(interval);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
-                        logger.error(e.getMessage(),e);
-                        return;
+                        logger.error("ExecutorCheckHelper#checkThread InterruptedException",e);
                     } catch (Exception e) {
                         logger.error("ExecutorCheckHelper#checkThread error.", e);
-                        return;
                     }
                 }
             }
