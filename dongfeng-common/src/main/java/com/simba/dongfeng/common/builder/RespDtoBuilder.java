@@ -40,6 +40,21 @@ public class RespDtoBuilder<T> {
         return this;
     }
 
+    public RespDtoBuilder<T> repeatedRequestResp() {
+        respDto = new RespDto<T>(RespCodeEnum.REPEATED_REQ.getCode(), RespCodeEnum.REPEATED_REQ.getMsg());
+        return this;
+    }
+
+    public RespDtoBuilder<T> checkSuccResp() {
+        respDto = new RespDto<T>(RespCodeEnum.CHECK_SUCC.getCode(), RespCodeEnum.CHECK_SUCC.getMsg());
+        return this;
+    }
+
+    public RespDtoBuilder<T> checkFailResp() {
+        respDto = new RespDto<T>(RespCodeEnum.CHECK_FAIL.getCode(), RespCodeEnum.CHECK_FAIL.getMsg());
+        return this;
+    }
+
 
     public RespDto<T> build() {
         return this.respDto;

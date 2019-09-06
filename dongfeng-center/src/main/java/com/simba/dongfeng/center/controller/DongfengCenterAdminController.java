@@ -2,6 +2,7 @@ package com.simba.dongfeng.center.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
+import com.simba.dongfeng.center.core.ScheduleCenter;
 import com.simba.dongfeng.center.enums.DagSwitchStatusEnum;
 import com.simba.dongfeng.center.enums.ExecutorRouterStgEnum;
 import com.simba.dongfeng.center.enums.JobTypeEnum;
@@ -14,6 +15,8 @@ import com.simba.dongfeng.common.builder.RespDtoBuilder;
 import com.simba.dongfeng.common.enums.RespCodeEnum;
 import com.simba.dongfeng.common.pojo.RespDto;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,8 +35,14 @@ import java.util.stream.Collectors;
  * DESC:  管理后台crud相关操作controller
  **/
 @Controller
+@RequestMapping("/admin")
 public class DongfengCenterAdminController {
+    private Logger logger = LoggerFactory.getLogger(DongfengCenterAdminController.class);
+
     public static final int pageSize = 20;
+
+    @Resource
+    private ScheduleCenter scheduleCenter;
 
     @Resource
     private CenterDagService centerDagService;
@@ -45,6 +54,21 @@ public class DongfengCenterAdminController {
     private CenterDagLogService centerDagLogService;
     @Resource
     private CenterJobLogService centerJobLogService;
+
+
+
+    @RequestMapping("/manualTrigger")
+    @ResponseBody
+    public RespDto manualTrigger(long dagId, String manualTriggerDagParam) {
+        logger.info("recv manualTrigger.dagId:" + dagId + ",manualTriggerDagParam:" + manualTriggerDagParam);
+        System.out.println("recv manualTrigger.dagId:" + dagId + ",manualTriggerDagParam:" + manualTriggerDagParam);
+        if (dagId == 0) {
+            return RespDtoBuilder.createBuilder().badReqResp().build();
+        }
+        scheduleCenter.manualTrigger(dagId, manualTriggerDagParam);
+        return RespDtoBuilder.createBuilder().succResp().build();
+    }
+
 
     @RequestMapping("/index")
     public String index() {

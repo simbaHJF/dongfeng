@@ -1,6 +1,7 @@
 package com.simba.dongfeng.executor.core;
 
 import com.simba.dongfeng.common.pojo.ExecutorHeartbeatInfo;
+import com.simba.dongfeng.common.pojo.RespDto;
 import com.simba.dongfeng.common.util.HttpClient;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -24,8 +25,7 @@ public class ExecutorServiceFacade {
         logger.info("send executorHeartbeatInfo:" + executorHeartbeatInfo);
         System.out.println("send executorHeartbeatInfo:" + executorHeartbeatInfo);
 
-        String resp = HttpClient.sendPost(host,"/dongfeng/executor/heartbeat",executorHeartbeatInfo,5000);
-        logger.info("recv heartbeat resp:" + resp);
-        System.out.println("recv heartbeat resp:" + resp);
+        HttpClient.sendPost(host,"/dongfeng/executor/heartbeat",executorHeartbeatInfo,5000);
+
     }
 }

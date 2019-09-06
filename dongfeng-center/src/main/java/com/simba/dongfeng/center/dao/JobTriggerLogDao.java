@@ -54,6 +54,7 @@ public interface JobTriggerLogDao {
 
     @Update("<script>update job_trigger_log set status = #{jobTriggerLog.status}  " +
             "<when test='#{jobTriggerLog.endTime} != null'> , end_time = #{jobTriggerLog.endTime} </when>" +
+            "<when test='#{jobTriggerLog.executorIp} != null'> , executor_ip = #{jobTriggerLog.executorIp} </when>" +
             "where id = #{jobTriggerLog.id} and status = #{expectStatus}" +
             "</script>")
     int updateJobTriggerLogWithAssignedStatus(@Param("jobTriggerLog") JobTriggerLogDto jobTriggerLogDto,@Param("expectStatus") int expectStatus);

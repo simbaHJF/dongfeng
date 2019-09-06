@@ -1,6 +1,9 @@
 package com.simba.dongfeng.executor.thread;
 
+import com.alibaba.fastjson.JSON;
+import com.simba.dongfeng.common.enums.RespCodeEnum;
 import com.simba.dongfeng.common.pojo.Callback;
+import com.simba.dongfeng.common.pojo.RespDto;
 import com.simba.dongfeng.common.util.HttpClient;
 import com.simba.dongfeng.executor.core.CallbackQueue;
 import org.slf4j.Logger;
@@ -16,12 +19,14 @@ import java.util.List;
 public class CallbackNotifyHelper {
     private Logger logger = LoggerFactory.getLogger(CallbackNotifyHelper.class);
     private boolean isRunning = true;
+    private String executorIp;
     private CallbackQueue callbackQueue;
     private List<String> dongfengCenterAddrList;
 
     private Thread callbackNotifyThread;
 
-    public CallbackNotifyHelper(CallbackQueue callbackQueue, List<String> dongfengCenterAddrList) {
+    public CallbackNotifyHelper(String executorIp, CallbackQueue callbackQueue, List<String> dongfengCenterAddrList) {
+        this.executorIp = executorIp;
         this.callbackQueue = callbackQueue;
         this.dongfengCenterAddrList = dongfengCenterAddrList;
     }
@@ -33,17 +38,29 @@ public class CallbackNotifyHelper {
                 while (isRunning) {
                     try {
                         Callback callback = callbackQueue.takeHead();
+                        callback.setExecutorIp(executorIp);
                         logger.info("callbackNotifyThread ## callbackQueue head callback:" + callback);
                         System.out.println("callbackNotifyThread ## callbackQueue head callback:" + callback);
+                        int callbackNotifySendFailCnt = 0;
                         for (String host : dongfengCenterAddrList) {
+                            RespDto respDto = null;
                             try {
-                                HttpClient.sendPost(host, "/dongfeng/callback", callback, 5000);
+                                respDto = HttpClient.sendPost(host, "/dongfeng/callback", callback, 5000);
+
+                                if (respDto.getCode() != RespCodeEnum.SUCC.getCode()) {
+                                    logger.warn("send callback.resp code is not succ.host:" + host + ",callback:" + callback + ",resp:" + respDto);
+                                    callbackNotifySendFailCnt++;
+                                    continue;
+                                }
+                                break;
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                logger.error("send callback request err.host:" + host + ",callback:" + callback, e);
-                                continue;
+                                logger.warn("send callback request err.host:" + host + ",callback:" + callback + ",resp:" + respDto, e);
+                                callbackNotifySendFailCnt++;
                             }
-                            break;
+                        }
+                        if (callbackNotifySendFailCnt == dongfengCenterAddrList.size()) {
+                            logger.error("send callback request err.all center fail,callback:" + callback);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

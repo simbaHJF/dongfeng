@@ -6,20 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>dongfeng admin</title>
 
-    <link rel="stylesheet" type="text/css" href="css/index.css">
-    <script type="text/javascript" src="js/jquery-3.4.1.js"></script>
+    <link rel="stylesheet" type="text/css" href="/dongfeng/css/index.css">
+    <script type="text/javascript" src="/dongfeng/js/jquery-3.4.1.js"></script>
 
-
-
-    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
-    <#--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
-          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">-->
-    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
-    <#--<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"
-            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-            crossorigin="anonymous"></script>-->
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/dongfeng/css/bootstrap.min.css">
+    <script type="text/javascript" src="/dongfeng/js/bootstrap.min.js"></script>
 
 
 
@@ -51,16 +42,16 @@
     <div class="pageSidebar">
         <ul class="nav nav-stacked nav-pills">
             <li role="presentation">
-                <a href="dagIndex" target="mainFrame" >dag配置</a>
+                <a href="admin/dagIndex" target="mainFrame" >dag配置</a>
             </li>
             <li role="presentation">
-                <a href="jobIndex" target="mainFrame">job配置</a>
+                <a href="admin/jobIndex" target="mainFrame">job配置</a>
             </li>
             <li role="presentation">
-                <a href="dagLogIndex" target="mainFrame">dagLog记录</a>
+                <a href="admin/dagLogIndex" target="mainFrame">dagLog记录</a>
             </li>
             <li role="presentation">
-                <a href="jobLogIndex" target="mainFrame">jobLog记录</a>
+                <a href="admin/jobLogIndex" target="mainFrame">jobLog记录</a>
             </li>
         </ul>
     </div>

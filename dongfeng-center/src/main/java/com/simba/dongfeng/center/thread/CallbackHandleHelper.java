@@ -8,7 +8,8 @@ import com.simba.dongfeng.center.pojo.DagTriggerLogDto;
 import com.simba.dongfeng.center.pojo.JobDto;
 import com.simba.dongfeng.center.pojo.JobTriggerLogDto;
 import com.simba.dongfeng.common.enums.JobStatusEnum;
-import com.simba.dongfeng.common.pojo.*;
+import com.simba.dongfeng.common.pojo.Callback;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +38,7 @@ public class CallbackHandleHelper {
     }
 
     public void start() {
-        callBackHandleThread = new Thread(){
+        callBackHandleThread = new Thread() {
             @Override
             public void run() {
                 InetAddress addr = null;
@@ -53,6 +54,8 @@ public class CallbackHandleHelper {
                         System.out.println("callBackHandleThread ## callbackQueue head callback:" + callback);
 
                         JobTriggerLogDto jobTriggerLog = scheduleServiceFacade.selectJobTriggerLogDtoById(callback.getJobTriggerLogId());
+                        logger.info("recv callback,corresponding jobLog:" + jobTriggerLog);
+
                         if (jobTriggerLog.getStatus() != JobStatusEnum.RUNNING.getValue()) {
                             logger.info("job callback has been handled.jobTriggerLog:" + jobTriggerLog);
                             System.out.println("job callback has been handled.jobTriggerLog:" + jobTriggerLog);
@@ -62,7 +65,7 @@ public class CallbackHandleHelper {
                         jobTriggerLog.setStatus(callback.getJobExecRs());
 
                         // 无锁化,更新回调任务执行结果.
-                        int updateRs = scheduleServiceFacade.updateJobTriggerLogWithAssignedStatus(jobTriggerLog,JobStatusEnum.RUNNING.getValue());
+                        int updateRs = scheduleServiceFacade.updateJobTriggerLogWithAssignedStatus(jobTriggerLog, JobStatusEnum.RUNNING.getValue());
                         if (updateRs != 1) {
                             logger.info("job callback has been handled.jobTriggerLog:" + jobTriggerLog);
                             System.out.println("job callback has been handled.jobTriggerLog:" + jobTriggerLog);
@@ -81,7 +84,7 @@ public class CallbackHandleHelper {
                             boolean allParentJobsCompleteFlag = true;
                             boolean allParentJobsSuccFlag = true;
                             for (JobDto parentJob : parentJobList) {
-                                JobTriggerLogDto parentJobTriggerLog = scheduleServiceFacade.selectJobTriggerLogDtoByJobAndDag(parentJob.getId(), dagTriggerLog.getId(),false);
+                                JobTriggerLogDto parentJobTriggerLog = scheduleServiceFacade.selectJobTriggerLogDtoByJobAndDag(parentJob.getId(), dagTriggerLog.getId(), false);
                                 if (parentJobTriggerLog.getStatus() == JobStatusEnum.RUNNING.getValue()) {
                                     allParentJobsCompleteFlag = false;
 
@@ -108,7 +111,7 @@ public class CallbackHandleHelper {
                                         dagTriggerLog.setStatus(DagExecStatusEnum.SUCC.getValue());
                                         scheduleServiceFacade.updateDagTriggerLog(dagTriggerLog);
 
-                                        JobTriggerLogDto endJobTriggerLog = scheduleServiceFacade.generateJobTriggerLogDto(childJobDto.getId(), dagTriggerLog.getDagId(), dagTriggerLog.getId(), JobStatusEnum.SUCC.getValue(), addr.getHostAddress(),addr.getHostAddress(), dagTriggerLog.getParam());
+                                        JobTriggerLogDto endJobTriggerLog = scheduleServiceFacade.generateJobTriggerLogDto(childJobDto.getId(), dagTriggerLog.getDagId(), dagTriggerLog.getId(), JobStatusEnum.SUCC.getValue(), addr.getHostAddress(), addr.getHostAddress(), dagTriggerLog.getParam());
                                         endJobTriggerLog.setEndTime(new Date());
                                         scheduleServiceFacade.insertJobTriggerLog(endJobTriggerLog);
 
@@ -118,7 +121,7 @@ public class CallbackHandleHelper {
                                         //子job不是结束node
                                         logger.info("callBackHandle,schedule childJob:" + childJobDto);
                                         System.out.println("callBackHandle,schedule childJob:" + childJobDto);
-                                        scheduleServiceFacade.scheduleJob(childJobDto, dagTriggerLog, 2,addr.getHostAddress());
+                                        scheduleServiceFacade.scheduleJob(childJobDto, dagTriggerLog, 2, addr.getHostAddress());
                                     }
                                 } else {
                                     //父job有失败
@@ -135,7 +138,7 @@ public class CallbackHandleHelper {
                                         } catch (UnknownHostException e) {
                                             e.printStackTrace();
                                         }
-                                        JobTriggerLogDto endJobTriggerLog = scheduleServiceFacade.generateJobTriggerLogDto(childJobDto.getId(), dagTriggerLog.getDagId(), dagTriggerLog.getId(), JobStatusEnum.FAIL.getValue(), addr.getHostAddress(),addr.getHostAddress(), dagTriggerLog.getParam());
+                                        JobTriggerLogDto endJobTriggerLog = scheduleServiceFacade.generateJobTriggerLogDto(childJobDto.getId(), dagTriggerLog.getDagId(), dagTriggerLog.getId(), JobStatusEnum.FAIL.getValue(), addr.getHostAddress(), addr.getHostAddress(), dagTriggerLog.getParam());
                                         endJobTriggerLog.setEndTime(new Date());
                                         scheduleServiceFacade.insertJobTriggerLog(endJobTriggerLog);
 
@@ -170,7 +173,7 @@ public class CallbackHandleHelper {
 
     public void stop() {
         isRunning = false;
-        if (callBackHandleThread != null && callBackHandleThread.getState() != Thread.State.TERMINATED){
+        if (callBackHandleThread != null && callBackHandleThread.getState() != Thread.State.TERMINATED) {
             // interrupt and wait
             callBackHandleThread.interrupt();
             try {

@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import java.util.concurrent.RejectedExecutionException;
@@ -27,6 +28,7 @@ public class ExecutorController {
     private ExecutorCtrlCenter executorCtrlCenter;
 
     @RequestMapping("/job/trigger")
+    @ResponseBody
     public RespDto jobTrigger(@RequestBody JobInfo jobInfo) {
         logger.info("receive job trigger request.jobInfo:" + jobInfo);
         System.out.println("receive job trigger request.jobInfo:" + jobInfo);
@@ -36,18 +38,37 @@ public class ExecutorController {
             return RespDtoBuilder.createBuilder().badReqResp().build();
         }
         try {
-            executorCtrlCenter.jobTrigger(jobInfo);
+            if (executorCtrlCenter.writeJobLogIdToRedis(jobInfo.getJobTriggerLogId())) {
+                executorCtrlCenter.jobTrigger(jobInfo);
+            } else {
+                return RespDtoBuilder.createBuilder().repeatedRequestResp().build();
+            }
+
         } catch (RejectedExecutionException e) {
             e.printStackTrace();
             logger.error("server resource lacking,reject.jobInfo:" + jobInfo, e);
             System.out.println("server resource lacking,reject.jobInfo:" + jobInfo);
+            executorCtrlCenter.deleteJobLogIdKeyInRedis(jobInfo.getJobTriggerLogId());
             return RespDtoBuilder.createBuilder().serverResourceLackResp().build();
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("internal server err.jobInfo:" + jobInfo, e);
             System.out.println("internal server err.jobInfo:" + jobInfo);
+            executorCtrlCenter.deleteJobLogIdKeyInRedis(jobInfo.getJobTriggerLogId());
             return RespDtoBuilder.createBuilder().serverErrResp().build();
         }
         return RespDtoBuilder.createBuilder().succResp().build();
     }
+
+    @RequestMapping("/job/check")
+    @ResponseBody
+    public RespDto jobCheck(@RequestBody JobInfo jobInfo) {
+        logger.info("recv job check request,jobInfo:" + jobInfo);
+        if (executorCtrlCenter.checkJob(jobInfo.getJobTriggerLogId())) {
+            return RespDtoBuilder.createBuilder().checkSuccResp().build();
+        } else {
+            return RespDtoBuilder.createBuilder().checkFailResp().build();
+        }
+    }
+
 }

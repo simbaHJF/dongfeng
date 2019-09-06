@@ -1,6 +1,7 @@
 package com.simba.dongfeng.common.util;
 
 import com.alibaba.fastjson.JSON;
+import com.simba.dongfeng.common.pojo.RespDto;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -13,6 +14,8 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
@@ -27,6 +30,7 @@ import java.util.List;
  **/
 public class HttpClient {
     private static final org.apache.http.client.HttpClient httpClient;
+    private static Logger logger = LoggerFactory.getLogger(HttpClient.class);
 
     static {
         RequestConfig config = RequestConfig.custom()
@@ -51,9 +55,11 @@ public class HttpClient {
      * @return response json str
      * @throws IOException
      */
-    public static String sendPost(String host, String api, Object entity, int timeoutMillisecond){
+    public static RespDto sendPost(String host, String api, Object entity, int timeoutMillisecond){
         String urlStr = "http://" + host + api;
         String entityJsonStr = JSON.toJSONString(entity);
+        System.out.println("send post url:" + urlStr + ",entityJsonStr:" + entityJsonStr);
+        logger.info("send post url:" + urlStr + ",entityJsonStr:" + entityJsonStr);
         try {
             HttpPost httpPost = new HttpPost(urlStr);
 
@@ -73,8 +79,11 @@ public class HttpClient {
             //把 reponse 的流  消费一下
             EntityUtils.consumeQuietly(httpEntity);
             httpPost.abort();
-            return resp;
+            System.out.println("send post resp:" + resp);
+            logger.info("send post recv resp:" + resp);
+            return JSON.parseObject(resp, RespDto.class);
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException("http request err.url:" + urlStr + ",entity:" + entityJsonStr, e);
         }
     }

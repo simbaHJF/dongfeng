@@ -20,7 +20,7 @@ public class ExecutorCfg {
     private String shRepoPath;
     @Value("${dongfeng.executor.name}")
     private String executorName;
-    @Value("${dongfeng.executor.port}")
+    @Value("${server.port}")
     private String executorPort;
     @Value("${dongfeng.executor.group}")
     private String group;

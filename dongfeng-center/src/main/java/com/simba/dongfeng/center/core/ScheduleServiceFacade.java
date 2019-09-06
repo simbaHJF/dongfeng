@@ -12,8 +12,10 @@ import com.simba.dongfeng.common.enums.RespCodeEnum;
 import com.simba.dongfeng.common.pojo.JobInfo;
 import com.simba.dongfeng.common.pojo.RespDto;
 import com.simba.dongfeng.common.util.HttpClient;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,10 +34,6 @@ import java.util.*;
 public class ScheduleServiceFacade {
     private Logger logger = LoggerFactory.getLogger(ScheduleServiceFacade.class);
 
-    //注入self,为了自身方法事务
-    @Resource
-    private ScheduleServiceFacade self;
-
     @Resource
     private DagDao dagDao;
     @Resource
@@ -48,6 +46,8 @@ public class ScheduleServiceFacade {
     private DagTriggerLogDao dagTriggerLogDao;
     @Resource
     private JobTriggerLogDao jobTriggerLogDao;
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
 
     private Comparator<DagDto> comparator = Comparator.comparing(DagDto::getTriggerTime);
@@ -126,16 +126,33 @@ public class ScheduleServiceFacade {
 
     /**
      * 任务分发到执行器
-     *
      * @param jobInfo
      * @param executorDto
+     * @param jobTriggerLogDto
      */
-    public void dispatch(JobInfo jobInfo, ExecutorDto executorDto) {
+    public void dispatch(JobInfo jobInfo, ExecutorDto executorDto,JobTriggerLogDto jobTriggerLogDto) {
         String host = executorDto.getExecutorIp() + ":" + executorDto.getExecutorPort();
-        String respStr = HttpClient.sendPost(host, "/dongfengexecutor/job/trigger", jobInfo, 5000);
-        RespDto respDto = JSON.parseObject(respStr, RespDto.class);
-        if (respDto.getCode() != RespCodeEnum.SUCC.getCode()) {
-            logger.error("dispatch err.jobInfo:" + jobInfo + ",executorDto:" + executorDto + ",respDto:" + respDto);
+        RespDto respDto = HttpClient.sendPost(host, "/dongfengexecutor/job/trigger", jobInfo, 5000);
+
+        //加入任务回查,避免任务重复分派
+        if (respDto.getCode() == RespCodeEnum.REPEATED_REQ.getCode()) {
+            String checkHost = stringRedisTemplate.opsForValue().get("dongfeng_schedule_" + jobInfo.getJobTriggerLogId());
+            logger.info("recv job trigger resp code 700,need check job.checkHost:" + checkHost);
+            if (StringUtils.isBlank(checkHost)) {
+                throw new RuntimeException("check ip is null.");
+            }
+            RespDto checkResp = HttpClient.sendPost(checkHost, "/dongfengexecutor/job/check", jobInfo, 5000);
+            if (checkResp.getCode() == RespCodeEnum.CHECK_SUCC.getCode()) {
+                String ip = checkHost.split(":")[0];
+                jobTriggerLogDto.setExecutorIp(ip);
+                logger.info("check job succ,checkHost:" + checkHost);
+            } else {
+                throw new RuntimeException("check ip resp code 801,check fail.checkHost:" + checkHost);
+            }
+        }
+        else if (respDto.getCode() != RespCodeEnum.SUCC.getCode()) {
+            System.out.println("dispatch err.jobInfo:" + jobInfo + ",executorDto:" + executorDto);
+            logger.error("dispatch err.jobInfo:" + jobInfo + ",executorDto:" + executorDto);
             throw new RuntimeException("dispatch err.jobInfo:" + jobInfo + ",executorDto:" + executorDto + ",respDto:" + respDto);
         }
     }
@@ -167,7 +184,7 @@ public class ScheduleServiceFacade {
                 boolean rs = insertOrUploadJobTriggerLogWhenTriggerNewJob(curJobTriggerLog);
                 if (rs == true) {
                     JobInfo jobInfo = this.generateJobInfo(jobDto, curJobTriggerLog);
-                    this.dispatch(jobInfo, executor);
+                    this.dispatch(jobInfo, executor,curJobTriggerLog);
                     curJobTriggerLog.setStatus(JobStatusEnum.RUNNING.getValue());
                     jobTriggerLogDao.updateJobTriggerLog(curJobTriggerLog);
                 }
@@ -193,9 +210,9 @@ public class ScheduleServiceFacade {
                         logger.error("job schedule failed.job:" + jobDto, e);
                     }
                     System.out.println("job schedule retry over.jobLog has been handled or jobLog is not belong to cur center." +
-                            "jobLog status:" + jobTriggerLog.getStatus() + ",corresponding centerIp:" + jobTriggerLog.getCenterIp());
+                            "jobLog:" + jobTriggerLog);
                     logger.info("job schedule retry over.jobLog has been handled or jobLog is not belong to cur center." +
-                            "jobLog status:" + jobTriggerLog.getStatus() + ",corresponding centerIp:" + jobTriggerLog.getCenterIp());
+                            "jobLog:" + jobTriggerLog);
                     break;
                 }
             }

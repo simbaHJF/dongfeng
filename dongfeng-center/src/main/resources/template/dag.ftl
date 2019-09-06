@@ -5,16 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>dag配置</title>
-    <script type="text/javascript" src="js/jquery-3.4.1.js"></script>
-    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
-    <#--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
-          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">-->
-    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
-    <#--<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"
-            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-            crossorigin="anonymous"></script>-->
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+
+    <script type="text/javascript" src="/dongfeng/js/jquery-3.4.1.js"></script>
+
+
+    <link rel="stylesheet" type="text/css" href="/dongfeng/css/bootstrap.min.css">
+    <script type="text/javascript" src="/dongfeng/js/bootstrap.min.js"></script>
 
 
 </head>
@@ -37,7 +33,7 @@
 
 
             <div id="modal-div" style="margin: 50px">
-                <form method="post" action="addDag" id="addDagForm">
+                <form method="post" id="addDagForm">
                     <div class="form-group">
                         <label for="dagName" class="text-danger">* Dag name</label>
                         <input type="text" class="form-control" id="addDagName" name="dagName" placeholder="Dag name">
@@ -145,6 +141,6 @@
     </nav>
 </div>
 </div>
-<script type="text/javascript" src="js/dag.js"></script>
+<script type="text/javascript" src="/dongfeng/js/dag.js"></script>
 </body>
 </html>

@@ -68,17 +68,6 @@ public class DongfengCenterController {
         return RespDtoBuilder.createBuilder().succResp().build();
     }
 
-    @RequestMapping("/manualTrigger")
-    @ResponseBody
-    public RespDto manualTrigger(long dagId, String manualTriggerDagParam) {
-        logger.info("recv manualTrigger.dagId:" + dagId + ",manualTriggerDagParam:" + manualTriggerDagParam);
-        System.out.println("recv manualTrigger.dagId:" + dagId + ",manualTriggerDagParam:" + manualTriggerDagParam);
-        if (dagId == 0) {
-            return RespDtoBuilder.createBuilder().badReqResp().build();
-        }
-        scheduleCenter.manualTrigger(dagId, manualTriggerDagParam);
-        return RespDtoBuilder.createBuilder().succResp().build();
-    }
 
 
 }

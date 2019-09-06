@@ -8,7 +8,7 @@
 
 
         <div id="modal-div" style="margin: 50px">
-            <form method="post" action="updateJobInfo" id="updateJobForm">
+            <form method="post" id="updateJobForm">
                 <div class="form-group">
                     <label for="id">* Job id</label>
                     <input type="text" class="form-control" name="id" placeholder="Job id" value="${jobInfo.id}" readonly>

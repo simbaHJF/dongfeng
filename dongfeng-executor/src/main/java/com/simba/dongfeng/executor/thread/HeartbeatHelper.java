@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 public class HeartbeatHelper {
     private Logger logger = LoggerFactory.getLogger(HeartbeatHelper.class);
     private boolean isRunning = true;
-    private int interval = 30;
+    private int interval = 30;//second
     private Thread heartbeatThread;
 
     private List<String> dongfengCenterAddrList;
@@ -34,14 +34,19 @@ public class HeartbeatHelper {
             @Override
             public void run() {
                 while (isRunning) {
+                    int heartbeatSendFailCnt = 0;
                     for (String host : dongfengCenterAddrList) {
                         try {
                             executorServiceFacade.sendHeartbeat(executorHeartbeatInfo, host);
                             break;
                         } catch (Exception e) {
                             e.printStackTrace();
-                            logger.error("heartbeatThread sendHeartbeat err,host:" + host, e);
+                            logger.warn("heartbeatThread sendHeartbeat err,host:" + host, e);
+                            heartbeatSendFailCnt++;
                         }
+                    }
+                    if (heartbeatSendFailCnt == dongfengCenterAddrList.size()) {
+                        logger.error("heartbeatThread sendHeartbeat err,all center fail.");
                     }
                     try {
                         TimeUnit.SECONDS.sleep(interval);

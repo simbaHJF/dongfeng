@@ -4,7 +4,7 @@ $(function () {
 
 function getTableDate(pageNum) {
     $.ajax({
-        url: '/dongfeng/jobData',
+        url: '/dongfeng/admin/jobData',
         type: 'get',
         data:{
             'page':pageNum
@@ -52,7 +52,7 @@ function page_on_click(data) {
 function add_job_submit() {
     $.ajax({
         type: "get",   //提交的方法
-        url:"/dongfeng/addJob", //提交的地址
+        url:"/dongfeng/admin/addJob", //提交的地址
         data:$('#addJobForm').serialize(),// 序列化表单值
         async: false,
         error: function(request) {  //失败的话
@@ -72,7 +72,7 @@ function update_job_submit() {
     checkDisable();
     $.ajax({
         type: "get",   //提交的方法
-        url:"/dongfeng/updateJobInfo", //提交的地址
+        url:"/dongfeng/admin/updateJobInfo", //提交的地址
         data:$('#updateJobForm').serialize(),// 序列化表单值
         async: false,
         error: function(request) {  //失败的话
@@ -93,7 +93,7 @@ function edit_job_page(data)
 {
     var jobId = $(data).parent().parent().parent().parent().parent().children().first().html();
     $.ajax({
-        url: '/dongfeng/updateJobPage',
+        url: '/dongfeng/admin/updateJobPage',
         type: 'get',
         data:{
             'jobId':jobId
@@ -120,7 +120,7 @@ function checkDisable() {
 function delete_job_submit(data) {
     var jobId = $(data).parent().parent().parent().parent().parent().children().first().html();
     $.ajax({
-        url: '/dongfeng/deleteJobInfo',
+        url: '/dongfeng/admin/deleteJobInfo',
         type: 'get',
         data:{
             'jobId':jobId

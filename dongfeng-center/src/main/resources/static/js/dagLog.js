@@ -4,7 +4,7 @@ $(function () {
 
 function getTableDate(pageNum) {
     $.ajax({
-        url: '/dongfeng/dagLogData',
+        url: '/dongfeng/admin/dagLogData',
         type: 'get',
         data:{
             'page':pageNum

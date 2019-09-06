@@ -7,7 +7,7 @@
 
 
         <div id="modal-div" style="margin: 50px">
-            <form method="post" action="updateDagInfo" id="updateDagForm">
+            <form method="post" id="updateDagForm">
                 <div class="form-group">
                     <label for="id">Dag id</label>
                     <input type="text" class="form-control" id="updateDagId" name="id" placeholder="Dag id"

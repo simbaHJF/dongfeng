@@ -11,6 +11,7 @@ public class Callback implements Serializable {
     private long jobTriggerLogId;
     private int jobExecRs;
     private int shardingIdx;
+    private String executorIp;
 
     public long getJobTriggerLogId() {
         return jobTriggerLogId;
@@ -36,12 +37,21 @@ public class Callback implements Serializable {
         this.shardingIdx = shardingIdx;
     }
 
+    public String getExecutorIp() {
+        return executorIp;
+    }
+
+    public void setExecutorIp(String executorIp) {
+        this.executorIp = executorIp;
+    }
+
     @Override
     public String toString() {
         return "Callback{" +
                 "jobTriggerLogId=" + jobTriggerLogId +
                 ", jobExecRs=" + jobExecRs +
                 ", shardingIdx=" + shardingIdx +
+                ", executorIp='" + executorIp + '\'' +
                 '}';
     }
 }

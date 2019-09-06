@@ -3,8 +3,13 @@ package com.simba.dongfeng.executor.core;
 import com.simba.dongfeng.common.pojo.ExecutorHeartbeatInfo;
 import com.simba.dongfeng.common.pojo.JobInfo;
 import com.simba.dongfeng.executor.cfg.ExecutorCfg;
+import com.simba.dongfeng.executor.pojo.JobRecord;
+import com.simba.dongfeng.executor.pojo.JobRecordPool;
 import com.simba.dongfeng.executor.thread.CallbackNotifyHelper;
+import com.simba.dongfeng.executor.thread.ExpiredJobRecordClearHelper;
 import com.simba.dongfeng.executor.thread.HeartbeatHelper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -30,15 +35,22 @@ public class ExecutorCtrlCenter {
     private ExecutorCfg executorCfg;
     @Resource
     private ExecutorServiceFacade executorServiceFacade;
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     private CallbackQueue callbackQueue = new CallbackQueue();
+    private JobRecordPool jobRecordPool = new JobRecordPool();
+
+    //任务执行池
     private ExecutorService threadPoolExecutor = new ThreadPoolExecutor(3, 3, 1, TimeUnit.MINUTES, new LinkedBlockingQueue<>(2));
+
 
     private List<String> dongfengCenterAddrList;
     private ExecutorHeartbeatInfo executorHeartbeatInfo;
 
     private HeartbeatHelper heartbeatHelper;
     private CallbackNotifyHelper callbackNotifyHelper;
+    private ExpiredJobRecordClearHelper expiredJobRecordClearHelper;
 
     @PostConstruct
     public void init() throws Exception {
@@ -46,8 +58,10 @@ public class ExecutorCtrlCenter {
         initExecutorHeartbeatInfo(executorCfg);
         heartbeatHelper = new HeartbeatHelper(dongfengCenterAddrList, executorHeartbeatInfo, executorServiceFacade);
         heartbeatHelper.start();
-        callbackNotifyHelper = new CallbackNotifyHelper(callbackQueue, dongfengCenterAddrList);
+        callbackNotifyHelper = new CallbackNotifyHelper(executorHeartbeatInfo.getExecutorIp(), callbackQueue, dongfengCenterAddrList);
         callbackNotifyHelper.start();
+        expiredJobRecordClearHelper = new ExpiredJobRecordClearHelper(jobRecordPool);
+        expiredJobRecordClearHelper.start();
     }
 
 
@@ -59,13 +73,36 @@ public class ExecutorCtrlCenter {
         if (callbackNotifyHelper != null) {
             callbackNotifyHelper.stop();
         }
+        if (expiredJobRecordClearHelper != null) {
+            expiredJobRecordClearHelper.stop();
+        }
     }
 
 
+    public boolean writeJobLogIdToRedis(long jobLogId) {
+        return stringRedisTemplate.opsForValue().setIfAbsent("dongfeng_schedule_" + jobLogId, executorHeartbeatInfo.getExecutorIp() + ":" + executorHeartbeatInfo.getExecutorPort(), 10, TimeUnit.MINUTES);
+    }
+
+    public boolean deleteJobLogIdKeyInRedis(long jobLogId) {
+        return stringRedisTemplate.delete(String.valueOf(jobLogId));
+    }
+
+
+    public boolean checkJob(long jobLogId) {
+        return jobRecordPool.getJobRecord(jobLogId) != null;
+    }
+
     public void jobTrigger(JobInfo jobInfo) {
-        WorkWarpper workWarpper = new WorkWarpper(jobInfo, callbackQueue);
-        System.out.println("构造完成,交由线程池处理");
-        threadPoolExecutor.execute(workWarpper);
+        JobRecord jobRecord = new JobRecord();
+        jobRecord.setJobLogId(jobInfo.getJobTriggerLogId());
+        WorkWarpper workWarpper = new WorkWarpper(jobInfo, callbackQueue,jobRecord);
+        try {
+            jobRecordPool.lockPool();
+            jobRecordPool.putJobRecord(jobRecord);
+            threadPoolExecutor.execute(workWarpper);
+        } finally {
+            jobRecordPool.unlockPool();
+        }
     }
 
     private void initDongfengCenterAddrList(ExecutorCfg executorCfg) {
