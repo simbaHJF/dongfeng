@@ -168,6 +168,9 @@ public class DongfengCenterAdminController {
             respDto.setMsg("对应dag不存在");
             return respDto;
         }
+        if (!StringUtils.equals(ExecutorRouterStgEnum.ASSIGN.getRouterName(), jobDto.getScheduleType())) {
+            jobDto.setAssignIp("");
+        }
         centerJobService.insertJobAndDependency(jobDto);
         RespDto respDto = new RespDto<>(RespCodeEnum.SUCC.getCode(), RespCodeEnum.SUCC.getMsg());
         return respDto;

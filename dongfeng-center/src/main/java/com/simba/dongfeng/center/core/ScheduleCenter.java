@@ -4,6 +4,7 @@ import com.simba.dongfeng.center.enums.DagTriggerTypeEnum;
 import com.simba.dongfeng.center.thread.CallbackHandleHelper;
 import com.simba.dongfeng.center.thread.DagFetchHelper;
 import com.simba.dongfeng.center.thread.DagScheduleHelper;
+import com.simba.dongfeng.center.thread.ExpireLogClearHelper;
 import com.simba.dongfeng.common.pojo.Callback;
 import com.simba.dongfeng.center.pojo.DagDto;
 import org.slf4j.Logger;
@@ -29,6 +30,7 @@ public class ScheduleCenter {
     private DagFetchHelper dagFetchHelper;
     private DagScheduleHelper dagScheduleHelper;
     private CallbackHandleHelper callbackHandleHelper;
+    private ExpireLogClearHelper expireLogClearHelper;
 
 
     @Resource
@@ -40,9 +42,11 @@ public class ScheduleCenter {
         dagFetchHelper = new DagFetchHelper(dagQueue, scheduleServiceFacade);
         dagScheduleHelper = new DagScheduleHelper(dagQueue, scheduleServiceFacade);
         callbackHandleHelper = new CallbackHandleHelper(callbackQueue, scheduleServiceFacade);
+        expireLogClearHelper = new ExpireLogClearHelper(scheduleServiceFacade);
         dagFetchHelper.start();
         dagScheduleHelper.start();
         callbackHandleHelper.start();
+        expireLogClearHelper.start();
     }
 
     @PreDestroy
@@ -55,6 +59,9 @@ public class ScheduleCenter {
         }
         if (callbackHandleHelper != null) {
             callbackHandleHelper.stop();
+        }
+        if (expireLogClearHelper != null) {
+            expireLogClearHelper.stop();
         }
     }
 

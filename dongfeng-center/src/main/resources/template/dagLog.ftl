@@ -28,6 +28,7 @@
                 <tr>
                     <th name="id">id</th>
                     <th name="dagId">dagId</th>
+                    <th name="dagName">dagName</th>
                     <th name="triggerType">triggerType</th>
                     <th name="startTime">startTime</th>
                     <th name="endTime">endTime</th>

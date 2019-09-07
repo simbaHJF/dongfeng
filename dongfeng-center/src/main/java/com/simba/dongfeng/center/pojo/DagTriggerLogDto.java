@@ -10,6 +10,7 @@ import java.util.Date;
 public class DagTriggerLogDto {
     private long id;
     private long dagId;
+    private String dagName;
     private int triggerType;
     private Date startTime;
     private Date endTime;
@@ -22,6 +23,14 @@ public class DagTriggerLogDto {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getDagName() {
+        return dagName;
+    }
+
+    public void setDagName(String dagName) {
+        this.dagName = dagName;
     }
 
     public long getDagId() {
@@ -76,6 +85,7 @@ public class DagTriggerLogDto {
     public String toString() {
         return "DagTriggerLogDto{" +
                 "id=" + id +
+                ", dagName='" + dagName + '\'' +
                 ", dagId=" + dagId +
                 ", triggerType=" + triggerType +
                 ", startTime=" + startTime +

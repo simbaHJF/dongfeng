@@ -111,7 +111,7 @@ public class CallbackHandleHelper {
                                         dagTriggerLog.setStatus(DagExecStatusEnum.SUCC.getValue());
                                         scheduleServiceFacade.updateDagTriggerLog(dagTriggerLog);
 
-                                        JobTriggerLogDto endJobTriggerLog = scheduleServiceFacade.generateJobTriggerLogDto(childJobDto.getId(), dagTriggerLog.getDagId(), dagTriggerLog.getId(), JobStatusEnum.SUCC.getValue(), addr.getHostAddress(), addr.getHostAddress(), dagTriggerLog.getParam());
+                                        JobTriggerLogDto endJobTriggerLog = scheduleServiceFacade.generateJobTriggerLogDto(childJobDto.getId(),childJobDto.getJobName(), dagTriggerLog.getDagId(), dagTriggerLog.getId(), JobStatusEnum.SUCC.getValue(), addr.getHostAddress(), addr.getHostAddress(), dagTriggerLog.getParam());
                                         endJobTriggerLog.setEndTime(new Date());
                                         scheduleServiceFacade.insertJobTriggerLog(endJobTriggerLog);
 
@@ -138,7 +138,7 @@ public class CallbackHandleHelper {
                                         } catch (UnknownHostException e) {
                                             e.printStackTrace();
                                         }
-                                        JobTriggerLogDto endJobTriggerLog = scheduleServiceFacade.generateJobTriggerLogDto(childJobDto.getId(), dagTriggerLog.getDagId(), dagTriggerLog.getId(), JobStatusEnum.FAIL.getValue(), addr.getHostAddress(), addr.getHostAddress(), dagTriggerLog.getParam());
+                                        JobTriggerLogDto endJobTriggerLog = scheduleServiceFacade.generateJobTriggerLogDto(childJobDto.getId(),childJobDto.getJobName(), dagTriggerLog.getDagId(), dagTriggerLog.getId(), JobStatusEnum.FAIL.getValue(), addr.getHostAddress(), addr.getHostAddress(), dagTriggerLog.getParam());
                                         endJobTriggerLog.setEndTime(new Date());
                                         scheduleServiceFacade.insertJobTriggerLog(endJobTriggerLog);
 

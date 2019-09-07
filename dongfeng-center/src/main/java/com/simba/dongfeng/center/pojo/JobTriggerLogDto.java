@@ -10,6 +10,7 @@ import java.util.Date;
 public class JobTriggerLogDto {
     private long id;
     private long jobId;
+    private String jobName;
     private long dagId;
     private long dagTriggerId;
     private Date startTime;
@@ -35,6 +36,14 @@ public class JobTriggerLogDto {
 
     public void setJobId(long jobId) {
         this.jobId = jobId;
+    }
+
+    public String getJobName() {
+        return jobName;
+    }
+
+    public void setJobName(String jobName) {
+        this.jobName = jobName;
     }
 
     public long getDagId() {
@@ -123,6 +132,7 @@ public class JobTriggerLogDto {
         return "JobTriggerLogDto{" +
                 "id=" + id +
                 ", jobId=" + jobId +
+                ", jobName='" + jobName + '\'' +
                 ", dagId=" + dagId +
                 ", dagTriggerId=" + dagTriggerId +
                 ", startTime=" + startTime +

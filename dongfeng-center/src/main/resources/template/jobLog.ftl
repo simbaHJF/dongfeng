@@ -27,8 +27,9 @@
                 <tr>
                     <th name="id">id</th>
                     <th name="jobId">jobId</th>
+                    <th name="jobName">jobName</th>
                     <th name="dagId">dagId</th>
-                    <th name="dagTriggerId">dagTriggerId</th>
+                    <th name="dagLogId">dagLogId</th>
                     <th name="startTime">startTime</th>
                     <th name="endTime">endTime</th>
                     <th name="status">status</th>

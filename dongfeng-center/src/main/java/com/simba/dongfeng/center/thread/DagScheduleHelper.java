@@ -56,13 +56,13 @@ public class DagScheduleHelper {
                             }
                         }
                         // 写dag调度日志
-                        DagTriggerLogDto dagTriggerLogDto = generateDagTriggerLogDto(dagDto.getId(), dagDto.getParam(), dagDto.getTriggerType());
+                        DagTriggerLogDto dagTriggerLogDto = generateDagTriggerLogDto(dagDto.getId(), dagDto.getDagName(), dagDto.getParam(), dagDto.getTriggerType());
                         scheduleServiceFacade.insertDagTriggerLog(dagTriggerLogDto);
 
                         // 写start job触发日志
                         JobDto startJob = scheduleServiceFacade.selectStartJobWithDagId(dagDto);
                         InetAddress addr = InetAddress.getLocalHost();
-                        JobTriggerLogDto startJobTriggerLog = scheduleServiceFacade.generateJobTriggerLogDto(startJob.getId(), dagDto.getId(), dagTriggerLogDto.getId(), JobStatusEnum.SUCC.getValue(), addr.getHostAddress(), addr.getHostAddress(), dagDto.getParam());
+                        JobTriggerLogDto startJobTriggerLog = scheduleServiceFacade.generateJobTriggerLogDto(startJob.getId(),startJob.getJobName(), dagDto.getId(), dagTriggerLogDto.getId(), JobStatusEnum.SUCC.getValue(), addr.getHostAddress(), addr.getHostAddress(), dagDto.getParam());
                         startJobTriggerLog.setEndTime(new Date());
                         scheduleServiceFacade.insertJobTriggerLog(startJobTriggerLog);
 
@@ -104,9 +104,10 @@ public class DagScheduleHelper {
     }
 
 
-    private DagTriggerLogDto generateDagTriggerLogDto(long dagId, String param, int dagTriggerType) {
+    private DagTriggerLogDto generateDagTriggerLogDto(long dagId, String dagName, String param, int dagTriggerType) {
         DagTriggerLogDto dagTriggerLogDto = new DagTriggerLogDto();
         dagTriggerLogDto.setDagId(dagId);
+        dagTriggerLogDto.setDagName(dagName);
         dagTriggerLogDto.setStartTime(new Date());
         dagTriggerLogDto.setStatus(DagExecStatusEnum.RUNNINT.getValue());
         dagTriggerLogDto.setTriggerType(dagTriggerType);

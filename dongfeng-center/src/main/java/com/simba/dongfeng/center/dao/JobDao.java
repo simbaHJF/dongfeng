@@ -25,7 +25,7 @@ public interface JobDao {
     List<JobDto> selectAllJob();
 
     @Select("<script>" +
-            "select id,job_name,job_type,sharding_cnt,dag_id,schedule_type,launch_command from job where id in " +
+            "select id,job_name,job_type,sharding_cnt,dag_id,schedule_type,launch_command,assign_ip from job where id in " +
             "<foreach item='item' index='index' collection='jobIdList' open='(' separator=', ' close=')'>" +
             "#{item}" +
             "</foreach>" +

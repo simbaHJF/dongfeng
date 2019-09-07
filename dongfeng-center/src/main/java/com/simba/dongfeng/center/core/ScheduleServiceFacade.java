@@ -121,6 +121,7 @@ public class ScheduleServiceFacade {
         List<ExecutorDto> executorDtoList = Optional.ofNullable(executorDao.selectExecutorsByGroup(dagDto.getDagGroup())).orElse(new ArrayList<>());
         ExecutorRouterStg executorRouterStg = ExecutorRouterStgEnum.getExecutorRouterStgEnum(jobDto.getScheduleType()).getExecutorRouterStg();
         ExecutorDto executor = executorRouterStg.route(jobDto, executorDtoList);
+        logger.info("job route,executorDtoList:" + executorDtoList + ",executor:" + executor);
         return executor;
     }
 
@@ -168,13 +169,14 @@ public class ScheduleServiceFacade {
     public void scheduleJob(JobDto jobDto, DagTriggerLogDto dagTriggerLogDto, int jobScheduleRetryTime, String centerIp) {
         int scheduleCnt = 0;
         ExecutorDto executor = null;
-        JobTriggerLogDto curJobTriggerLog = generateJobTriggerLogDto(jobDto.getId(), dagTriggerLogDto.getDagId(), dagTriggerLogDto.getId(), JobStatusEnum.INITIAL.getValue(), centerIp, null, dagTriggerLogDto.getParam());
+        JobTriggerLogDto curJobTriggerLog = generateJobTriggerLogDto(jobDto.getId(),jobDto.getJobName(), dagTriggerLogDto.getDagId(), dagTriggerLogDto.getId(), JobStatusEnum.INITIAL.getValue(), centerIp, null, dagTriggerLogDto.getParam());
         while (true) {
             try {
                 /**
                  * 先写调度日志,再调度
                  */
                 executor = this.route(jobDto);
+
                 curJobTriggerLog.setExecutorIp(executor.getExecutorIp());
 
                 //无锁化,db中job_trigger_log表限制job_id+dag_trigger_id的唯一索引,保证同一dag_trigger_id下不会重复插入某个job_trigger_log
@@ -192,27 +194,34 @@ public class ScheduleServiceFacade {
             } catch (Exception e) {
                 logger.info("job schedule err.", e);
                 if (scheduleCnt++ < jobScheduleRetryTime) {
-                    System.out.println("job schedule retry:" + scheduleCnt + ",job:" + jobDto.toString() + ",executor:" + executor.toString());
-                    logger.info("job schedule retry:" + scheduleCnt + ",job:" + jobDto.toString() + ",executor:" + executor.toString());
+                    System.out.println("job schedule retry:" + scheduleCnt + ",job:" + jobDto.toString() + ",executor:" + executor);
+                    logger.info("job schedule retry:" + scheduleCnt + ",job:" + jobDto.toString() + ",executor:" + executor);
                     continue;
                 } else {
                     JobTriggerLogDto jobTriggerLog = this.selectJobTriggerLogDtoByJobAndDag(curJobTriggerLog.getJobId(), curJobTriggerLog.getDagTriggerId(), false);
-                    if (jobTriggerLog.getStatus() == JobStatusEnum.INITIAL.getValue() && jobTriggerLog.getCenterIp().equals(centerIp)) {
-                        curJobTriggerLog.setStatus(JobStatusEnum.FAIL.getValue());
-                        curJobTriggerLog.setEndTime(new Date());
-                        jobTriggerLogDao.updateJobTriggerLogWithAssignedCenter(curJobTriggerLog);
+                    if (jobTriggerLog != null) {
+                        if (jobTriggerLog.getStatus() == JobStatusEnum.INITIAL.getValue() && jobTriggerLog.getCenterIp().equals(centerIp)) {
+                            curJobTriggerLog.setStatus(JobStatusEnum.FAIL.getValue());
+                            curJobTriggerLog.setEndTime(new Date());
+                            jobTriggerLogDao.updateJobTriggerLogWithAssignedCenter(curJobTriggerLog);
 
+                            dagTriggerLogDto.setStatus(DagExecStatusEnum.FAIL.getValue());
+                            dagTriggerLogDto.setEndTime(new Date());
+                            dagTriggerLogDao.updateDagTriggerLog(dagTriggerLogDto);
+
+                            //TODO alarm
+                            logger.error("job schedule failed.job:" + jobDto, e);
+                        } else {
+                            System.out.println("job schedule retry over.jobLog has been handled or jobLog is not belong to cur center." +
+                                    "jobLog:" + jobTriggerLog);
+                            logger.info("job schedule retry over.jobLog has been handled or jobLog is not belong to cur center." +
+                                    "jobLog:" + jobTriggerLog);
+                        }
+                    } else {
                         dagTriggerLogDto.setStatus(DagExecStatusEnum.FAIL.getValue());
                         dagTriggerLogDto.setEndTime(new Date());
                         dagTriggerLogDao.updateDagTriggerLog(dagTriggerLogDto);
-
-                        //TODO alarm
-                        logger.error("job schedule failed.job:" + jobDto, e);
                     }
-                    System.out.println("job schedule retry over.jobLog has been handled or jobLog is not belong to cur center." +
-                            "jobLog:" + jobTriggerLog);
-                    logger.info("job schedule retry over.jobLog has been handled or jobLog is not belong to cur center." +
-                            "jobLog:" + jobTriggerLog);
                     break;
                 }
             }
@@ -340,11 +349,35 @@ public class ScheduleServiceFacade {
     }
 
 
-    public JobTriggerLogDto generateJobTriggerLogDto(long jobId, long dagId, long dagTriggerId, int status, String centerIp, String executorIp, String param) {
+    public int deleteExpiredDagLog() {
+        Date timeLine = Timestamp.valueOf(LocalDateTime.now().minusDays(1));
+        return dagTriggerLogDao.deleteExpiredDagLog(timeLine);
+    }
+
+    public int deleteExpiredJobLog() {
+        Date timeLine = Timestamp.valueOf(LocalDateTime.now().minusDays(1));
+        return jobTriggerLogDao.deleteExpiredJobLog(timeLine);
+    }
+
+
+    /**
+     * 构造一个jobLog
+     * @param jobId
+     * @param jobName
+     * @param dagId
+     * @param dagTriggerId
+     * @param status
+     * @param centerIp
+     * @param executorIp
+     * @param param
+     * @return
+     */
+    public JobTriggerLogDto generateJobTriggerLogDto(long jobId,String jobName, long dagId, long dagTriggerId, int status, String centerIp, String executorIp, String param) {
         JobTriggerLogDto jobTriggerLogDto = new JobTriggerLogDto();
         jobTriggerLogDto.setDagId(dagId);
         jobTriggerLogDto.setDagTriggerId(dagTriggerId);
         jobTriggerLogDto.setJobId(jobId);
+        jobTriggerLogDto.setJobName(jobName);
         jobTriggerLogDto.setStartTime(new Date());
         jobTriggerLogDto.setStatus(status);
         jobTriggerLogDto.setCenterIp(centerIp);

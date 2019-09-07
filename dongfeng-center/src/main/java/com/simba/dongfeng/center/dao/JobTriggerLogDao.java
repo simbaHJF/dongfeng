@@ -3,6 +3,7 @@ package com.simba.dongfeng.center.dao;
 import com.simba.dongfeng.center.pojo.JobTriggerLogDto;
 import org.apache.ibatis.annotations.*;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -13,26 +14,26 @@ import java.util.List;
 public interface JobTriggerLogDao {
 
 
-    @Select("select id,job_id,dag_id,dag_trigger_id,start_time,end_time,status,center_ip,executor_ip,sharding_idx,sharding_cnt,param " +
+    @Select("select id,job_id,job_name,dag_id,dag_trigger_id,start_time,end_time,status,center_ip,executor_ip,sharding_idx,sharding_cnt,param " +
             "from job_trigger_log where id = #{id}")
     JobTriggerLogDto selectJobTriggerLogDtoById(@Param("id") long id);
 
-    @Select("select id,job_id,dag_id,dag_trigger_id,start_time,end_time,status,center_ip,executor_ip,sharding_idx,sharding_cnt,param " +
+    @Select("select id,job_id,job_name,dag_id,dag_trigger_id,start_time,end_time,status,center_ip,executor_ip,sharding_idx,sharding_cnt,param " +
             "from job_trigger_log")
     List<JobTriggerLogDto> selectJobLogByPage();
 
     @Select("<script> " +
-            "select id,job_id,dag_id,dag_trigger_id,start_time,end_time,status,center_ip,executor_ip,sharding_idx,sharding_cnt,param  " +
+            "select id,job_id,job_name,dag_id,dag_trigger_id,start_time,end_time,status,center_ip,executor_ip,sharding_idx,sharding_cnt,param  " +
             "from job_trigger_log where job_id = #{jobId} and dag_trigger_id = #{dagTriggerId} " +
             "<when test='lock = true'> for update</when> " +
             "</script>")
-    JobTriggerLogDto selectJobTriggerLogDtoByJobAndDag(@Param("jobId") long jobId,@Param("dagTriggerId") long dagTriggerId,@Param("lock") boolean lock);
+    JobTriggerLogDto selectJobTriggerLogDtoByJobAndDag(@Param("jobId") long jobId, @Param("dagTriggerId") long dagTriggerId, @Param("lock") boolean lock);
 
-    @Insert("insert into job_trigger_log(job_id,dag_id,dag_trigger_id,start_time,end_time,status,center_ip,executor_ip,sharding_idx,sharding_cnt,param) " +
-            "values(#{jobTriggerLog.jobId},#{jobTriggerLog.dagId},#{jobTriggerLog.dagTriggerId},#{jobTriggerLog.startTime},#{jobTriggerLog.endTime}, " +
+    @Insert("insert into job_trigger_log(job_id,job_name,dag_id,dag_trigger_id,start_time,end_time,status,center_ip,executor_ip,sharding_idx,sharding_cnt,param) " +
+            "values(#{jobTriggerLog.jobId},#{jobTriggerLog.jobName},#{jobTriggerLog.dagId},#{jobTriggerLog.dagTriggerId},#{jobTriggerLog.startTime},#{jobTriggerLog.endTime}, " +
             "#{jobTriggerLog.status},#{jobTriggerLog.centerIp},#{jobTriggerLog.executorIp},#{jobTriggerLog.shardingIdx}," +
             "#{jobTriggerLog.shardingCnt},#{jobTriggerLog.param})")
-    @Options(useGeneratedKeys=true, keyProperty="id", keyColumn="id")
+    @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     int inserJobTriggerLog(@Param("jobTriggerLog") JobTriggerLogDto jobTriggerLogDto);
 
     @Update("<script> " +
@@ -57,7 +58,9 @@ public interface JobTriggerLogDao {
             "<when test='#{jobTriggerLog.executorIp} != null'> , executor_ip = #{jobTriggerLog.executorIp} </when>" +
             "where id = #{jobTriggerLog.id} and status = #{expectStatus}" +
             "</script>")
-    int updateJobTriggerLogWithAssignedStatus(@Param("jobTriggerLog") JobTriggerLogDto jobTriggerLogDto,@Param("expectStatus") int expectStatus);
+    int updateJobTriggerLogWithAssignedStatus(@Param("jobTriggerLog") JobTriggerLogDto jobTriggerLogDto, @Param("expectStatus") int expectStatus);
 
 
+    @Delete("delete from job_trigger_log where status != 0 and status != 1 and end_time < #{timeLine}")
+    int deleteExpiredJobLog(@Param("timeLine") Date timeLine);
 }
