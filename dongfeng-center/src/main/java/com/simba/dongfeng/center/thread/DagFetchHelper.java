@@ -47,7 +47,6 @@ public class DagFetchHelper {
                     try {
                         List<DagDto> dagDtoList = Optional.ofNullable(scheduleServiceFacade.fetchNeedTriggerDag(fetchTimeWindow)).orElse(new ArrayList<>());
                         logger.info("dagFetchThread ## fetch dag list:" + JSON.toJSONString(dagDtoList));
-                        System.out.println("dagFetchThread ## fetch dag list:" + JSON.toJSONString(dagDtoList));
                         dagQueue.addAllToTail(dagDtoList);
                         /*DagDto lastDag = dagQueue.peekTail();
                         if (lastDag == null) {

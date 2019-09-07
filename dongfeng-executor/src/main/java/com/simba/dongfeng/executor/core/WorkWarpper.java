@@ -4,6 +4,7 @@ import com.simba.dongfeng.common.enums.JobStatusEnum;
 import com.simba.dongfeng.common.pojo.Callback;
 import com.simba.dongfeng.common.pojo.JobInfo;
 import com.simba.dongfeng.executor.pojo.JobRecord;
+import com.simba.dongfeng.executor.util.ProcessUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +31,7 @@ public class WorkWarpper implements Runnable {
     public void run() {
         try {
             Process process = Runtime.getRuntime().exec(jobInfo.getLaunchCommand() + " " + jobInfo.getParam());
+            /*ProcessUtil.readProcessOutput(process);*/
             // TODO 获取process的pid,写入对应JobRecord中,为后续版本的kill job做准备.
             int exitValue = process.waitFor();
             Callback callback = new Callback();

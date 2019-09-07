@@ -23,7 +23,6 @@ public class ExecutorServiceFacade {
 
     public void sendHeartbeat(ExecutorHeartbeatInfo executorHeartbeatInfo, String host) {
         logger.info("send executorHeartbeatInfo:" + executorHeartbeatInfo);
-        System.out.println("send executorHeartbeatInfo:" + executorHeartbeatInfo);
 
         HttpClient.sendPost(host,"/dongfeng/executor/heartbeat",executorHeartbeatInfo,5000);
 

@@ -40,7 +40,6 @@ public class CallbackNotifyHelper {
                         Callback callback = callbackQueue.takeHead();
                         callback.setExecutorIp(executorIp);
                         logger.info("callbackNotifyThread ## callbackQueue head callback:" + callback);
-                        System.out.println("callbackNotifyThread ## callbackQueue head callback:" + callback);
                         int callbackNotifySendFailCnt = 0;
                         for (String host : dongfengCenterAddrList) {
                             RespDto respDto = null;

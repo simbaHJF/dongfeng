@@ -58,7 +58,6 @@ public class HttpClient {
     public static RespDto sendPost(String host, String api, Object entity, int timeoutMillisecond){
         String urlStr = "http://" + host + api;
         String entityJsonStr = JSON.toJSONString(entity);
-        System.out.println("send post url:" + urlStr + ",entityJsonStr:" + entityJsonStr);
         logger.info("send post url:" + urlStr + ",entityJsonStr:" + entityJsonStr);
         try {
             HttpPost httpPost = new HttpPost(urlStr);
@@ -79,7 +78,6 @@ public class HttpClient {
             //把 reponse 的流  消费一下
             EntityUtils.consumeQuietly(httpEntity);
             httpPost.abort();
-            System.out.println("send post resp:" + resp);
             logger.info("send post recv resp:" + resp);
             return JSON.parseObject(resp, RespDto.class);
         } catch (Exception e) {

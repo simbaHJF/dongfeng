@@ -48,7 +48,6 @@ public class DagScheduleHelper {
                     try {
                         dagDto = dagQueue.takeHead();
                         logger.info("dagScheduleThread ## dagQueue head dag:" + dagDto);
-                        System.out.println("dagScheduleThread ## dagQueue head dag:" + dagDto);
                         if (dagDto.getTriggerType() == DagTriggerTypeEnum.CRON.getValue()) {
                             Date now = new Date();
                             if (now.before(dagDto.getTriggerTime())) {

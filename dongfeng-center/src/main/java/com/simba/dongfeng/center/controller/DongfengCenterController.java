@@ -46,7 +46,6 @@ public class DongfengCenterController {
         }
         try {
             ExecutorDto executorDto = PojoConverter.convertExecutorHeartbeatInfo(executorHeartbeatInfo);
-            System.out.println(executorDto);
             centerExecutorService.replaceExecutor(executorDto);
             return RespDtoBuilder.createBuilder().succResp().build();
         } catch (Exception e) {
@@ -59,7 +58,6 @@ public class DongfengCenterController {
     @ResponseBody
     public RespDto callback(@RequestBody Callback callback) {
         logger.info("recv callback info:" + callback);
-        System.out.println("recv callback info:" + callback);
 
         if (callback == null) {
             return RespDtoBuilder.createBuilder().badReqResp().build();

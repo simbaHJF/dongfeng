@@ -96,7 +96,6 @@ public class DongfengCenterAdminController {
             dagDto.setStatus(DagSwitchStatusEnum.OFF.getValue());
         }
         centerDagService.insertDag(dagDto);
-        System.out.println(dagDto);
         RespDto respDto = new RespDto<>(RespCodeEnum.SUCC.getCode(), RespCodeEnum.SUCC.getMsg());
         return respDto;
     }
@@ -112,7 +111,6 @@ public class DongfengCenterAdminController {
     @RequestMapping("/updateDagInfo")
     @ResponseBody
     public RespDto updateDagInfo(DagDto dagDto) {
-        System.out.println(dagDto);
         centerDagService.updateDagInfo(dagDto);
         return RespDtoBuilder.createBuilder().succResp().build();
     }
@@ -120,7 +118,6 @@ public class DongfengCenterAdminController {
     @RequestMapping("/deleteDagInfo")
     @ResponseBody
     public RespDto deleteDagInfo(@RequestParam("dagId") long dagId) {
-        System.out.println(dagId);
         centerDagService.deleteDagInfo(dagId);
         return RespDtoBuilder.createBuilder().succResp().build();
     }
@@ -146,7 +143,6 @@ public class DongfengCenterAdminController {
     @RequestMapping("/addJob")
     @ResponseBody
     public RespDto addJob(JobDto jobDto) {
-        System.out.println(jobDto);
         if (jobDto.getJobType() == JobTypeEnum.TASK_NODE.getValue() && StringUtils.isBlank(jobDto.getLaunchCommand())) {
             RespDto respDto = RespDtoBuilder.createBuilder().badReqResp().build();
             respDto.setMsg("任务节点类型为:任务节点 时,Launch command不能为空");
@@ -181,7 +177,6 @@ public class DongfengCenterAdminController {
         JobDto jobDto = centerJobService.selectJobById(jobId);
         List<Long> parentJobIds = Optional.ofNullable(centerDependencyService.selectParentJobIdList(jobId)).orElse(new ArrayList<>());
         jobDto.setParentJobIds(parentJobIds.stream().map(ele -> String.valueOf(ele)).collect(Collectors.joining(",")));
-        System.out.println(jobDto);
         model.addAttribute("jobInfo", jobDto);
         return "updateJob";
     }
@@ -189,7 +184,6 @@ public class DongfengCenterAdminController {
     @RequestMapping("/updateJobInfo")
     @ResponseBody
     public RespDto updateJobInfo(JobDto jobDto) {
-        System.out.println(jobDto);
         if (StringUtils.isBlank(jobDto.getAssignIp())) {
             jobDto.setAssignIp("");
         }
@@ -205,7 +199,6 @@ public class DongfengCenterAdminController {
     @RequestMapping("/deleteJobInfo")
     @ResponseBody
     public RespDto deleteJobInfo(@RequestParam("jobId") long jobId) {
-        System.out.println(jobId);
         boolean rs = centerJobService.deleteJob(jobId);
 
         if (rs == false) {

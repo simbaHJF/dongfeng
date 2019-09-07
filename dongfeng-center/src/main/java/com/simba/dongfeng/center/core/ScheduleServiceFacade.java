@@ -86,7 +86,6 @@ public class ScheduleServiceFacade {
                 }
                 dagDao.updateDagTriggerTime(dagDto.getId(), nextValidTime);
             } catch (ParseException e) {
-                System.out.println("parse dag trigger cron err.dag:" + dagDto);
                 logger.error("parse dag trigger cron err.dag:" + dagDto, e);
                 //TODO:  ALARM,  DO NOT THROW EXCEPTION
             }
@@ -152,7 +151,6 @@ public class ScheduleServiceFacade {
             }
         }
         else if (respDto.getCode() != RespCodeEnum.SUCC.getCode()) {
-            System.out.println("dispatch err.jobInfo:" + jobInfo + ",executorDto:" + executorDto);
             logger.error("dispatch err.jobInfo:" + jobInfo + ",executorDto:" + executorDto);
             throw new RuntimeException("dispatch err.jobInfo:" + jobInfo + ",executorDto:" + executorDto + ",respDto:" + respDto);
         }
@@ -194,7 +192,6 @@ public class ScheduleServiceFacade {
             } catch (Exception e) {
                 logger.info("job schedule err.", e);
                 if (scheduleCnt++ < jobScheduleRetryTime) {
-                    System.out.println("job schedule retry:" + scheduleCnt + ",job:" + jobDto.toString() + ",executor:" + executor);
                     logger.info("job schedule retry:" + scheduleCnt + ",job:" + jobDto.toString() + ",executor:" + executor);
                     continue;
                 } else {
@@ -212,8 +209,6 @@ public class ScheduleServiceFacade {
                             //TODO alarm
                             logger.error("job schedule failed.job:" + jobDto, e);
                         } else {
-                            System.out.println("job schedule retry over.jobLog has been handled or jobLog is not belong to cur center." +
-                                    "jobLog:" + jobTriggerLog);
                             logger.info("job schedule retry over.jobLog has been handled or jobLog is not belong to cur center." +
                                     "jobLog:" + jobTriggerLog);
                         }

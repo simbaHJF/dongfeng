@@ -31,10 +31,8 @@ public class ExecutorController {
     @ResponseBody
     public RespDto jobTrigger(@RequestBody JobInfo jobInfo) {
         logger.info("receive job trigger request.jobInfo:" + jobInfo);
-        System.out.println("receive job trigger request.jobInfo:" + jobInfo);
         if (jobInfo == null || StringUtils.isBlank(jobInfo.getLaunchCommand())) {
             logger.error("ExecutorController#jobTrigger err,bad request.");
-            System.out.println("ExecutorController#jobTrigger err,bad request.");
             return RespDtoBuilder.createBuilder().badReqResp().build();
         }
         try {
@@ -47,13 +45,11 @@ public class ExecutorController {
         } catch (RejectedExecutionException e) {
             e.printStackTrace();
             logger.error("server resource lacking,reject.jobInfo:" + jobInfo, e);
-            System.out.println("server resource lacking,reject.jobInfo:" + jobInfo);
             executorCtrlCenter.deleteJobLogIdKeyInRedis(jobInfo.getJobTriggerLogId());
             return RespDtoBuilder.createBuilder().serverResourceLackResp().build();
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("internal server err.jobInfo:" + jobInfo, e);
-            System.out.println("internal server err.jobInfo:" + jobInfo);
             executorCtrlCenter.deleteJobLogIdKeyInRedis(jobInfo.getJobTriggerLogId());
             return RespDtoBuilder.createBuilder().serverErrResp().build();
         }
