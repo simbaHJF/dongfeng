@@ -217,8 +217,8 @@ public class DongfengCenterAdminController {
 
     @RequestMapping("/dagLogData")
     @ResponseBody
-    public RespDto dagLogData(int page) {
-        PageInfo<DagTriggerLogDto> pageInfo = centerDagLogService.selectDagLogByPage(page, pageSize);
+    public RespDto dagLogData(int page,long dagId) {
+        PageInfo<DagTriggerLogDto> pageInfo = centerDagLogService.selectDagLogByPage(page, pageSize, dagId);
         RespDto<PageInfo> respDto = new RespDto<>(RespCodeEnum.SUCC.getCode(), RespCodeEnum.SUCC.getMsg(), pageInfo);
         return respDto;
     }
@@ -230,8 +230,8 @@ public class DongfengCenterAdminController {
 
     @RequestMapping("/jobLogData")
     @ResponseBody
-    public RespDto jobLogData(int page) {
-        PageInfo<JobTriggerLogDto> pageInfo = centerJobLogService.selectJobLogByPage(page, pageSize);
+    public RespDto jobLogData(int page, long dagLogId) {
+        PageInfo<JobTriggerLogDto> pageInfo = centerJobLogService.selectJobLogByPage(page, pageSize,dagLogId);
         RespDto<PageInfo> respDto = new RespDto<>(RespCodeEnum.SUCC.getCode(), RespCodeEnum.SUCC.getMsg(), pageInfo);
         return respDto;
     }

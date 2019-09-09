@@ -15,7 +15,7 @@ public class JobDto {
     private String launchCommand;
     private String assignIp;
 
-    //admin中crud辅助字段,非表字段
+    //admin中crud辅助字段,非表字段,依赖关系会存入dependency表中
     private String parentJobIds;
 
     public long getId() {

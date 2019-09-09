@@ -55,7 +55,7 @@ public class ScheduleServiceFacade {
 
     /**
      * 拉取60秒时间窗口内需要被调度的dag,更新下次调度时间
-     * 事务只是为了操作期间锁表
+     * 放在事务里,只是为了操作期间锁表
      *
      * @return
      */

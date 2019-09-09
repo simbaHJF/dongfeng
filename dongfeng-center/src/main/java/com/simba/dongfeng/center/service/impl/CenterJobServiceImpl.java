@@ -33,7 +33,7 @@ public class CenterJobServiceImpl implements CenterJobService {
     @Override
     public PageInfo<JobDto> selectJobByPage(int page, int pageSize) {
         PageHelper.startPage(page, pageSize);
-        List<JobDto> jobDtoList = Optional.ofNullable(jobDao.selectAllJob()).orElse(new ArrayList<>());
+        List<JobDto> jobDtoList = Optional.ofNullable(jobDao.selectJobsByPage()).orElse(new ArrayList<>());
         PageInfo<JobDto> pageInfo = new PageInfo<>(jobDtoList);
         return pageInfo;
     }

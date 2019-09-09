@@ -11,5 +11,5 @@ import java.util.List;
  * @date: Created in  2019-09-01 22:19
  */
 public interface CenterDagLogService {
-    PageInfo<DagTriggerLogDto> selectDagLogByPage(int page, int pageSize);
+    PageInfo<DagTriggerLogDto> selectDagLogByPage(int page, int pageSize,long dagId);
 }

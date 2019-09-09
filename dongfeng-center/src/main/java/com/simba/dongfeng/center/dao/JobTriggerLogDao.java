@@ -18,9 +18,12 @@ public interface JobTriggerLogDao {
             "from job_trigger_log where id = #{id}")
     JobTriggerLogDto selectJobTriggerLogDtoById(@Param("id") long id);
 
-    @Select("select id,job_id,job_name,dag_id,dag_trigger_id,start_time,end_time,status,center_ip,executor_ip,sharding_idx,sharding_cnt,param " +
-            "from job_trigger_log")
-    List<JobTriggerLogDto> selectJobLogByPage();
+    @Select("<script> " +
+            "select id,job_id,job_name,dag_id,dag_trigger_id,start_time,end_time,status,center_ip,executor_ip,sharding_idx,sharding_cnt,param " +
+            " from job_trigger_log " +
+            "<when test = 'dagLogId != 0'> where dag_trigger_id = #{dagLogId} </when>" +
+            "</script>")
+    List<JobTriggerLogDto> selectJobLogByPage(@Param("dagLogId") long dagLogId);
 
     @Select("<script> " +
             "select id,job_id,job_name,dag_id,dag_trigger_id,start_time,end_time,status,center_ip,executor_ip,sharding_idx,sharding_cnt,param  " +

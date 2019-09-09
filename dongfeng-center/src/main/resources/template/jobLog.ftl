@@ -15,6 +15,17 @@
 </head>
 <body>
 
+<div class="row">
+    <div class="col-lg-6" style="padding: 65px;">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search by dagId" id="searchJobLogsByDagLogId">
+            <span class="input-group-btn">
+        <button class="btn btn-primary btn-default" type="button" onclick="searchJobLogsByDagLogId()">Go!</button>
+      </span>
+        </div><!-- /input-group -->
+    </div><!-- /.col-lg-6 -->
+</div><!-- /.row -->
+
 <div class="row" style="padding-left: 50px;padding-right: 50px;">
 
     <div class="col-xs-12">

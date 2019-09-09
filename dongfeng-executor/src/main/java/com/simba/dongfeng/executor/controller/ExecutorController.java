@@ -36,7 +36,7 @@ public class ExecutorController {
             return RespDtoBuilder.createBuilder().badReqResp().build();
         }
         try {
-            if (executorCtrlCenter.writeJobLogIdToRedis(jobInfo.getJobTriggerLogId())) {
+            if (executorCtrlCenter.writeJobLogIdToRedisIfAbsent(jobInfo.getJobTriggerLogId())) {
                 executorCtrlCenter.jobTrigger(jobInfo);
             } else {
                 return RespDtoBuilder.createBuilder().repeatedRequestResp().build();

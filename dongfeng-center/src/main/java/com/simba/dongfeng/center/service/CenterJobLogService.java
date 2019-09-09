@@ -9,5 +9,5 @@ import com.simba.dongfeng.center.pojo.JobTriggerLogDto;
  * DESC:
  **/
 public interface CenterJobLogService {
-    PageInfo<JobTriggerLogDto> selectJobLogByPage(int page, int pageSize);
+    PageInfo<JobTriggerLogDto> selectJobLogByPage(int page, int pageSize, long dagLogId);
 }

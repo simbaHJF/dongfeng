@@ -79,7 +79,7 @@ public class ExecutorCtrlCenter {
     }
 
 
-    public boolean writeJobLogIdToRedis(long jobLogId) {
+    public boolean writeJobLogIdToRedisIfAbsent(long jobLogId) {
         return stringRedisTemplate.opsForValue().setIfAbsent("dongfeng_schedule_" + jobLogId, executorHeartbeatInfo.getExecutorIp() + ":" + executorHeartbeatInfo.getExecutorPort(), 10, TimeUnit.MINUTES);
     }
 

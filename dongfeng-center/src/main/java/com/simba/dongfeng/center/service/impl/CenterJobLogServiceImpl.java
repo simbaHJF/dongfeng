@@ -25,9 +25,9 @@ public class CenterJobLogServiceImpl implements CenterJobLogService {
     private JobTriggerLogDao jobTriggerLogDao;
 
     @Override
-    public PageInfo<JobTriggerLogDto> selectJobLogByPage(int page, int pageSize) {
+    public PageInfo<JobTriggerLogDto> selectJobLogByPage(int page, int pageSize, long dagLogId) {
         PageHelper.startPage(page, pageSize);
-        List<JobTriggerLogDto> jobTriggerLogDtoList = Optional.ofNullable(jobTriggerLogDao.selectJobLogByPage()).orElse(new ArrayList<>());
+        List<JobTriggerLogDto> jobTriggerLogDtoList = Optional.ofNullable(jobTriggerLogDao.selectJobLogByPage(dagLogId)).orElse(new ArrayList<>());
         PageInfo<JobTriggerLogDto> pageInfo = new PageInfo<>(jobTriggerLogDtoList);
         return pageInfo;
     }

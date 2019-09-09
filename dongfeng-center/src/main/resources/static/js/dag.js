@@ -5,7 +5,7 @@ $(function () {
 function getTableDate(pageNum) {
     $.ajax({
         url: '/dongfeng/admin/dagData',
-        type: 'get',
+        type: 'post',
         data:{
             'page':pageNum
         },
@@ -53,7 +53,7 @@ function page_on_click(data) {
 
 function add_dag_submit() {
     $.ajax({
-        type: "get",   //提交的方法
+        type: "post",   //提交的方法
         url:"/dongfeng/admin/addDag", //提交的地址
         data:$('#addDagForm').serialize(),// 序列化表单值
         async: false,
@@ -68,7 +68,7 @@ function add_dag_submit() {
 
 function edit_dag_submit() {
     $.ajax({
-        type: "get",   //提交的方法
+        type: "post",   //提交的方法
         url:"/dongfeng/admin/updateDagInfo", //提交的地址
         data:$('#updateDagForm').serialize(),// 序列化表单值
         async: false,
@@ -92,7 +92,7 @@ function edit_dag_page(data)
 
     $.ajax({
         url: '/dongfeng/admin/updateDagPage',
-        type: 'get',
+        type: 'post',
         data:{
             'dagId':dagId
         },
@@ -112,7 +112,7 @@ function delete_dag_submit(data) {
     var dagId = $(data).parent().parent().parent().parent().parent().children().first().html();
     $.ajax({
         url: '/dongfeng/admin/deleteDagInfo',
-        type: 'get',
+        type: 'post',
         data:{
             'dagId':dagId
         },
@@ -139,7 +139,7 @@ function manual_trigger_click(data) {
 function manual_trigger_submit() {
     $.ajax({
         url: '/dongfeng/admin/manualTrigger',
-        type: 'get',
+        type: 'post',
         data:$('#manualTriggerDagForm').serialize(),
         success: function(data) {  //成功
             if (data.code === 200) {

@@ -22,7 +22,7 @@ public interface JobDao {
     JobDto selectStartJobByDagId(@Param("dagId") long dagId);
 
     @Select("select id,job_name,job_type,sharding_cnt,dag_id,schedule_type,launch_command,assign_ip from job")
-    List<JobDto> selectAllJob();
+    List<JobDto> selectJobsByPage();
 
     @Select("<script>" +
             "select id,job_name,job_type,sharding_cnt,dag_id,schedule_type,launch_command,assign_ip from job where id in " +

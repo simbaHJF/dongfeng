@@ -17,8 +17,12 @@ public interface DagTriggerLogDao {
             " where id = #{dagTriggerId} ")
     DagTriggerLogDto selectDagTriggerLogById(@Param("dagTriggerId") long dagTriggerId);
 
-    @Select("select id,dag_id,dag_name,trigger_type,start_time,end_time,status,param from dag_trigger_log ")
-    List<DagTriggerLogDto> selectDagLogByPage();
+    @Select("<script> " +
+            "select id,dag_id,dag_name,trigger_type,start_time,end_time,status,param " +
+            " from dag_trigger_log " +
+            "<if test='dagId != 0'> where dag_id = #{dagId} </if> " +
+            "</script> ")
+    List<DagTriggerLogDto> selectDagLogByPage(@Param("dagId") long dagId);
 
 
     @Insert("insert into dag_trigger_log(dag_id,dag_name,trigger_type,start_time,status,param) " +

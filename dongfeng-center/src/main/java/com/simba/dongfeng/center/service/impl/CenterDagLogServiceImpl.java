@@ -25,9 +25,9 @@ public class CenterDagLogServiceImpl implements CenterDagLogService {
     private DagTriggerLogDao dagTriggerLogDao;
 
     @Override
-    public PageInfo<DagTriggerLogDto> selectDagLogByPage(int page, int pageSize) {
+    public PageInfo<DagTriggerLogDto> selectDagLogByPage(int page, int pageSize, long dagId) {
         PageHelper.startPage(page, pageSize);
-        List<DagTriggerLogDto> dagTriggerLogDtoList = Optional.ofNullable(dagTriggerLogDao.selectDagLogByPage()).orElse(new ArrayList<>());
+        List<DagTriggerLogDto> dagTriggerLogDtoList = Optional.ofNullable(dagTriggerLogDao.selectDagLogByPage(dagId)).orElse(new ArrayList<>());
         PageInfo<DagTriggerLogDto> pageInfo = new PageInfo<>(dagTriggerLogDtoList);
         return pageInfo;
     }

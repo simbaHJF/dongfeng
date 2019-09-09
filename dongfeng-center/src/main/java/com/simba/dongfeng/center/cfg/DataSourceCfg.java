@@ -24,7 +24,7 @@ import java.util.Properties;
  **/
 @Configuration
 @PropertySource("classpath:db.properties")
-@MapperScan(basePackages = {"com.simba.dongfeng.center.dao"},sqlSessionFactoryRef = "sqlSessionFactory",sqlSessionTemplateRef = "sqlSessionTemplate")
+@MapperScan(basePackages = {"com.simba.dongfeng.center.dao"}/*,sqlSessionFactoryRef = "sqlSessionFactory"*/,sqlSessionTemplateRef = "sqlSessionTemplate")
 public class DataSourceCfg {
 
     @Value("${dongfeng.datasource.druid.url}")

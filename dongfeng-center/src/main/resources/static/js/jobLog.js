@@ -1,13 +1,15 @@
 $(function () {
-    getTableDate(1);
+    getTableData(1,0);
 })
 
-function getTableDate(pageNum) {
+function getTableData(pageNum,dagLogId) {
+
     $.ajax({
         url: '/dongfeng/admin/jobLogData',
-        type: 'get',
+        type: 'post',
         data:{
-            'page':pageNum
+            'page':pageNum,
+            'dagLogId':dagLogId
         },
         dataType: 'json',
         success: function (data) {
@@ -26,9 +28,9 @@ function getTableDate(pageNum) {
             var pages = '';
             for (var i = 1;i <= data.respDto.pages;i++){
                 if (i === data.respDto.pageNum) {
-                    pages = pages + '<li class="active"><a onclick="page_on_click(this)">' + i + '</a></li>';
+                    pages = pages + '<li class="active"><a onclick="page_on_click(this,' + dagLogId + ')">' + i + '</a></li>';
                 } else {
-                    pages = pages + '<li><a onclick="page_on_click(this)">' + i + '</a></li>';
+                    pages = pages + '<li><a onclick="page_on_click(this,' + dagLogId + ')">' + i + '</a></li>';
                 }
             }
             $("#pagination").empty();
@@ -36,7 +38,19 @@ function getTableDate(pageNum) {
         }
     })
 }
-function page_on_click(data) {
+function page_on_click(data,dagLogId) {
     var page = $(data).html();
-    getTableDate(page);
+    getTableData(page,dagLogId);
+}
+
+function searchJobLogsByDagLogId() {
+
+    var dagLogId;
+    if ($("#searchJobLogsByDagLogId").val() == '') {
+        dagLogId = 0;
+    } else {
+        dagLogId = $("#searchJobLogsByDagLogId").val();
+    }
+    getTableData(1, dagLogId);
+
 }
