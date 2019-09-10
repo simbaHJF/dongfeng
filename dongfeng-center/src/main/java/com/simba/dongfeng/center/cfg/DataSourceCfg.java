@@ -22,9 +22,9 @@ import java.util.Properties;
  * AUTHOR: simba.hjf
  * DESC:
  **/
-@Configuration
+/*@Configuration
 @PropertySource("classpath:db.properties")
-@MapperScan(basePackages = {"com.simba.dongfeng.center.dao"}/*,sqlSessionFactoryRef = "sqlSessionFactory"*/,sqlSessionTemplateRef = "sqlSessionTemplate")
+@MapperScan(basePackages = {"com.simba.dongfeng.center.dao"}*//*,sqlSessionFactoryRef = "sqlSessionFactory"*//*,sqlSessionTemplateRef = "sqlSessionTemplate")
 public class DataSourceCfg {
 
     @Value("${dongfeng.datasource.druid.url}")
@@ -63,10 +63,10 @@ public class DataSourceCfg {
     @Value("${dongfeng.datasource.druid.test-while-idle}")
     private boolean testWhileIdle;
 
-    /**
+    *//**
      * DataSource
      * @return
-     */
+     *//*
     @Bean(name = "dataSource")
     public DataSource dataSource() {
         DruidDataSource datasource = new DruidDataSource();
@@ -86,12 +86,12 @@ public class DataSourceCfg {
     }
 
 
-    /**
+    *//**
      * 数据源事务管理器
      * @param dataSource
      * @return
      * @throws SQLException
-     */
+     *//*
     @Bean(name = "transactionManager")
     public DataSourceTransactionManager bossTransactionManager(@Qualifier("dataSource") DataSource dataSource) throws SQLException {
         return new DataSourceTransactionManager(dataSource);
@@ -110,12 +110,12 @@ public class DataSourceCfg {
 
     }
 
-    /**
+    *//**
      * Mybatis的连接会话工厂实例
      * @param dataSource
      * @return
      * @throws Exception
-     */
+     *//*
     @Bean(name = "sqlSessionFactory")
     public SqlSessionFactory bossSqlSessionFactory(@Qualifier("dataSource") DataSource dataSource,@Qualifier("pageInterceptor")PageInterceptor pageInterceptor) throws Exception {
         SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
@@ -125,16 +125,16 @@ public class DataSourceCfg {
         return sessionFactory.getObject();
     }
 
-    /**
+    *//**
      * Mybatis的SqlSessionTemplate
      * @param sqlSessionFactory
      * @return
      * @throws Exception
-     */
+     *//*
     @Bean(name = "sqlSessionTemplate")
     public SqlSessionTemplate bossSqlSessionTemplate(
             @Qualifier("sqlSessionFactory") SqlSessionFactory sqlSessionFactory) throws Exception {
         return new SqlSessionTemplate(sqlSessionFactory);
     }
 
-}
+}*/
