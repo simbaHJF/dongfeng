@@ -14,17 +14,17 @@ import java.util.List;
 @Mapper
 public interface ExecutorDao {
 
-    @Insert("replace into executor(executor_name,executor_ip,executor_port,executor_group,active_time) " +
+    @Insert("replace into dongfeng_executor(executor_name,executor_ip,executor_port,executor_group,active_time) " +
             "values(#{executorDto.executorName},#{executorDto.executorIp},#{executorDto.executorPort}," +
             "#{executorDto.executorGroup},#{executorDto.activeTime})")
     int replaceExecutor(@Param("executorDto") ExecutorDto executorDto);
 
 
-    @Delete("delete from executor where active_time < #{deadlineTime}")
+    @Delete("delete from dongfeng_executor where active_time < #{deadlineTime}")
     int deleteExpiredExecutor(@Param("deadlineTime") Date deadlineTime);
 
 
-    @Select("select id,executor_name,executor_ip,executor_port,executor_group,active_time from executor " +
+    @Select("select id,executor_name,executor_ip,executor_port,executor_group,active_time from dongfeng_executor " +
             "where executor_group = #{group} ")
     List<ExecutorDto> selectExecutorsByGroup(@Param("group") String group);
 
