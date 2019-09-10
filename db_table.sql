@@ -1,4 +1,4 @@
-CREATE TABLE `dag` (
+CREATE TABLE `dongfeng_dag` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '自增主键',
   `dag_name` varchar(50) NOT NULL COMMENT 'dag名称',
   `dag_group` varchar(50) NOT NULL COMMENT 'dag业务组',
@@ -10,7 +10,7 @@ CREATE TABLE `dag` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Dag表';
 
 
-CREATE TABLE `dag_trigger_log` (
+CREATE TABLE `dongfeng_dag_trigger_log` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '自增主键',
   `dag_id` bigint(20) NOT NULL COMMENT 'dag的id',
   `dag_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'dag名称',
@@ -23,7 +23,7 @@ CREATE TABLE `dag_trigger_log` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='dag流调度log表';
 
 
-CREATE TABLE `dependency` (
+CREATE TABLE `dongfeng_dependency` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '自增id',
   `job_id` bigint(20) NOT NULL COMMENT 'job表id',
   `parent_job_id` bigint(20) NOT NULL COMMENT '依赖父job的id',
@@ -34,7 +34,7 @@ CREATE TABLE `dependency` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='任务依赖表';
 
 
-CREATE TABLE `executor` (
+CREATE TABLE `dongfeng_executor` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '自增id',
   `executor_name` varchar(100) NOT NULL COMMENT '执行器名称',
   `executor_ip` varchar(20) NOT NULL COMMENT '执行器ip',
@@ -47,7 +47,7 @@ CREATE TABLE `executor` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='执行器表';
 
 
-CREATE TABLE `job` (
+CREATE TABLE `dongfeng_job` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '自增id',
   `job_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '任务名称',
   `job_type` int(11) NOT NULL COMMENT '任务类型',
@@ -60,7 +60,7 @@ CREATE TABLE `job` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='任务表';
 
 
-CREATE TABLE `job_trigger_log` (
+CREATE TABLE `dongfeng_job_trigger_log` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '自增主键',
   `job_id` bigint(20) NOT NULL COMMENT '任务id',
   `job_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'job名称',

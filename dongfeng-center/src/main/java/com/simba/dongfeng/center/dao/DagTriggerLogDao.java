@@ -13,32 +13,32 @@ import java.util.List;
  **/
 public interface DagTriggerLogDao {
 
-    @Select("select id,dag_id,dag_name,trigger_type,start_time,end_time,status,param from dag_trigger_log " +
+    @Select("select id,dag_id,dag_name,trigger_type,start_time,end_time,status,param from dongfeng_dag_trigger_log " +
             " where id = #{dagTriggerId} ")
     DagTriggerLogDto selectDagTriggerLogById(@Param("dagTriggerId") long dagTriggerId);
 
     @Select("<script> " +
             "select id,dag_id,dag_name,trigger_type,start_time,end_time,status,param " +
-            " from dag_trigger_log " +
+            " from dongfeng_dag_trigger_log " +
             "<if test='dagId != 0'> where dag_id = #{dagId} </if> " +
             "</script> ")
     List<DagTriggerLogDto> selectDagLogByPage(@Param("dagId") long dagId);
 
 
-    @Insert("insert into dag_trigger_log(dag_id,dag_name,trigger_type,start_time,status,param) " +
+    @Insert("insert into dongfeng_dag_trigger_log(dag_id,dag_name,trigger_type,start_time,status,param) " +
             " values(#{dagTrigerLog.dagId},#{dagTrigerLog.dagName},#{dagTrigerLog.triggerType},#{dagTrigerLog.startTime}," +
             "#{dagTrigerLog.status},#{dagTrigerLog.param})")
     @Options(useGeneratedKeys=true, keyProperty="id", keyColumn="id")
     int insertDagTriggerLog(@Param("dagTrigerLog") DagTriggerLogDto dagTrigerLog);
 
 
-    @Update("<script>update dag_trigger_log set status = #{dagTrigerLog.status} " +
+    @Update("<script>update dongfeng_dag_trigger_log set status = #{dagTrigerLog.status} " +
             "<when test='#{dagTrigerLog.endTime} != null'> , end_time = #{dagTrigerLog.endTime} </when>" +
             "where id =#{dagTrigerLog.id}" +
             "</script>")
     int updateDagTriggerLog(@Param("dagTrigerLog") DagTriggerLogDto dagTrigerLog);
 
 
-    @Delete("delete from dag_trigger_log where status != 1 and end_time < #{timeLine}")
+    @Delete("delete from dongfeng_dag_trigger_log where status != 1 and end_time < #{timeLine}")
     int deleteExpiredDagLog(@Param("timeLine") Date timeLine);
 }

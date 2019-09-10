@@ -14,30 +14,30 @@ import java.util.List;
 @Mapper
 public interface DagDao {
 
-    @Select("select id,dag_name,dag_group,dag_cron,status,trigger_time,param from dag " +
+    @Select("select id,dag_name,dag_group,dag_cron,status,trigger_time,param from dongfeng_dag " +
             " where id = #{dagId}")
     DagDto selectDagById(@Param("dagId") long dagId);
 
-    @Select("select id,dag_name,dag_group,dag_cron,status,trigger_time,param from dag " +
+    @Select("select id,dag_name,dag_group,dag_cron,status,trigger_time,param from dongfeng_dag " +
             " where status = 2 and trigger_time < #{endTimeline} order by trigger_time for update")
     List<DagDto> selectNeedTriggerDagWithLock(@Param("endTimeline") Date endTimeline);
 
-    @Select("select id,dag_name,dag_group,dag_cron,status,trigger_time,param from dag")
+    @Select("select id,dag_name,dag_group,dag_cron,status,trigger_time,param from dongfeng_dag")
     List<DagDto> selectAllDag();
 
-    @Insert("insert into dag(dag_name,dag_group,dag_cron,status,param) values(#{dag.dagName},#{dag.dagGroup},#{dag.dagCron},#{dag.status},#{dag.param})")
+    @Insert("insert into dongfeng_dag(dag_name,dag_group,dag_cron,status,param) values(#{dag.dagName},#{dag.dagGroup},#{dag.dagCron},#{dag.status},#{dag.param})")
     int insertDag(@Param("dag") DagDto dagDto);
 
-    @Update("update dag set trigger_time = #{triggerTime} where id = #{id}")
+    @Update("update dongfeng_dag set trigger_time = #{triggerTime} where id = #{id}")
     int updateDagTriggerTime(@Param("id") long id, @Param("triggerTime") Date triggerTime);
 
 
-    @Update("update dag set dag_name = #{dag.dagName} , dag_group = #{dag.dagGroup} , dag_cron = #{dag.dagCron} " +
+    @Update("update dongfeng_dag set dag_name = #{dag.dagName} , dag_group = #{dag.dagGroup} , dag_cron = #{dag.dagCron} " +
             ", status = #{dag.status} , param = #{dag.param} " +
             "where id = #{dag.id}")
     int updateDagInfo(@Param("dag") DagDto dagDto);
 
-    @Delete("delete from dag where id = #{id}")
+    @Delete("delete from dongfeng_dag where id = #{id}")
     int deleteDagInfo(@Param("id") long dagId);
 
 }

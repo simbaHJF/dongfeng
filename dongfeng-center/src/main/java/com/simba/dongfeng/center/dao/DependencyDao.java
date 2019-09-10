@@ -14,19 +14,19 @@ import java.util.List;
 @Mapper
 public interface DependencyDao {
 
-    @Select("select job_id from dependency where parent_job_id = #{parentId}")
+    @Select("select job_id from dongfeng_dependency where parent_job_id = #{parentId}")
     List<Long> selectChildJobIdList(@Param("parentId") long parentId);
 
-    @Select("select parent_job_id from dependency where job_id = #{jobId}")
+    @Select("select parent_job_id from dongfeng_dependency where job_id = #{jobId}")
     List<Long> selectParentJobIdList(@Param("jobId") long jobId);
 
-    @Insert("insert into dependency(job_id,parent_job_id,dag_id) " +
+    @Insert("insert into dongfeng_dependency(job_id,parent_job_id,dag_id) " +
             "values(#{dependency.jobId},#{dependency.parentJobId},#{dependency.dagId})")
     int insertDependency(@Param("dependency") DependencyDto dependency);
 
-    @Delete("delete from dependency where dag_id = #{dagId}")
+    @Delete("delete from dongfeng_dependency where dag_id = #{dagId}")
     int deleteDependencyByDagId(@Param("dagId") long dagId);
 
-    @Delete("delete from dependency where job_id = #{jobId}")
+    @Delete("delete from dongfeng_dependency where job_id = #{jobId}")
     int deleteDependencyByJobId(@Param("jobId") long jobId);
 }
