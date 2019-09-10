@@ -21,8 +21,11 @@ public interface JobDao {
             "where job_type = 1 and dag_id = #{dagId}")
     JobDto selectStartJobByDagId(@Param("dagId") long dagId);
 
-    @Select("select id,job_name,job_type,sharding_cnt,dag_id,schedule_type,launch_command,assign_ip from job")
-    List<JobDto> selectJobsByPage();
+    @Select("<script> " +
+            "select id,job_name,job_type,sharding_cnt,dag_id,schedule_type,launch_command,assign_ip from job " +
+            "<when test = 'dagId != 0'> where dag_id = #{dagId} </when> " +
+            "</script>")
+    List<JobDto> selectJobsByPage(@Param("dagId") long dagId);
 
     @Select("<script>" +
             "select id,job_name,job_type,sharding_cnt,dag_id,schedule_type,launch_command,assign_ip from job where id in " +

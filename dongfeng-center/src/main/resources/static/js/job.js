@@ -1,13 +1,14 @@
 $(function () {
-    getTableDate(1);
+    getTableData(1,0);
 })
 
-function getTableDate(pageNum) {
+function getTableData(pageNum, dagId) {
     $.ajax({
         url: '/dongfeng/admin/jobData',
         type: 'post',
         data:{
-            'page':pageNum
+            'page':pageNum,
+            'dagId':dagId
         },
         dataType: 'json',
         success: function (data) {
@@ -34,9 +35,9 @@ function getTableDate(pageNum) {
             var pages = '';
             for (var i = 1;i <= data.respDto.pages;i++){
                 if (i === data.respDto.pageNum) {
-                    pages = pages + '<li class="active"><a onclick="page_on_click(this)">' + i + '</a></li>';
+                    pages = pages + '<li class="active"><a onclick="page_on_click(this,' + dagId + ')">' + i + '</a></li>';
                 } else {
-                    pages = pages + '<li><a onclick="page_on_click(this)">' + i + '</a></li>';
+                    pages = pages + '<li><a onclick="page_on_click(this,' + dagId + ')">' + i + '</a></li>';
                 }
             }
             $("#pagination").empty();
@@ -44,9 +45,9 @@ function getTableDate(pageNum) {
         }
     })
 }
-function page_on_click(data) {
+function page_on_click(data,dagId) {
     var page = $(data).html();
-    getTableDate(page);
+    getTableData(page,dagId);
 }
 
 function add_job_submit() {
@@ -133,4 +134,14 @@ function delete_job_submit(data) {
             }
         }
     })
+}
+
+function searchJobsByDagId() {
+    var dagId;
+    if ($("#searchJobsByDagId").val() == '') {
+        dagId = 0;
+    } else {
+        dagId = $("#searchJobsByDagId").val();
+    }
+    getTableData(1, dagId);
 }

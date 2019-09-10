@@ -17,6 +17,17 @@
 </head>
 <body>
 
+<div class="row">
+    <div class="col-lg-6" style="padding: 65px;">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search by dagId" id="searchJobsByDagId">
+            <span class="input-group-btn">
+        <button class="btn btn-primary btn-default" type="button" onclick="searchJobsByDagId()">Go!</button>
+      </span>
+        </div><!-- /input-group -->
+    </div><!-- /.col-lg-6 -->
+</div><!-- /.row -->
+
 <div style="padding: 50px;">
     <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#addJobModal">新增job配置</button>
 </div>

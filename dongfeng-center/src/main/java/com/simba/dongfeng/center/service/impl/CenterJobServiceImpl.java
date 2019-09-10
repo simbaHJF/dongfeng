@@ -31,9 +31,9 @@ public class CenterJobServiceImpl implements CenterJobService {
     private DependencyDao dependencyDao;
 
     @Override
-    public PageInfo<JobDto> selectJobByPage(int page, int pageSize) {
+    public PageInfo<JobDto> selectJobByPage(int page, int pageSize, long dagId) {
         PageHelper.startPage(page, pageSize);
-        List<JobDto> jobDtoList = Optional.ofNullable(jobDao.selectJobsByPage()).orElse(new ArrayList<>());
+        List<JobDto> jobDtoList = Optional.ofNullable(jobDao.selectJobsByPage(dagId)).orElse(new ArrayList<>());
         PageInfo<JobDto> pageInfo = new PageInfo<>(jobDtoList);
         return pageInfo;
     }

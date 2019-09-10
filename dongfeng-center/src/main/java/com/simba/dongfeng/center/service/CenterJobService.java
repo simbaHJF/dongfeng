@@ -13,7 +13,7 @@ import java.util.List;
  * DESC:
  **/
 public interface CenterJobService {
-    PageInfo<JobDto> selectJobByPage(int page, int pageSize);
+    PageInfo<JobDto> selectJobByPage(int page, int pageSize, long dagId);
 
     void insertJobAndDependency(JobDto jobDto);
 

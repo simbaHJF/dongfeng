@@ -129,8 +129,8 @@ public class DongfengCenterAdminController {
 
     @RequestMapping("/jobData")
     @ResponseBody
-    public RespDto jobData(int page) {
-        PageInfo<JobDto> pageInfo = centerJobService.selectJobByPage(page, pageSize);
+    public RespDto jobData(int page,long dagId) {
+        PageInfo<JobDto> pageInfo = centerJobService.selectJobByPage(page, pageSize, dagId);
         for (JobDto jobDto : pageInfo.getList()) {
             List<Long> parentJobIds = Optional.ofNullable(centerDependencyService.selectParentJobIdList(jobDto.getId())).orElse(new ArrayList<>());
 
