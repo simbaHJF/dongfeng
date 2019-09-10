@@ -32,17 +32,9 @@ task :center_prod_upload => [:center_compile_prod] do
 end
 
 
-
-desc "app prod upload"
-task :app_prod_upload => [:app_prod_compile] do
-    sh 'sh upload.sh v-bosspixiu-01 /data/app/jinnang jinnang-app-1.0-SNAPSHOT-jar-with-dependencies.jar jinnang-app/target'
+desc "executor prod upload"
+task :executor_prod_upload => [:executor_compile_prod] do
+    sh 'sh upload.sh v-bosspixiu-01 /data/app/dongfeng dongfeng-executor-0.0.1-SNAPSHOT.jar dongfeng-executor/target'
 end
 
 
-
-
-
-desc "task prod upload"
-task :task_prod_upload => [:task_prod_compile] do
-    sh 'sh upload.sh v-bosspixiu-01 /data/app/jinnang jinnang-task-1.0-SNAPSHOT-jar-with-dependencies.jar jinnang-task/target'
-end
