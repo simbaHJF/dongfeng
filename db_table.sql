@@ -13,7 +13,7 @@ CREATE TABLE `dongfeng_dag` (
 CREATE TABLE `dongfeng_dag_trigger_log` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '自增主键',
   `dag_id` bigint(20) NOT NULL COMMENT 'dag的id',
-  `dag_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'dag名称',
+  `dag_name` varchar(50) NOT NULL COMMENT 'dag名称',
   `trigger_type` int(11) NOT NULL COMMENT '触发类型',
   `start_time` datetime NOT NULL COMMENT '开始时间',
   `end_time` datetime DEFAULT NULL COMMENT '结束时间',
@@ -49,13 +49,13 @@ CREATE TABLE `dongfeng_executor` (
 
 CREATE TABLE `dongfeng_job` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '自增id',
-  `job_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '任务名称',
+  `job_name` varchar(50) NOT NULL DEFAULT '' COMMENT '任务名称',
   `job_type` int(11) NOT NULL COMMENT '任务类型',
   `sharding_cnt` int(11) NOT NULL COMMENT '分片数',
   `dag_id` bigint(20) NOT NULL COMMENT '对应dag流id',
-  `schedule_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '调度策略',
+  `schedule_type` varchar(50) NOT NULL COMMENT '调度策略',
   `launch_command` varchar(200) NOT NULL COMMENT '任务启动命令',
-  `assign_ip` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT '' COMMENT '指定的执行ip',
+  `assign_ip` varchar(50) DEFAULT '' COMMENT '指定的执行ip',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='任务表';
 
@@ -63,14 +63,14 @@ CREATE TABLE `dongfeng_job` (
 CREATE TABLE `dongfeng_job_trigger_log` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '自增主键',
   `job_id` bigint(20) NOT NULL COMMENT '任务id',
-  `job_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'job名称',
+  `job_name` varchar(50) NOT NULL COMMENT 'job名称',
   `dag_id` bigint(20) NOT NULL COMMENT 'dag的id',
   `dag_trigger_id` bigint(20) NOT NULL COMMENT 'dag触发id',
   `start_time` datetime NOT NULL COMMENT '任务开始时间',
   `end_time` datetime DEFAULT NULL COMMENT '任务结束时间',
   `status` int(11) NOT NULL COMMENT '任务状态',
-  `center_ip` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '调度中心ip',
-  `executor_ip` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '任务执行节点ip',
+  `center_ip` varchar(200) NOT NULL COMMENT '调度中心ip',
+  `executor_ip` varchar(20) NOT NULL COMMENT '任务执行节点ip',
   `sharding_idx` int(11) NOT NULL COMMENT '分片序号',
   `sharding_cnt` int(11) NOT NULL COMMENT '分片总数',
   `param` varchar(200) DEFAULT '' COMMENT '执行参数',
