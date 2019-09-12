@@ -9,13 +9,11 @@ import com.simba.dongfeng.center.dao.JobDao;
 import com.simba.dongfeng.center.enums.DagSwitchStatusEnum;
 import com.simba.dongfeng.center.pojo.DagDto;
 import com.simba.dongfeng.center.service.CenterDagService;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -52,14 +50,13 @@ public class CenterDagServiceImpl implements CenterDagService {
         DagDto oldDag = dagDao.selectDagById(dagDto.getId());
         if (dagDto.getStatus() == DagSwitchStatusEnum.OFF.getValue()) {
             dagDao.updateDagTriggerTime(dagDto.getId(), null);
-        } else if (!StringUtils.equals(oldDag.getDagCron(), dagDto.getDagCron())) {
+        } else {
             try {
                 Date triggerTime = new CronExpression(dagDto.getDagCron()).getNextValidTimeAfter(Timestamp.valueOf(LocalDateTime.now()));
                 dagDao.updateDagTriggerTime(dagDto.getId(), triggerTime);
             } catch (Exception e) {
                 throw new RuntimeException("updateDagInfo err", e);
             }
-
         }
         return dagDao.updateDagInfo(dagDto);
     }
