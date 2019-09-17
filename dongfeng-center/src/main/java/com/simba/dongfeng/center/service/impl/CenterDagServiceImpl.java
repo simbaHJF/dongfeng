@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -52,7 +53,9 @@ public class CenterDagServiceImpl implements CenterDagService {
             dagDao.updateDagTriggerTime(dagDto.getId(), null);
         } else {
             try {
-                Date triggerTime = new CronExpression(dagDto.getDagCron()).getNextValidTimeAfter(Timestamp.valueOf(LocalDateTime.now()));
+                /*ZoneId zoneId = ZoneId.of("GMT+08");*/
+                LocalDateTime localDateTime = LocalDateTime.now();
+                Date triggerTime = new CronExpression(dagDto.getDagCron()).getNextValidTimeAfter(Timestamp.valueOf(localDateTime));
                 dagDao.updateDagTriggerTime(dagDto.getId(), triggerTime);
             } catch (Exception e) {
                 throw new RuntimeException("updateDagInfo err", e);

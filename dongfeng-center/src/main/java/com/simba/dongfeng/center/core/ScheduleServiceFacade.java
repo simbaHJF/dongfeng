@@ -23,6 +23,7 @@ import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 /**
@@ -61,8 +62,14 @@ public class ScheduleServiceFacade {
      */
     @Transactional(value = "transactionManager")
     public List<DagDto> fetchNeedTriggerDag(int fetchTimeWindow) {
-        Timestamp endTimeline = Timestamp.valueOf(LocalDateTime.now().plusSeconds(fetchTimeWindow));
-        Timestamp nowTimeline = Timestamp.valueOf(LocalDateTime.now());
+
+        /*ZoneId zoneId = ZoneId.of("GMT+08");*/
+        LocalDateTime localDateTime = LocalDateTime.now();
+        Timestamp nowTimeline = Timestamp.valueOf(localDateTime);
+        Timestamp endTimeline = Timestamp.valueOf(localDateTime.plusSeconds(fetchTimeWindow));
+        logger.info("fetch时间:" + localDateTime.getYear() + "年" + localDateTime.getMonthValue() + "月" + localDateTime.getDayOfMonth() +
+                "日" + localDateTime.getHour() + "时" + localDateTime.getMinute() + "分" + localDateTime.getSecond() + "秒");
+
         List<DagDto> dagDtoList = Optional.ofNullable(dagDao.selectNeedTriggerDagWithLock(endTimeline)).orElse(new ArrayList<>());
         List<DagDto> dagsInFetchTimeWindow = new ArrayList<>();
         Iterator<DagDto> iterator = dagDtoList.iterator();
@@ -126,11 +133,12 @@ public class ScheduleServiceFacade {
 
     /**
      * 任务分发到执行器
+     *
      * @param jobInfo
      * @param executorDto
      * @param jobTriggerLogDto
      */
-    public void dispatch(JobInfo jobInfo, ExecutorDto executorDto,JobTriggerLogDto jobTriggerLogDto) {
+    public void dispatch(JobInfo jobInfo, ExecutorDto executorDto, JobTriggerLogDto jobTriggerLogDto) {
         String host = executorDto.getExecutorIp() + ":" + executorDto.getExecutorPort();
         RespDto respDto = HttpClient.sendPost(host, "/dongfengexecutor/job/trigger", jobInfo, 5000);
 
@@ -149,8 +157,7 @@ public class ScheduleServiceFacade {
             } else {
                 throw new RuntimeException("check ip resp code 801,check fail.checkHost:" + checkHost);
             }
-        }
-        else if (respDto.getCode() != RespCodeEnum.SUCC.getCode()) {
+        } else if (respDto.getCode() != RespCodeEnum.SUCC.getCode()) {
             logger.error("dispatch err.jobInfo:" + jobInfo + ",executorDto:" + executorDto);
             throw new RuntimeException("dispatch err.jobInfo:" + jobInfo + ",executorDto:" + executorDto + ",respDto:" + respDto);
         }
@@ -159,6 +166,7 @@ public class ScheduleServiceFacade {
 
     /**
      * 写调度日志,调度job(TASK_NODE节点)
+     *
      * @param jobDto
      * @param dagTriggerLogDto
      * @param jobScheduleRetryTime
@@ -167,7 +175,7 @@ public class ScheduleServiceFacade {
     public void scheduleJob(JobDto jobDto, DagTriggerLogDto dagTriggerLogDto, int jobScheduleRetryTime, String centerIp) {
         int scheduleCnt = 0;
         ExecutorDto executor = null;
-        JobTriggerLogDto curJobTriggerLog = generateJobTriggerLogDto(jobDto.getId(),jobDto.getJobName(), dagTriggerLogDto.getDagId(), dagTriggerLogDto.getId(), JobStatusEnum.INITIAL.getValue(), centerIp, null, dagTriggerLogDto.getParam());
+        JobTriggerLogDto curJobTriggerLog = generateJobTriggerLogDto(jobDto.getId(), jobDto.getJobName(), dagTriggerLogDto.getDagId(), dagTriggerLogDto.getId(), JobStatusEnum.INITIAL.getValue(), centerIp, null, dagTriggerLogDto.getParam());
         while (true) {
             try {
                 /**
@@ -184,7 +192,7 @@ public class ScheduleServiceFacade {
                 boolean rs = insertOrUploadJobTriggerLogWhenTriggerNewJob(curJobTriggerLog);
                 if (rs == true) {
                     JobInfo jobInfo = this.generateJobInfo(jobDto, curJobTriggerLog);
-                    this.dispatch(jobInfo, executor,curJobTriggerLog);
+                    this.dispatch(jobInfo, executor, curJobTriggerLog);
                     curJobTriggerLog.setStatus(JobStatusEnum.RUNNING.getValue());
                     jobTriggerLogDao.updateJobTriggerLog(curJobTriggerLog);
                 }
@@ -345,18 +353,23 @@ public class ScheduleServiceFacade {
 
 
     public int deleteExpiredDagLog() {
-        Date timeLine = Timestamp.valueOf(LocalDateTime.now().minusDays(1));
+        /*ZoneId zoneId = ZoneId.of("GMT+08");*/
+        LocalDateTime localDateTime = LocalDateTime.now();
+        Date timeLine = Timestamp.valueOf(localDateTime.minusDays(1));
         return dagTriggerLogDao.deleteExpiredDagLog(timeLine);
     }
 
     public int deleteExpiredJobLog() {
-        Date timeLine = Timestamp.valueOf(LocalDateTime.now().minusDays(1));
+        /*ZoneId zoneId = ZoneId.of("GMT+08");*/
+        LocalDateTime localDateTime = LocalDateTime.now();
+        Date timeLine = Timestamp.valueOf(localDateTime.minusDays(1));
         return jobTriggerLogDao.deleteExpiredJobLog(timeLine);
     }
 
 
     /**
      * 构造一个jobLog
+     *
      * @param jobId
      * @param jobName
      * @param dagId
@@ -367,7 +380,7 @@ public class ScheduleServiceFacade {
      * @param param
      * @return
      */
-    public JobTriggerLogDto generateJobTriggerLogDto(long jobId,String jobName, long dagId, long dagTriggerId, int status, String centerIp, String executorIp, String param) {
+    public JobTriggerLogDto generateJobTriggerLogDto(long jobId, String jobName, long dagId, long dagTriggerId, int status, String centerIp, String executorIp, String param) {
         JobTriggerLogDto jobTriggerLogDto = new JobTriggerLogDto();
         jobTriggerLogDto.setDagId(dagId);
         jobTriggerLogDto.setDagTriggerId(dagTriggerId);

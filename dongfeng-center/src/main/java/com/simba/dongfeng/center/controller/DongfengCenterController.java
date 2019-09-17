@@ -46,6 +46,7 @@ public class DongfengCenterController {
         }
         try {
             ExecutorDto executorDto = PojoConverter.convertExecutorHeartbeatInfo(executorHeartbeatInfo);
+            System.out.println(executorDto);
             centerExecutorService.replaceExecutor(executorDto);
             return RespDtoBuilder.createBuilder().succResp().build();
         } catch (Exception e) {
