@@ -2,6 +2,7 @@ package com.simba.dongfeng.executor.pojo;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -48,7 +49,9 @@ public class JobRecordPool {
     public void deleteExpireJobRecord() {
         try {
             poolLock.lock();
-            Date deadLine = Timestamp.valueOf(LocalDateTime.now().minusHours(1));
+            /*ZoneId zoneId = ZoneId.of("GMT+08");*/
+            LocalDateTime localDateTime = LocalDateTime.now();
+            Date deadLine = Timestamp.valueOf(localDateTime.minusHours(1));
             Iterator<Map.Entry<Long, JobRecord>> iterator = map.entrySet().iterator();
             while (iterator.hasNext()) {
                 JobRecord jobRecord = iterator.next().getValue();

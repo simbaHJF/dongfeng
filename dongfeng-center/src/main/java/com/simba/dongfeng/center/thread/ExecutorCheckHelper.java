@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -35,8 +36,10 @@ public class ExecutorCheckHelper {
                 while (isRunning) {
 
                     try {
-                        Date deadlineTime = Timestamp.valueOf(LocalDateTime.now().minusSeconds(90));
-                        executorDao.deleteExpiredExecutor(deadlineTime);
+                        /*ZoneId zoneId = ZoneId.of("GMT+08");*/
+                        LocalDateTime localDateTime = LocalDateTime.now();
+                        Date timeline = Timestamp.valueOf(localDateTime.minusSeconds(90));
+                        executorDao.deleteExpiredExecutor(timeline);
                         TimeUnit.SECONDS.sleep(interval);
                     } catch (InterruptedException e) {
                         e.printStackTrace();

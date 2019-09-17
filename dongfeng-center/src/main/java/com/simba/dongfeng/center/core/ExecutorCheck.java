@@ -28,7 +28,7 @@ public class ExecutorCheck {
     @PostConstruct
     public void init() {
         executorCheckHelper = new ExecutorCheckHelper(executorDao);
-        executorCheckHelper.start();
+        //executorCheckHelper.start();
     }
 
     @PreDestroy
