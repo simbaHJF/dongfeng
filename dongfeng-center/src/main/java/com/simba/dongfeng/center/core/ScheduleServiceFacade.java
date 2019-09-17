@@ -357,6 +357,7 @@ public class ScheduleServiceFacade {
         /*ZoneId zoneId = ZoneId.of("GMT+08");*/
         LocalDateTime localDateTime = LocalDateTime.now();
         Date timeLine = Timestamp.valueOf(localDateTime.minusDays(3));
+        logger.info("delete expiredDagLog,timeLine:" + timeLine);
         return dagTriggerLogDao.deleteExpiredDagLog(timeLine);
     }
 
@@ -364,6 +365,7 @@ public class ScheduleServiceFacade {
         /*ZoneId zoneId = ZoneId.of("GMT+08");*/
         LocalDateTime localDateTime = LocalDateTime.now();
         Date timeLine = Timestamp.valueOf(localDateTime.minusDays(3));
+        logger.info("delete expiredJobLog,timeLine:" + timeLine);
         return jobTriggerLogDao.deleteExpiredJobLog(timeLine);
     }
 
