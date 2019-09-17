@@ -356,14 +356,14 @@ public class ScheduleServiceFacade {
     public int deleteExpiredDagLog() {
         /*ZoneId zoneId = ZoneId.of("GMT+08");*/
         LocalDateTime localDateTime = LocalDateTime.now();
-        Date timeLine = Timestamp.valueOf(localDateTime.minusDays(1));
+        Date timeLine = Timestamp.valueOf(localDateTime.minusDays(3));
         return dagTriggerLogDao.deleteExpiredDagLog(timeLine);
     }
 
     public int deleteExpiredJobLog() {
         /*ZoneId zoneId = ZoneId.of("GMT+08");*/
         LocalDateTime localDateTime = LocalDateTime.now();
-        Date timeLine = Timestamp.valueOf(localDateTime.minusDays(1));
+        Date timeLine = Timestamp.valueOf(localDateTime.minusDays(3));
         return jobTriggerLogDao.deleteExpiredJobLog(timeLine);
     }
 

@@ -15,7 +15,7 @@ public class ExpireLogClearHelper {
     private Logger logger = LoggerFactory.getLogger(ExpireLogClearHelper.class);
 
     private boolean isRunning = true;
-    private long interval = 3;//day
+    private long interval = 1;//day
     private Thread expireLogClearThread;
 
     private ScheduleServiceFacade scheduleServiceFacade;
