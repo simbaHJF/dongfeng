@@ -5,6 +5,7 @@ import com.simba.dongfeng.common.pojo.JobInfo;
 import com.simba.dongfeng.executor.cfg.ExecutorCfg;
 import com.simba.dongfeng.executor.pojo.JobRecord;
 import com.simba.dongfeng.executor.pojo.JobRecordPool;
+import com.simba.dongfeng.executor.thread.CallbackNotifyFailRetryHelper;
 import com.simba.dongfeng.executor.thread.CallbackNotifyHelper;
 import com.simba.dongfeng.executor.thread.ExpiredJobRecordClearHelper;
 import com.simba.dongfeng.executor.thread.HeartbeatHelper;
@@ -39,10 +40,11 @@ public class ExecutorCtrlCenter {
     private StringRedisTemplate stringRedisTemplate;
 
     private CallbackQueue callbackQueue = new CallbackQueue();
+    private CallbackNotifyFailQueue callbackNotifyFailQueue = new CallbackNotifyFailQueue();
     private JobRecordPool jobRecordPool = new JobRecordPool();
 
     //任务执行池
-    private ExecutorService threadPoolExecutor = new ThreadPoolExecutor(3, 3, 1, TimeUnit.MINUTES, new LinkedBlockingQueue<>(2));
+    private ExecutorService threadPoolExecutor = new ThreadPoolExecutor(3, 3, 0, TimeUnit.MINUTES, new LinkedBlockingQueue<>(2));
 
 
     private List<String> dongfengCenterAddrList;
@@ -51,6 +53,7 @@ public class ExecutorCtrlCenter {
     private HeartbeatHelper heartbeatHelper;
     private CallbackNotifyHelper callbackNotifyHelper;
     private ExpiredJobRecordClearHelper expiredJobRecordClearHelper;
+    private CallbackNotifyFailRetryHelper callbackNotifyFailRetryHelper;
 
     @PostConstruct
     public void init() throws Exception {
@@ -58,10 +61,12 @@ public class ExecutorCtrlCenter {
         initExecutorHeartbeatInfo(executorCfg);
         heartbeatHelper = new HeartbeatHelper(dongfengCenterAddrList, executorHeartbeatInfo, executorServiceFacade);
         heartbeatHelper.start();
-        callbackNotifyHelper = new CallbackNotifyHelper(executorHeartbeatInfo.getExecutorIp(), callbackQueue, dongfengCenterAddrList);
+        callbackNotifyHelper = new CallbackNotifyHelper(executorHeartbeatInfo.getExecutorIp(), callbackQueue,callbackNotifyFailQueue, dongfengCenterAddrList);
         callbackNotifyHelper.start();
         expiredJobRecordClearHelper = new ExpiredJobRecordClearHelper(jobRecordPool);
         expiredJobRecordClearHelper.start();
+        callbackNotifyFailRetryHelper = new CallbackNotifyFailRetryHelper(executorHeartbeatInfo.getExecutorIp(), callbackNotifyFailQueue, dongfengCenterAddrList);
+        callbackNotifyFailRetryHelper.start();
     }
 
 
