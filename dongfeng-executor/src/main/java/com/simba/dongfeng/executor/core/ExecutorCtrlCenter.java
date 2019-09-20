@@ -81,6 +81,9 @@ public class ExecutorCtrlCenter {
         if (expiredJobRecordClearHelper != null) {
             expiredJobRecordClearHelper.stop();
         }
+        if (callbackNotifyFailRetryHelper != null) {
+            callbackNotifyFailRetryHelper.stop();
+        }
     }
 
 
