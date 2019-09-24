@@ -55,6 +55,11 @@ public class CallbackHandleHelper {
                         JobTriggerLogDto jobTriggerLog = scheduleServiceFacade.selectJobTriggerLogDtoById(callback.getJobTriggerLogId());
                         logger.info("callback corresponding jobLog:" + jobTriggerLog);
 
+                        if (jobTriggerLog == null) {
+                            logger.error("job callback.corresponding jobTriggerLog is null.jobLogId:" + callback.getJobTriggerLogId());
+                            continue;
+                        }
+
                         if (jobTriggerLog.getStatus() != JobStatusEnum.RUNNING.getValue()) {
                             logger.info("job callback has been handled.jobTriggerLog:" + jobTriggerLog);
                             continue;
