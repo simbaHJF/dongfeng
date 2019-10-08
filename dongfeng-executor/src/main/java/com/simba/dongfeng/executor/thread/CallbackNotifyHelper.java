@@ -5,6 +5,7 @@ import com.simba.dongfeng.common.enums.RespCodeEnum;
 import com.simba.dongfeng.common.pojo.Callback;
 import com.simba.dongfeng.common.pojo.RespDto;
 import com.simba.dongfeng.common.util.HttpClient;
+import com.simba.dongfeng.executor.core.CallbackNotifyFailQueue;
 import com.simba.dongfeng.executor.core.CallbackQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,13 +22,15 @@ public class CallbackNotifyHelper {
     private boolean isRunning = true;
     private String executorIp;
     private CallbackQueue callbackQueue;
+    private CallbackNotifyFailQueue callbackNotifyFailQueue;
     private List<String> dongfengCenterAddrList;
 
     private Thread callbackNotifyThread;
 
-    public CallbackNotifyHelper(String executorIp, CallbackQueue callbackQueue, List<String> dongfengCenterAddrList) {
+    public CallbackNotifyHelper(String executorIp, CallbackQueue callbackQueue, CallbackNotifyFailQueue callbackNotifyFailQueue, List<String> dongfengCenterAddrList) {
         this.executorIp = executorIp;
         this.callbackQueue = callbackQueue;
+        this.callbackNotifyFailQueue = callbackNotifyFailQueue;
         this.dongfengCenterAddrList = dongfengCenterAddrList;
     }
 
@@ -59,7 +62,8 @@ public class CallbackNotifyHelper {
                             }
                         }
                         if (callbackNotifySendFailCnt == dongfengCenterAddrList.size()) {
-                            logger.error("send callback request err.all center fail,callback:" + callback);
+                            logger.warn("send callback request err.all center fail,callback:" + callback);
+                            callbackNotifyFailQueue.addTail(callback);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

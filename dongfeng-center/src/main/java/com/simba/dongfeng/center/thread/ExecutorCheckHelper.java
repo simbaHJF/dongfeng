@@ -36,11 +36,11 @@ public class ExecutorCheckHelper {
                 while (isRunning) {
 
                     try {
-                        /*ZoneId zoneId = ZoneId.of("GMT+08");*/
+                        TimeUnit.SECONDS.sleep(interval);
                         LocalDateTime localDateTime = LocalDateTime.now();
                         Date timeline = Timestamp.valueOf(localDateTime.minusSeconds(90));
                         executorDao.deleteExpiredExecutor(timeline);
-                        TimeUnit.SECONDS.sleep(interval);
+
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                         logger.error("ExecutorCheckHelper#checkThread InterruptedException",e);

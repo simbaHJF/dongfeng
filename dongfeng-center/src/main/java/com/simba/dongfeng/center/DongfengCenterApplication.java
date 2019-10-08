@@ -12,10 +12,6 @@ import java.util.TimeZone;
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class, DataSourceTransactionManagerAutoConfiguration.class, MybatisAutoConfiguration.class})
 public class DongfengCenterApplication {
-    /*@PostConstruct
-    void started() {
-        TimeZone.setDefault(TimeZone.getTimeZone("CST"));
-    }*/
     public static void main(String[] args) {
         SpringApplication.run(DongfengCenterApplication.class, args);
     }

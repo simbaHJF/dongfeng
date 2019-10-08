@@ -15,11 +15,21 @@ function getTableData(pageNum, dagId) {
         dataType: 'json',
         success: function (data) {
 
+            var button = '<div class="btn-group">\n' +
+                '  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">\n' +
+                '    操作 <span class="caret"></span>\n' +
+                '  </button>\n' +
+                '  <ul class="dropdown-menu">\n' +
+                '    <li><a href="#" onclick="interruptDag(this)">中断</a></li>\n' +
+                '  </ul>\n' +
+                '</div>';
+
             var tableStr = '';
             $.each(data.respDto.list, function (index, item) {
                 var tr;
                 tr = '<td>' + item.id + '</td>' + '<td>' + item.dagId + '</td>'+ '<td>' + item.dagName + '</td>' + '<td>' + item.triggerType + '</td>' +
-                    '<td>' + item.startTime + '</td>' + '<td>' + item.endTime + '</td>' + '<td>' + item.status + '</td>' + '<td>' + item.param + '</td>';
+                    '<td>' + item.startTime + '</td>' + '<td>' + item.endTime + '</td>' + '<td>' + item.status + '</td>' + '<td>' + item.param + '</td>'
+                    + '<td>' + button + '</td>';
                 tableStr = tableStr + '<tr>' + tr + '</tr>';
             })
             $("#tbody").empty();
@@ -52,4 +62,22 @@ function searchDagLogsByDagId() {
         dagId = $("#searchDagLogsByDagId").val();
     }
     getTableData(1, dagId);
+}
+
+function interruptDag(data) {
+    var dagLogId = $(data).parent().parent().parent().parent().parent().children().first().html();
+    $.ajax({
+        url: '/dongfeng/admin/manualInterrupt',
+        type: 'post',
+        data:{
+            'dagLogId':dagLogId
+        },
+        success: function(data) {  //成功
+            if (data.code === 200) {
+                self.location.reload();
+            } else {
+                alert(data.msg);
+            }
+        }
+    })
 }

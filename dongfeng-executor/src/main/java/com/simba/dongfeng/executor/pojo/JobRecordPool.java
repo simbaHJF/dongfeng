@@ -2,7 +2,6 @@ package com.simba.dongfeng.executor.pojo;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,7 +29,7 @@ public class JobRecordPool {
     public JobRecord putJobRecord(JobRecord jobRecord) {
         try {
             poolLock.lock();
-            return map.put(jobRecord.getJobLogId(), jobRecord);
+            return map.put(jobRecord.getJobInfo().getJobTriggerLogId(), jobRecord);
         } finally {
             poolLock.unlock();
         }
@@ -45,11 +44,19 @@ public class JobRecordPool {
         }
     }
 
+    public JobRecord removeJobRecord(long jobLogId) {
+        try {
+            poolLock.lock();
+            return map.remove(jobLogId);
+        }finally {
+            poolLock.unlock();
+        }
+    }
+
 
     public void deleteExpireJobRecord() {
         try {
             poolLock.lock();
-            /*ZoneId zoneId = ZoneId.of("GMT+08");*/
             LocalDateTime localDateTime = LocalDateTime.now();
             Date deadLine = Timestamp.valueOf(localDateTime.minusHours(1));
             Iterator<Map.Entry<Long, JobRecord>> iterator = map.entrySet().iterator();

@@ -54,17 +54,21 @@ public class DagScheduleHelper {
                                 TimeUnit.MILLISECONDS.sleep(dagDto.getTriggerTime().getTime() - now.getTime());
                             }
                         }
+                        logger.info("testA##########");
                         // 写dag调度日志
                         DagTriggerLogDto dagTriggerLogDto = generateDagTriggerLogDto(dagDto.getId(), dagDto.getDagName(), dagDto.getParam(), dagDto.getTriggerType());
                         scheduleServiceFacade.insertDagTriggerLog(dagTriggerLogDto);
-
+                        logger.info("testB##########");
                         // 写start job触发日志
                         JobDto startJob = scheduleServiceFacade.selectStartJobWithDagId(dagDto);
+                        logger.info("testC##########");
                         InetAddress addr = InetAddress.getLocalHost();
+                        logger.info("testD##########");
                         JobTriggerLogDto startJobTriggerLog = scheduleServiceFacade.generateJobTriggerLogDto(startJob.getId(),startJob.getJobName(), dagDto.getId(), dagTriggerLogDto.getId(), JobStatusEnum.SUCC.getValue(), addr.getHostAddress(), addr.getHostAddress(), dagDto.getParam());
+                        logger.info("testE###########");
                         startJobTriggerLog.setEndTime(new Date());
                         scheduleServiceFacade.insertJobTriggerLog(startJobTriggerLog);
-
+                        logger.info("testF##########");
                         //  获取所有子任务,进行调度
                         List<JobDto> childJobList = Optional.ofNullable(scheduleServiceFacade.selectChildJobList(startJob.getId())).orElse(new ArrayList<>());
                         for (JobDto jobDto : childJobList) {

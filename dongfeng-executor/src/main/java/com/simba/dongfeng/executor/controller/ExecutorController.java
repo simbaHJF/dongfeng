@@ -45,11 +45,13 @@ public class ExecutorController {
         } catch (RejectedExecutionException e) {
             e.printStackTrace();
             logger.error("server resource lacking,reject.jobInfo:" + jobInfo, e);
+            executorCtrlCenter.deleteJobRecordInPool(jobInfo.getJobTriggerLogId());
             executorCtrlCenter.deleteJobLogIdKeyInRedis(jobInfo.getJobTriggerLogId());
             return RespDtoBuilder.createBuilder().serverResourceLackResp().build();
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("internal server err.jobInfo:" + jobInfo, e);
+            executorCtrlCenter.deleteJobRecordInPool(jobInfo.getJobTriggerLogId());
             executorCtrlCenter.deleteJobLogIdKeyInRedis(jobInfo.getJobTriggerLogId());
             return RespDtoBuilder.createBuilder().serverErrResp().build();
         }
@@ -67,4 +69,11 @@ public class ExecutorController {
         }
     }
 
+    @RequestMapping("/job/interrupt")
+    @ResponseBody
+    public RespDto jobInterrupt(@RequestBody long jobLogId) {
+        logger.info("recv job interrupt request.jobLogId:" + jobLogId);
+        executorCtrlCenter.jobInterrupt(jobLogId);
+        return RespDtoBuilder.createBuilder().succResp().build();
+    }
 }
