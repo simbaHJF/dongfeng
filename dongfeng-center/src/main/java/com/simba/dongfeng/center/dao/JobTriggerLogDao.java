@@ -67,6 +67,6 @@ public interface JobTriggerLogDao {
     int updateJobTriggerLogWithAssignedStatus(@Param("jobTriggerLog") JobTriggerLogDto jobTriggerLogDto, @Param("expectStatus") List<Integer> expectStatus);
 
 
-    @Delete("delete from dongfeng_job_trigger_log where status != 0 and status != 1 and end_time < #{timeLine}")
+    @Delete("delete from dongfeng_job_trigger_log where end_time < #{timeLine} or start_time < #{timeLine}")
     int deleteExpiredJobLog(@Param("timeLine") Date timeLine);
 }
