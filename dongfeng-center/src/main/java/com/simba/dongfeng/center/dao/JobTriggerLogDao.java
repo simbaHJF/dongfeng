@@ -59,9 +59,12 @@ public interface JobTriggerLogDao {
     @Update("<script>update dongfeng_job_trigger_log set status = #{jobTriggerLog.status}  " +
             "<when test='#{jobTriggerLog.endTime} != null'> , end_time = #{jobTriggerLog.endTime} </when>" +
             "<when test='#{jobTriggerLog.executorIp} != null'> , executor_ip = #{jobTriggerLog.executorIp} </when>" +
-            "where id = #{jobTriggerLog.id} and status = #{expectStatus}" +
+            "where id = #{jobTriggerLog.id} and status in " +
+            "<foreach item='item' index='index' collection='expectStatus' open='(' separator=', ' close=')'>" +
+            "#{item}" +
+            "</foreach>" +
             "</script>")
-    int updateJobTriggerLogWithAssignedStatus(@Param("jobTriggerLog") JobTriggerLogDto jobTriggerLogDto, @Param("expectStatus") int expectStatus);
+    int updateJobTriggerLogWithAssignedStatus(@Param("jobTriggerLog") JobTriggerLogDto jobTriggerLogDto, @Param("expectStatus") List<Integer> expectStatus);
 
 
     @Delete("delete from dongfeng_job_trigger_log where end_time < #{timeLine} or start_time < #{timeLine}")
