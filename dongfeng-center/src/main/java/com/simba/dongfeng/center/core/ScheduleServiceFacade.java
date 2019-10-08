@@ -347,7 +347,7 @@ public class ScheduleServiceFacade {
      * @param expectStatus
      * @return
      */
-    public int updateJobTriggerLogWithAssignedStatus(JobTriggerLogDto jobTriggerLogDto, int expectStatus) {
+    public int updateJobTriggerLogWithAssignedStatus(JobTriggerLogDto jobTriggerLogDto, List<Integer> expectStatus) {
         return jobTriggerLogDao.updateJobTriggerLogWithAssignedStatus(jobTriggerLogDto, expectStatus);
     }
 

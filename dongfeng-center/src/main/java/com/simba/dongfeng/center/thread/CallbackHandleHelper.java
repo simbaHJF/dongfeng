@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -60,8 +61,8 @@ public class CallbackHandleHelper {
                             continue;
                         }
 
-                        if (jobTriggerLog.getStatus() != JobStatusEnum.RUNNING.getValue()) {
-                            logger.info("job callback has been handled.jobTriggerLog:" + jobTriggerLog);
+                        if (jobTriggerLog.getStatus() == JobStatusEnum.SUCC.getValue() || jobTriggerLog.getStatus() == JobStatusEnum.FAIL.getValue()) {
+                            logger.info("job callback has been handled.corresponding jobTriggerLog is finished.jobTriggerLog:" + jobTriggerLog);
                             continue;
                         }
                         jobTriggerLog.setEndTime(new Date());
@@ -69,7 +70,10 @@ public class CallbackHandleHelper {
                         jobTriggerLog.setExecutorIp(callback.getExecutorIp());
 
                         // 无锁化,更新回调任务执行结果.
-                        int updateRs = scheduleServiceFacade.updateJobTriggerLogWithAssignedStatus(jobTriggerLog, JobStatusEnum.RUNNING.getValue());
+                        List<Integer> expectStatus = new ArrayList<>();
+                        expectStatus.add(JobStatusEnum.INITIAL.getValue());
+                        expectStatus.add(JobStatusEnum.RUNNING.getValue());
+                        int updateRs = scheduleServiceFacade.updateJobTriggerLogWithAssignedStatus(jobTriggerLog, expectStatus);
                         if (updateRs != 1) {
                             logger.info("job callback has been handled.jobTriggerLog:" + jobTriggerLog);
                             continue;
