@@ -60,8 +60,8 @@ public class CallbackHandleHelper {
                             continue;
                         }
 
-                        if (jobTriggerLog.getStatus() != JobStatusEnum.RUNNING.getValue()) {
-                            logger.info("job callback has been handled.jobTriggerLog:" + jobTriggerLog);
+                        if (jobTriggerLog.getStatus() == JobStatusEnum.SUCC.getValue() || jobTriggerLog.getStatus() == JobStatusEnum.FAIL.getValue()) {
+                            logger.info("job callback has been handled.corresponding jobTriggerLog is finished.jobTriggerLog:" + jobTriggerLog);
                             continue;
                         }
                         jobTriggerLog.setEndTime(new Date());
