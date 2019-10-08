@@ -45,6 +45,7 @@
                     <th name="endTime">endTime</th>
                     <th name="status">status</th>
                     <th name="param">param</th>
+                    <th name="operation">operation</th>
                 </tr>
                 </thead>
                 <tbody id="tbody"></tbody>

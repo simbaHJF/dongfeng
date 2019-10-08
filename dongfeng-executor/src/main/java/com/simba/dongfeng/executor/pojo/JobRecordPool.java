@@ -29,7 +29,7 @@ public class JobRecordPool {
     public JobRecord putJobRecord(JobRecord jobRecord) {
         try {
             poolLock.lock();
-            return map.put(jobRecord.getJobLogId(), jobRecord);
+            return map.put(jobRecord.getJobInfo().getJobTriggerLogId(), jobRecord);
         } finally {
             poolLock.unlock();
         }
@@ -40,6 +40,15 @@ public class JobRecordPool {
             poolLock.lock();
             return map.get(jobLogId);
         } finally {
+            poolLock.unlock();
+        }
+    }
+
+    public JobRecord removeJobRecord(long jobLogId) {
+        try {
+            poolLock.lock();
+            return map.remove(jobLogId);
+        }finally {
             poolLock.unlock();
         }
     }

@@ -28,4 +28,7 @@ public interface ExecutorDao {
             "where executor_group = #{group} ")
     List<ExecutorDto> selectExecutorsByGroup(@Param("group") String group);
 
+    @Select("select id,executor_name,executor_ip,executor_port,executor_group,active_time from dongfeng_executor where executor_ip = #{executorIp}")
+    ExecutorDto selectExecutorByIp(@Param("executorIp") String executorIp);
+
 }

@@ -1,5 +1,7 @@
 package com.simba.dongfeng.executor.pojo;
 
+import com.simba.dongfeng.common.pojo.JobInfo;
+
 import java.util.Date;
 
 /**
@@ -8,24 +10,17 @@ import java.util.Date;
  * DESC:
  **/
 public class JobRecord {
-    private long jobLogId;
-    private int jobPid;
+    private Process process;
     private Date endTime;
+    private JobInfo jobInfo;
 
-    public long getJobLogId() {
-        return jobLogId;
+
+    public Process getProcess() {
+        return process;
     }
 
-    public void setJobLogId(long jobLogId) {
-        this.jobLogId = jobLogId;
-    }
-
-    public int getJobPid() {
-        return jobPid;
-    }
-
-    public void setJobPid(int jobPid) {
-        this.jobPid = jobPid;
+    public void setProcess(Process process) {
+        this.process = process;
     }
 
     public Date getEndTime() {
@@ -36,12 +31,20 @@ public class JobRecord {
         this.endTime = endTime;
     }
 
+    public JobInfo getJobInfo() {
+        return jobInfo;
+    }
+
+    public void setJobInfo(JobInfo jobInfo) {
+        this.jobInfo = jobInfo;
+    }
+
     @Override
     public String toString() {
         return "JobRecord{" +
-                "jobLogId=" + jobLogId +
-                ", jobPid=" + jobPid +
+                ", process=" + process +
                 ", endTime=" + endTime +
+                ", jobInfo=" + jobInfo +
                 '}';
     }
 }

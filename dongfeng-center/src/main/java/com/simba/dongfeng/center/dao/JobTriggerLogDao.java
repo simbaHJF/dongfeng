@@ -23,7 +23,7 @@ public interface JobTriggerLogDao {
             " from dongfeng_job_trigger_log " +
             "<when test = 'dagLogId != 0'> where dag_trigger_id = #{dagLogId} </when>" +
             "</script>")
-    List<JobTriggerLogDto> selectJobLogByPage(@Param("dagLogId") long dagLogId);
+    List<JobTriggerLogDto> selectJobLogs(@Param("dagLogId") long dagLogId);
 
     @Select("<script> " +
             "select id,job_id,job_name,dag_id,dag_trigger_id,start_time,end_time,status,center_ip,executor_ip,sharding_idx,sharding_cnt,param  " +

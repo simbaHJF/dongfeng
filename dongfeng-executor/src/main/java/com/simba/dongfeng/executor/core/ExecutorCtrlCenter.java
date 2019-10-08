@@ -1,5 +1,7 @@
 package com.simba.dongfeng.executor.core;
 
+import com.simba.dongfeng.common.enums.JobStatusEnum;
+import com.simba.dongfeng.common.pojo.Callback;
 import com.simba.dongfeng.common.pojo.ExecutorHeartbeatInfo;
 import com.simba.dongfeng.common.pojo.JobInfo;
 import com.simba.dongfeng.executor.cfg.ExecutorCfg;
@@ -9,6 +11,7 @@ import com.simba.dongfeng.executor.thread.CallbackNotifyFailRetryHelper;
 import com.simba.dongfeng.executor.thread.CallbackNotifyHelper;
 import com.simba.dongfeng.executor.thread.ExpiredJobRecordClearHelper;
 import com.simba.dongfeng.executor.thread.HeartbeatHelper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -43,8 +46,9 @@ public class ExecutorCtrlCenter {
     private CallbackNotifyFailQueue callbackNotifyFailQueue = new CallbackNotifyFailQueue();
     private JobRecordPool jobRecordPool = new JobRecordPool();
 
+    LinkedBlockingQueue<Runnable> linkedBlockingQueue = new LinkedBlockingQueue<>(2);
     //任务执行池
-    private ExecutorService threadPoolExecutor = new ThreadPoolExecutor(3, 3, 0, TimeUnit.MINUTES, new LinkedBlockingQueue<>(2));
+    private ExecutorService threadPoolExecutor = new ThreadPoolExecutor(3, 3, 0, TimeUnit.MINUTES, linkedBlockingQueue);
 
 
     private List<String> dongfengCenterAddrList;
@@ -95,6 +99,10 @@ public class ExecutorCtrlCenter {
         return stringRedisTemplate.delete(String.valueOf(jobLogId));
     }
 
+    public void deleteJobRecordInPool(long jobLogId) {
+        jobRecordPool.removeJobRecord(jobLogId);
+    }
+
 
     public boolean checkJob(long jobLogId) {
         return jobRecordPool.getJobRecord(jobLogId) != null;
@@ -102,14 +110,29 @@ public class ExecutorCtrlCenter {
 
     public void jobTrigger(JobInfo jobInfo) {
         JobRecord jobRecord = new JobRecord();
-        jobRecord.setJobLogId(jobInfo.getJobTriggerLogId());
-        WorkWarpper workWarpper = new WorkWarpper(jobInfo, callbackQueue,jobRecord);
-        try {
-            jobRecordPool.lockPool();
-            jobRecordPool.putJobRecord(jobRecord);
-            threadPoolExecutor.execute(workWarpper);
-        } finally {
-            jobRecordPool.unlockPool();
+        //jobRecord.setJobLogId(jobInfo.getJobTriggerLogId());
+        jobRecord.setJobInfo(jobInfo);
+        jobRecordPool.putJobRecord(jobRecord);
+        WorkWarpper workWarpper = new WorkWarpper(jobInfo, callbackQueue,jobRecordPool);
+        threadPoolExecutor.execute(workWarpper);
+    }
+
+    public void jobInterrupt(long jobLogId) {
+        JobRecord jobRecord = jobRecordPool.getJobRecord(jobLogId);
+        if (jobRecord != null) {
+            boolean removeRs = linkedBlockingQueue.removeIf(t -> (((WorkWarpper)t).getJobInfo().getJobTriggerLogId() == jobLogId));
+            if (removeRs) {
+                Callback callback = new Callback();
+                callback.setJobTriggerLogId(jobRecord.getJobInfo().getJobTriggerLogId());
+                callback.setShardingIdx(jobRecord.getJobInfo().getShardingIdx());
+                callback.setJobExecRs(JobStatusEnum.FAIL.getValue());
+                callbackQueue.addTail(callback);
+            } else {
+                if (jobRecord.getProcess() != null && jobRecord.getEndTime() == null) {
+                    jobRecord.getProcess().destroyForcibly();
+                }
+            }
+            jobRecordPool.removeJobRecord(jobRecord.getJobInfo().getJobTriggerLogId());
         }
     }
 
