@@ -182,7 +182,9 @@ public class ScheduleServiceFacade {
                  * 先写调度日志,再调度
                  */
                 executor = this.route(jobDto);
-
+                if (executor == null) {
+                    throw new RuntimeException("executor route rs is null");
+                }
                 curJobTriggerLog.setExecutorIp(executor.getExecutorIp());
 
                 //无锁化,db中job_trigger_log表限制job_id+dag_trigger_id的唯一索引,保证同一dag_trigger_id下不会重复插入某个job_trigger_log
@@ -198,7 +200,7 @@ public class ScheduleServiceFacade {
                 }
                 break;
             } catch (Exception e) {
-                logger.info("job schedule err.", e);
+                logger.info("job schedule err." + e.getMessage(), e);
                 if (scheduleCnt++ < jobScheduleRetryTime) {
                     logger.info("job schedule retry:" + scheduleCnt + ",job:" + jobDto.toString() + ",executor:" + executor);
                     continue;
