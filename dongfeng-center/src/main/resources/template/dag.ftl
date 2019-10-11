@@ -98,7 +98,7 @@
                     </div>
                     <div class="form-group">
                         <label for="manualTriggerDagParam" class="text-danger">Param</label>
-                        <input type="text" class="form-control" id="manualTriggerDagParam" name="manualTriggerDagParam" >
+                        <input type="text" class="form-control" id="manualTriggerDagParam" name="manualTriggerDagParam">
                     </div>
                     <button type="button" class="btn btn-default" onclick="manual_trigger_submit()">launch</button>
                 </form>
@@ -107,6 +107,9 @@
     </div>
 </div>
 
+<div class="row" style="padding-left: 60px;padding-right: 60px;">
+    <p class="bg-info" style="font-size:20px"> status : 1为关闭 ; 2为开启 </p>
+</div>
 
 <div class="row" style="padding-left: 50px;padding-right: 50px;">
 

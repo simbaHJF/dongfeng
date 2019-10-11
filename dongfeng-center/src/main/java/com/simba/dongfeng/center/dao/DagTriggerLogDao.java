@@ -38,6 +38,9 @@ public interface DagTriggerLogDao {
             "</script>")
     int updateDagTriggerLog(@Param("dagTrigerLog") DagTriggerLogDto dagTrigerLog);
 
+    @Update("update dongfeng_dag_trigger_log set status = 1 where id = #{dagLogId}")
+    int updateDagTriggerLogStatusInitial(@Param("dagLogId") long dagLogId);
+
 
     @Delete("delete from dongfeng_dag_trigger_log where end_time < #{timeLine} or start_time < #{timeLine}")
     int deleteExpiredDagLog(@Param("timeLine") Date timeLine);

@@ -12,7 +12,7 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * DATE:   2019/9/6 15:49
  * AUTHOR: simba.hjf
- * DESC:
+ * DESC:    job执行记录池,用于保存在本executor上执行过的任务,以便有可能的中断操作.
  **/
 public class JobRecordPool {
     private Map<Long, JobRecord> map = new HashMap<>();

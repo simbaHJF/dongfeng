@@ -70,7 +70,7 @@ CREATE TABLE `dongfeng_job_trigger_log` (
   `end_time` datetime DEFAULT NULL COMMENT '任务结束时间',
   `status` int(11) NOT NULL COMMENT '任务状态',
   `center_ip` varchar(200) NOT NULL COMMENT '调度中心ip',
-  `executor_ip` varchar(20) NOT NULL COMMENT '任务执行节点ip',
+  `executor_ip` varchar(20) DEFAULT NULL COMMENT '任务执行节点ip',
   `sharding_idx` int(11) NOT NULL COMMENT '分片序号',
   `sharding_cnt` int(11) NOT NULL COMMENT '分片总数',
   `param` varchar(200) DEFAULT '' COMMENT '执行参数',
