@@ -181,19 +181,19 @@ public class ScheduleServiceFacade {
             try {
                 /**
                  * 先写调度日志,再调度
+                 * 无锁化,db中job_trigger_log表限制job_id+dag_trigger_id的唯一索引,保证同一dag_trigger_id下不会重复插入某个job_trigger_log
+                 * 多center节点时,由于网络原因,存在executor向每个center都发送了一遍任务处理回调结果,造成多个center想执行触发后续job任务,写jobLog的逻辑.
+                 * 重复插入后会由于唯一索引冲突报错进入catch模块
+                 * 再加上centerIp字段限制,只有成功写入后续任务的jobLog的center能够处理后续任务状态设置,时间设置等操作.
                  */
+                boolean rs = insertOrUploadJobTriggerLogWhenTriggerNewJob(curJobTriggerLog);
+
                 executor = this.route(jobDto);
                 if (executor == null) {
                     throw new RuntimeException("executor route rs is null");
                 }
                 curJobTriggerLog.setExecutorIp(executor.getExecutorIp());
-
-                //无锁化,db中job_trigger_log表限制job_id+dag_trigger_id的唯一索引,保证同一dag_trigger_id下不会重复插入某个job_trigger_log
-                // 多center节点时,由于网络原因,存在executor向每个center都发送了一遍任务处理回调结果,造成多个center想执行触发后续job任务,写jobLog的逻辑.
-                // 重复插入后会由于唯一索引冲突报错进入catch模块
-                // 再加上centerIp字段限制,只有成功写入后续任务的jobLog的center能够处理后续任务状态设置,时间设置等操作.
-                boolean rs = insertOrUploadJobTriggerLogWhenTriggerNewJob(curJobTriggerLog);
-                if (rs == true) {
+                if (rs) {
                     JobInfo jobInfo = this.generateJobInfo(jobDto, curJobTriggerLog);
                     this.dispatch(jobInfo, executor, curJobTriggerLog);
                     curJobTriggerLog.setStatus(JobStatusEnum.RUNNING.getValue());
@@ -204,7 +204,6 @@ public class ScheduleServiceFacade {
                 logger.info("job schedule err." + e.getMessage(), e);
                 if (scheduleCnt++ < jobScheduleRetryTime) {
                     logger.info("job schedule retry:" + scheduleCnt + ",job:" + jobDto.toString() + ",executor:" + executor);
-                    continue;
                 } else {
                     JobTriggerLogDto jobTriggerLog = this.selectJobTriggerLogDtoByJobAndDag(curJobTriggerLog.getJobId(), curJobTriggerLog.getDagTriggerId(), false);
                     if (jobTriggerLog != null) {

@@ -21,6 +21,7 @@ function getTableData(pageNum, dagId) {
                 '  </button>\n' +
                 '  <ul class="dropdown-menu">\n' +
                 '    <li><a href="#" onclick="interruptDag(this)">中断</a></li>\n' +
+                '    <li><a href="#" onclick="fail_dag_rerun(this)">失败继续</a></li>\n' +
                 '  </ul>\n' +
                 '</div>';
 
@@ -68,6 +69,24 @@ function interruptDag(data) {
     var dagLogId = $(data).parent().parent().parent().parent().parent().children().first().html();
     $.ajax({
         url: '/dongfeng/admin/manualInterrupt',
+        type: 'post',
+        data:{
+            'dagLogId':dagLogId
+        },
+        success: function(data) {  //成功
+            if (data.code === 200) {
+                self.location.reload();
+            } else {
+                alert(data.msg);
+            }
+        }
+    })
+}
+
+function fail_dag_rerun(data) {
+    var dagLogId = $(data).parent().parent().parent().parent().parent().children().first().html();
+    $.ajax({
+        url: '/dongfeng/admin/manualRerunFailDagLog',
         type: 'post',
         data:{
             'dagLogId':dagLogId

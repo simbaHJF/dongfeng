@@ -1,6 +1,5 @@
 package com.simba.dongfeng.center.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
 import com.simba.dongfeng.center.core.ScheduleCenter;
 import com.simba.dongfeng.center.enums.DagSwitchStatusEnum;
@@ -56,7 +55,6 @@ public class DongfengCenterAdminController {
     private CenterJobLogService centerJobLogService;
 
 
-
     @RequestMapping("/manualTrigger")
     @ResponseBody
     public RespDto manualTrigger(long dagId, String manualTriggerDagParam) {
@@ -71,13 +69,28 @@ public class DongfengCenterAdminController {
     @RequestMapping("/manualInterrupt")
     @ResponseBody
     public RespDto manualInterrupt(long dagLogId) {
-        logger.info("recv manualInterrupt.jobLogId:" + dagLogId);
-        System.out.println("recv manualInterrupt.jobLogId:" + dagLogId);
+        logger.info("recv manualInterrupt.dagLogId:" + dagLogId);
         if (dagLogId == 0) {
             return RespDtoBuilder.createBuilder().badReqResp().build();
         }
         scheduleCenter.manualInterrupt(dagLogId);
         return RespDtoBuilder.createBuilder().succResp().build();
+    }
+
+    @RequestMapping("/manualRerunFailDagLog")
+    @ResponseBody
+    public RespDto manualRerunFailDagLog(long dagLogId) {
+        logger.info("recv manualRerunFailDagLog.dagLogId:" + dagLogId);
+        if (dagLogId == 0) {
+            return RespDtoBuilder.createBuilder().badReqResp().build();
+        }
+        try {
+            scheduleCenter.manualRerunFailDagLog(dagLogId);
+            return RespDtoBuilder.createBuilder().succResp().build();
+        } catch (Exception e) {
+            logger.error("manualRerunFailDagLog err.dagLogId:" + dagLogId, e);
+            return RespDtoBuilder.createBuilder().serverErrResp().build();
+        }
     }
 
 
@@ -96,7 +109,8 @@ public class DongfengCenterAdminController {
     @ResponseBody
     public RespDto dagData(int page) {
         PageInfo<DagDto> pageInfo = centerDagService.selectDagByPage(page, pageSize);
-        RespDto<PageInfo<DagDto>> respDto = new RespDto<>(RespCodeEnum.SUCC.getCode(), RespCodeEnum.SUCC.getMsg(), pageInfo);
+        RespDto<PageInfo<DagDto>> respDto = new RespDto<>(RespCodeEnum.SUCC.getCode(), RespCodeEnum.SUCC.getMsg(),
+                pageInfo);
         return respDto;
     }
 
@@ -140,12 +154,14 @@ public class DongfengCenterAdminController {
 
     @RequestMapping("/jobData")
     @ResponseBody
-    public RespDto jobData(int page,long dagId) {
+    public RespDto jobData(int page, long dagId) {
         PageInfo<JobDto> pageInfo = centerJobService.selectJobByPage(page, pageSize, dagId);
         for (JobDto jobDto : pageInfo.getList()) {
-            List<Long> parentJobIds = Optional.ofNullable(centerDependencyService.selectParentJobIdList(jobDto.getId())).orElse(new ArrayList<>());
+            List<Long> parentJobIds =
+                    Optional.ofNullable(centerDependencyService.selectParentJobIdList(jobDto.getId())).orElse(new ArrayList<>());
 
-            jobDto.setParentJobIds(parentJobIds.stream().map(ele -> String.valueOf(ele)).collect(Collectors.joining(",")));
+            jobDto.setParentJobIds(parentJobIds.stream().map(ele -> String.valueOf(ele)).collect(Collectors.joining(
+                    ",")));
         }
         RespDto<PageInfo> respDto = new RespDto<>(RespCodeEnum.SUCC.getCode(), RespCodeEnum.SUCC.getMsg(), pageInfo);
         return respDto;
@@ -186,7 +202,8 @@ public class DongfengCenterAdminController {
     @RequestMapping("/updateJobPage")
     public String updateJobPage(Model model, long jobId) {
         JobDto jobDto = centerJobService.selectJobById(jobId);
-        List<Long> parentJobIds = Optional.ofNullable(centerDependencyService.selectParentJobIdList(jobId)).orElse(new ArrayList<>());
+        List<Long> parentJobIds =
+                Optional.ofNullable(centerDependencyService.selectParentJobIdList(jobId)).orElse(new ArrayList<>());
         jobDto.setParentJobIds(parentJobIds.stream().map(ele -> String.valueOf(ele)).collect(Collectors.joining(",")));
         model.addAttribute("jobInfo", jobDto);
         return "updateJob";
@@ -228,7 +245,7 @@ public class DongfengCenterAdminController {
 
     @RequestMapping("/dagLogData")
     @ResponseBody
-    public RespDto dagLogData(int page,long dagId) {
+    public RespDto dagLogData(int page, long dagId) {
         PageInfo<DagTriggerLogDto> pageInfo = centerDagLogService.selectDagLogByPage(page, pageSize, dagId);
         RespDto<PageInfo> respDto = new RespDto<>(RespCodeEnum.SUCC.getCode(), RespCodeEnum.SUCC.getMsg(), pageInfo);
         return respDto;
@@ -242,7 +259,7 @@ public class DongfengCenterAdminController {
     @RequestMapping("/jobLogData")
     @ResponseBody
     public RespDto jobLogData(int page, long dagLogId) {
-        PageInfo<JobTriggerLogDto> pageInfo = centerJobLogService.selectJobLogByPage(page, pageSize,dagLogId);
+        PageInfo<JobTriggerLogDto> pageInfo = centerJobLogService.selectJobLogByPage(page, pageSize, dagLogId);
         RespDto<PageInfo> respDto = new RespDto<>(RespCodeEnum.SUCC.getCode(), RespCodeEnum.SUCC.getMsg(), pageInfo);
         return respDto;
     }

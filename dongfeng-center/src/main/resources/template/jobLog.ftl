@@ -26,6 +26,10 @@
     </div><!-- /.col-lg-6 -->
 </div><!-- /.row -->
 
+<div class="row" style="padding-left: 60px;padding-right: 60px;">
+    <p class="bg-info" style="font-size:20px"> status : 1为运行中 ; 2为成功 ; 3为失败 </p>
+</div>
+
 <div class="row" style="padding-left: 50px;padding-right: 50px;">
 
     <div class="col-xs-12">

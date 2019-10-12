@@ -1,13 +1,13 @@
 package com.simba.dongfeng.center.core;
 
+import com.simba.dongfeng.center.dao.DagTriggerLogDao;
 import com.simba.dongfeng.center.dao.ExecutorDao;
+import com.simba.dongfeng.center.dao.JobDao;
 import com.simba.dongfeng.center.dao.JobTriggerLogDao;
 import com.simba.dongfeng.center.enums.DagExecStatusEnum;
 import com.simba.dongfeng.center.enums.DagTriggerTypeEnum;
-import com.simba.dongfeng.center.pojo.DagDto;
-import com.simba.dongfeng.center.pojo.DagTriggerLogDto;
-import com.simba.dongfeng.center.pojo.ExecutorDto;
-import com.simba.dongfeng.center.pojo.JobTriggerLogDto;
+import com.simba.dongfeng.center.enums.JobTypeEnum;
+import com.simba.dongfeng.center.pojo.*;
 import com.simba.dongfeng.center.thread.CallbackHandleHelper;
 import com.simba.dongfeng.center.thread.DagFetchHelper;
 import com.simba.dongfeng.center.thread.DagScheduleHelper;
@@ -19,12 +19,19 @@ import com.simba.dongfeng.common.pojo.RespDto;
 import com.simba.dongfeng.common.util.HttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * DATE:   2019-08-15 15:50
@@ -50,6 +57,12 @@ public class ScheduleCenter {
     private JobTriggerLogDao jobTriggerLogDao;
     @Resource
     private ExecutorDao executorDao;
+    @Resource
+    private JobDao jobDao;
+    @Resource
+    private DagTriggerLogDao dagTriggerLogDao;
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
 
     @PostConstruct
@@ -122,7 +135,46 @@ public class ScheduleCenter {
                 }
             }
         }
+    }
 
+    /**
+     * 重新运行dagLogId下对应的失败的jobg,已经执行成功的不再重复执行
+     * @param dagLogId
+     * @return
+     */
+    public boolean manualRerunFailDagLog(long dagLogId) throws UnknownHostException {
+        DagTriggerLogDto dagTriggerLogDto = scheduleServiceFacade.selectDagTriggerLogById(dagLogId);
+        if (dagTriggerLogDto == null || dagTriggerLogDto.getStatus() != DagExecStatusEnum.FAIL.getValue()) {
+            return false;
+        }
+        List<JobTriggerLogDto> jobLogList = jobTriggerLogDao.selectJobLogs(dagLogId);
+        List<JobTriggerLogDto> failJobLogList = Optional.ofNullable(jobLogList)
+                .orElse(new ArrayList<>())
+                .stream()
+                .filter(ele -> ele.getStatus() == JobStatusEnum.FAIL.getValue())
+                .collect(Collectors.toList());
+
+        dagTriggerLogDao.updateDagTriggerLogStatusInitial(dagTriggerLogDto.getId());
+
+        //删除失败任务的jobLogId
+        Iterator<JobTriggerLogDto> iterator = failJobLogList.iterator();
+        while (iterator.hasNext()) {
+            JobTriggerLogDto jobLog = iterator.next();
+            jobTriggerLogDao.deleteJobLog(jobLog.getId());
+            JobDto jobDto = jobDao.selectJobById(jobLog.getJobId());
+            if (jobDto.getJobType() == JobTypeEnum.END_NODE.getValue()) {
+                iterator.remove();
+            }
+        }
+
+        //调度失败任务
+        for (JobTriggerLogDto jobLog : failJobLogList) {
+            stringRedisTemplate.delete("dongfeng_schedule_" + jobLog.getId());
+            InetAddress addr = InetAddress.getLocalHost();
+            JobDto jobDto = jobDao.selectJobById(jobLog.getJobId());
+            scheduleServiceFacade.scheduleJob(jobDto,dagTriggerLogDto,2,addr.getHostAddress());
+        }
+        return true;
     }
 
 }
