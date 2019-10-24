@@ -111,6 +111,7 @@ public class ScheduleCenter {
      * 这样做的原因是,涉及多个任务的时候,由于网络原因和其他问题,想提供一个中断时间点的逻辑统一视图太复杂了
      * 而且部分中断请求成功而部分失败的case下,中断结果的定义不好界定.所以这里只做中断尝试,不保证结果.
      * 中断结果会在executor收到中断请求后,中断对应进程,然后以回调形式通知回center来体现.
+     *
      * @param dagLogId
      */
     public void manualInterrupt(long dagLogId) {
@@ -123,10 +124,11 @@ public class ScheduleCenter {
             if (jobLog.getStatus() == JobStatusEnum.RUNNING.getValue()) {
                 String host = null;
                 try {
-                    ExecutorDto executorDto = executorDao.selectExecutorByIp(jobLog.getExecutorIp());
+                    ExecutorDto executorDto = executorDao.selectExecutorByIp(jobLog.getExecutorIp(), false);
                     String port = executorDto != null ? executorDto.getExecutorPort() : "8080";
                     host = jobLog.getExecutorIp() + ":" + port;
-                    RespDto respDto = HttpClient.sendPost(host, "/dongfengexecutor/job/interrupt", jobLog.getId(), 300000);
+                    RespDto respDto = HttpClient.sendPost(host, "/dongfengexecutor/job/interrupt", jobLog.getId(),
+                            300000);
                     if (respDto.getCode() != RespCodeEnum.SUCC.getCode()) {
                         logger.error("manualInterrupt request fail.jobId:" + jobLog.getId() + "host:" + host);
                     }
@@ -139,6 +141,7 @@ public class ScheduleCenter {
 
     /**
      * 重新运行dagLogId下对应的失败的jobg,已经执行成功的不再重复执行
+     *
      * @param dagLogId
      * @return
      */
@@ -172,7 +175,7 @@ public class ScheduleCenter {
             stringRedisTemplate.delete("dongfeng_schedule_" + jobLog.getId());
             InetAddress addr = InetAddress.getLocalHost();
             JobDto jobDto = jobDao.selectJobById(jobLog.getJobId());
-            scheduleServiceFacade.scheduleJob(jobDto,dagTriggerLogDto,2,addr.getHostAddress());
+            scheduleServiceFacade.scheduleJob(jobDto, dagTriggerLogDto, 2, addr.getHostAddress());
         }
         return true;
     }
