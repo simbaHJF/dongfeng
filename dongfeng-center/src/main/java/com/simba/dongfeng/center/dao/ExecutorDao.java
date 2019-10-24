@@ -20,8 +20,9 @@ public interface ExecutorDao {
     int insertExecutor(@Param("executorDto") ExecutorDto executorDto);
 
     @Update("update dongfeng_executor set executor_name = #{executor.executorName}, " +
-            "executor_port = #{executor.executorPort}, executor_group = #{executor.executorGroup}" +
-            ", active_time = #{executor.activeTime}")
+            "executor_port = #{executor.executorPort}, executor_group = #{executor.executorGroup} " +
+            ", active_time = #{executor.activeTime} " +
+            "where ip = #{executor.executorIp}")
     int updateExecutor(@Param("executor") ExecutorDto executorDto);
 
 
