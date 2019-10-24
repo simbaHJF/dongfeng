@@ -14,10 +14,15 @@ import java.util.List;
 @Mapper
 public interface ExecutorDao {
 
-    @Insert("replace into dongfeng_executor(executor_name,executor_ip,executor_port,executor_group,active_time) " +
+    @Insert("insert into dongfeng_executor(executor_name,executor_ip,executor_port,executor_group,active_time) " +
             "values(#{executorDto.executorName},#{executorDto.executorIp},#{executorDto.executorPort}," +
             "#{executorDto.executorGroup},#{executorDto.activeTime})")
-    int replaceExecutor(@Param("executorDto") ExecutorDto executorDto);
+    int insertExecutor(@Param("executorDto") ExecutorDto executorDto);
+
+    @Update("update dongfeng_executor set executor_name = #{executor.executorName}, " +
+            "executor_port = #{executor.executorPort}, executor_group = #{executor.executorGroup}" +
+            ", active_time = #{executor.activeTime}")
+    int updateExecutor(@Param("executor") ExecutorDto executorDto);
 
 
     @Delete("delete from dongfeng_executor where active_time < #{deadlineTime}")
@@ -28,7 +33,12 @@ public interface ExecutorDao {
             "where executor_group = #{group} ")
     List<ExecutorDto> selectExecutorsByGroup(@Param("group") String group);
 
-    @Select("select id,executor_name,executor_ip,executor_port,executor_group,active_time from dongfeng_executor where executor_ip = #{executorIp}")
-    ExecutorDto selectExecutorByIp(@Param("executorIp") String executorIp);
+    @Select("<script>" +
+            "select id,executor_name,executor_ip,executor_port,executor_group,active_time from dongfeng_executor " +
+            "where executor_ip = #{executorIp} " +
+            "<when test='lock = true'> for update</when> " +
+            "</script>")
+    ExecutorDto selectExecutorByIp(@Param("executorIp") String executorIp, @Param("lock") boolean lock);
+
 
 }

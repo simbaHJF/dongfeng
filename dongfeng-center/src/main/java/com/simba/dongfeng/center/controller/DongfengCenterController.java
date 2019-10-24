@@ -45,9 +45,7 @@ public class DongfengCenterController {
             return RespDtoBuilder.createBuilder().badReqResp().build();
         }
         try {
-            ExecutorDto executorDto = PojoConverter.convertExecutorHeartbeatInfo(executorHeartbeatInfo);
-            System.out.println(executorDto);
-            centerExecutorService.replaceExecutor(executorDto);
+            centerExecutorService.heartbeatHandle(executorHeartbeatInfo);
             return RespDtoBuilder.createBuilder().succResp().build();
         } catch (Exception e) {
             logger.error("DongfengCenterController ## heartbeat err.", e);

@@ -1,6 +1,5 @@
 package com.simba.dongfeng.center.core;
 
-import com.alibaba.fastjson.JSON;
 import com.simba.dongfeng.center.core.route.ExecutorRouterStg;
 import com.simba.dongfeng.center.dao.*;
 import com.simba.dongfeng.center.enums.DagExecStatusEnum;
@@ -23,7 +22,6 @@ import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.*;
 
 /**
@@ -69,9 +67,11 @@ public class ScheduleServiceFacade {
         Timestamp nowTimeline = Timestamp.valueOf(localDateTime);
         Timestamp endTimeline = Timestamp.valueOf(localDateTime.plusSeconds(fetchTimeWindow));
         logger.info("fetch时间:" + localDateTime.getYear() + "年" + localDateTime.getMonthValue() + "月" + localDateTime.getDayOfMonth() +
-                "日" + localDateTime.getHour() + "时" + localDateTime.getMinute() + "分" + localDateTime.getSecond() + "秒");
+                "日" + localDateTime.getHour() + "时" + localDateTime.getMinute() + "分" + localDateTime.getSecond() +
+                "秒");
 
-        List<DagDto> dagDtoList = Optional.ofNullable(dagDao.selectNeedTriggerDagWithLock(endTimeline)).orElse(new ArrayList<>());
+        List<DagDto> dagDtoList =
+                Optional.ofNullable(dagDao.selectNeedTriggerDagWithLock(endTimeline)).orElse(new ArrayList<>());
         List<DagDto> dagsInFetchTimeWindow = new ArrayList<>();
         Iterator<DagDto> iterator = dagDtoList.iterator();
         while (iterator.hasNext()) {
@@ -103,7 +103,8 @@ public class ScheduleServiceFacade {
     }
 
     public boolean insertOrUploadJobTriggerLogWhenTriggerNewJob(JobTriggerLogDto jobTriggerLog) {
-        JobTriggerLogDto jobLog = jobTriggerLogDao.selectJobTriggerLogDtoByJobAndDag(jobTriggerLog.getJobId(), jobTriggerLog.getDagTriggerId(), false);
+        JobTriggerLogDto jobLog = jobTriggerLogDao.selectJobTriggerLogDtoByJobAndDag(jobTriggerLog.getJobId(),
+                jobTriggerLog.getDagTriggerId(), false);
         if (jobLog == null) {
             jobTriggerLogDao.inserJobTriggerLog(jobTriggerLog);
             return true;
@@ -125,8 +126,10 @@ public class ScheduleServiceFacade {
      */
     public ExecutorDto route(JobDto jobDto) {
         DagDto dagDto = dagDao.selectDagById(jobDto.getDagId());
-        List<ExecutorDto> executorDtoList = Optional.ofNullable(executorDao.selectExecutorsByGroup(dagDto.getDagGroup())).orElse(new ArrayList<>());
-        ExecutorRouterStg executorRouterStg = ExecutorRouterStgEnum.getExecutorRouterStgEnum(jobDto.getScheduleType()).getExecutorRouterStg();
+        List<ExecutorDto> executorDtoList =
+                Optional.ofNullable(executorDao.selectExecutorsByGroup(dagDto.getDagGroup())).orElse(new ArrayList<>());
+        ExecutorRouterStg executorRouterStg =
+                ExecutorRouterStgEnum.getExecutorRouterStgEnum(jobDto.getScheduleType()).getExecutorRouterStg();
         ExecutorDto executor = executorRouterStg.route(jobDto, executorDtoList);
         logger.info("job route,executorDtoList:" + executorDtoList + ",executor:" + executor);
         return executor;
@@ -145,7 +148,8 @@ public class ScheduleServiceFacade {
 
         //加入任务回查,避免任务重复分派
         if (respDto.getCode() == RespCodeEnum.REPEATED_REQ.getCode()) {
-            String checkHost = stringRedisTemplate.opsForValue().get("dongfeng_schedule_" + jobInfo.getJobTriggerLogId());
+            String checkHost =
+                    stringRedisTemplate.opsForValue().get("dongfeng_schedule_" + jobInfo.getJobTriggerLogId());
             logger.info("recv job trigger resp code 700,need check job.checkHost:" + checkHost);
             if (StringUtils.isBlank(checkHost)) {
                 throw new RuntimeException("check ip is null.");
@@ -160,7 +164,8 @@ public class ScheduleServiceFacade {
             }
         } else if (respDto.getCode() != RespCodeEnum.SUCC.getCode()) {
             logger.error("dispatch err.jobInfo:" + jobInfo + ",executorDto:" + executorDto);
-            throw new RuntimeException("dispatch err.jobInfo:" + jobInfo + ",executorDto:" + executorDto + ",respDto:" + respDto);
+            throw new RuntimeException("dispatch err.jobInfo:" + jobInfo + ",executorDto:" + executorDto + ",respDto" +
+                    ":" + respDto);
         }
     }
 
@@ -173,10 +178,13 @@ public class ScheduleServiceFacade {
      * @param jobScheduleRetryTime
      * @param centerIp
      */
-    public void scheduleJob(JobDto jobDto, DagTriggerLogDto dagTriggerLogDto, int jobScheduleRetryTime, String centerIp) {
+    public void scheduleJob(JobDto jobDto, DagTriggerLogDto dagTriggerLogDto, int jobScheduleRetryTime,
+                            String centerIp) {
         int scheduleCnt = 0;
         ExecutorDto executor = null;
-        JobTriggerLogDto curJobTriggerLog = generateJobTriggerLogDto(jobDto.getId(), jobDto.getJobName(), dagTriggerLogDto.getDagId(), dagTriggerLogDto.getId(), JobStatusEnum.INITIAL.getValue(), centerIp, null, dagTriggerLogDto.getParam());
+        JobTriggerLogDto curJobTriggerLog = generateJobTriggerLogDto(jobDto.getId(), jobDto.getJobName(),
+                dagTriggerLogDto.getDagId(), dagTriggerLogDto.getId(), JobStatusEnum.INITIAL.getValue(), centerIp,
+                null, dagTriggerLogDto.getParam());
         while (true) {
             try {
                 /**
@@ -205,7 +213,9 @@ public class ScheduleServiceFacade {
                 if (scheduleCnt++ < jobScheduleRetryTime) {
                     logger.info("job schedule retry:" + scheduleCnt + ",job:" + jobDto.toString() + ",executor:" + executor);
                 } else {
-                    JobTriggerLogDto jobTriggerLog = this.selectJobTriggerLogDtoByJobAndDag(curJobTriggerLog.getJobId(), curJobTriggerLog.getDagTriggerId(), false);
+                    JobTriggerLogDto jobTriggerLog =
+                            this.selectJobTriggerLogDtoByJobAndDag(curJobTriggerLog.getJobId(),
+                                    curJobTriggerLog.getDagTriggerId(), false);
                     if (jobTriggerLog != null) {
                         if (jobTriggerLog.getStatus() == JobStatusEnum.INITIAL.getValue() && jobTriggerLog.getCenterIp().equals(centerIp)) {
                             curJobTriggerLog.setStatus(JobStatusEnum.FAIL.getValue());
@@ -219,7 +229,8 @@ public class ScheduleServiceFacade {
                             //TODO alarm
                             logger.error("job schedule failed.job:" + jobDto, e);
                         } else {
-                            logger.info("job schedule retry over.jobLog has been handled or jobLog is not belong to cur center." +
+                            logger.info("job schedule retry over.jobLog has been handled or jobLog is not belong to " +
+                                    "cur center." +
                                     "jobLog:" + jobTriggerLog);
                         }
                     } else {
@@ -384,7 +395,8 @@ public class ScheduleServiceFacade {
      * @param param
      * @return
      */
-    public JobTriggerLogDto generateJobTriggerLogDto(long jobId, String jobName, long dagId, long dagTriggerId, int status, String centerIp, String executorIp, String param) {
+    public JobTriggerLogDto generateJobTriggerLogDto(long jobId, String jobName, long dagId, long dagTriggerId,
+                                                     int status, String centerIp, String executorIp, String param) {
         JobTriggerLogDto jobTriggerLogDto = new JobTriggerLogDto();
         jobTriggerLogDto.setDagId(dagId);
         jobTriggerLogDto.setDagTriggerId(dagTriggerId);
