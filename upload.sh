@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-warFile="dongfeng-center-0.0.1-SNAPSHOT.jar"
-
 gatewayDir="/home/work/qinxc"
 gatewayHost="192.168.1.69"
 gatewayUser="work"
@@ -13,36 +11,15 @@ databusHost="47.94.99.134"
 databusUser="rcd_deploy"
 databusPort="13122"
 
-pixiuDir="/data/app/dongfeng"
 pixiuUser="work"
 pixiuPort="13122"
 
-if [ ! -n "$1" ]
-then
-	pixiuHost="v-bosspixiu-01"
-else
-	pixiuHost=${1}
-fi
-
-if [ -n "$2" ]
-then
-	pixiuDir="$2"
-fi
-
-if [ ! -n "$3" ]
-then
-	warFile="dongfeng-center-0.0.1-SNAPSHOT.jar"
-else
-	warFile=${3}
-fi
-
+pixiuHost=${1}
+pixiuDir=${2}
+warFile=${3}
 currentDir=$(pwd)
-if [ ! -n "$4" ]
-then
-	fileDir=$currentDir+"/dongfeng-center/target"
-else
-	fileDir=$currentDir/${4}
-fi
+fileDir=${currentDir}/${4}
+
 
 echo $pixiuHost ":" $pixiuDir
 

@@ -29,10 +29,10 @@ end
 
 desc "center prod upload"
 task :center_prod_upload => [:center_compile_prod] do
-    sh 'sh upload.sh v-bosspixiu-01 /data/app/dongfeng dongfeng-center-0.0.1-SNAPSHOT.jar dongfeng-center/target'
+    sh 'sh upload.sh 172.21.36.34 /data/app/jar dongfeng-center-0.0.1-SNAPSHOT.jar dongfeng-center/target'
 end
 
 desc "executor prod upload"
 task :executor_prod_upload => [:executor_compile_prod] do
-    sh 'sh upload.sh v-bosspixiu-01 /data/app/dongfeng dongfeng-executor-0.0.1-SNAPSHOT.jar dongfeng-executor/target'
+    sh 'sh upload.sh 172.21.36.34 /data/app/jar dongfeng-executor-0.0.1-SNAPSHOT.jar dongfeng-executor/target'
 end
