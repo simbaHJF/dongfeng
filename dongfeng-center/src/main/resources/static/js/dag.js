@@ -25,7 +25,8 @@ function getTableDate(pageNum) {
             $.each(data.respDto.list, function (index, item) {
                 var tr;
                 tr = '<td>' + item.id + '</td>' + '<td>' + item.dagName + '</td>' + '<td>' + item.dagGroup + '</td>' + '<td>' + item.dagCron + '</td>'
-                    + '<td>' + item.status + '</td>'+ '<td>' + item.triggerTime + '</td>' + '<td>' + item.param + '</td>' + '<td>' + button + '</td>';
+                    + '<td>' + item.status + '</td>'+ '<td>' + item.triggerTime + '</td>' + '<td>' + item.param + '</td>' + '<td>' + button + '</td>'
+                +'<td>' + item.alarm + '</td>';
                 tableStr = tableStr + '<tr>' + tr + '</tr>';
             })
             $("#tbody").empty();

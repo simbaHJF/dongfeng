@@ -6,6 +6,7 @@ import com.simba.dongfeng.center.enums.DagExecStatusEnum;
 import com.simba.dongfeng.center.enums.DagTriggerTypeEnum;
 import com.simba.dongfeng.center.enums.ExecutorRouterStgEnum;
 import com.simba.dongfeng.center.pojo.*;
+import com.simba.dongfeng.center.util.AlarmUtils;
 import com.simba.dongfeng.common.enums.JobStatusEnum;
 import com.simba.dongfeng.common.enums.RespCodeEnum;
 import com.simba.dongfeng.common.pojo.JobInfo;
@@ -215,6 +216,7 @@ public class ScheduleServiceFacade {
                     JobTriggerLogDto jobTriggerLog =
                             this.selectJobTriggerLogDtoByJobAndDag(curJobTriggerLog.getJobId(),
                                     curJobTriggerLog.getDagTriggerId(), false);
+                    DagDto dagDto = dagDao.selectDagById(dagTriggerLogDto.getDagId());
                     if (jobTriggerLog != null) {
                         if (jobTriggerLog.getStatus() == JobStatusEnum.INITIAL.getValue() && jobTriggerLog.getCenterIp().equals(centerIp)) {
                             curJobTriggerLog.setStatus(JobStatusEnum.FAIL.getValue());
@@ -225,8 +227,8 @@ public class ScheduleServiceFacade {
                             dagTriggerLogDto.setEndTime(new Date());
                             dagTriggerLogDao.updateDagTriggerLog(dagTriggerLogDto);
 
-                            //TODO alarm
                             logger.error("job schedule failed.job:" + jobDto, e);
+                            AlarmUtils.sendAlarm(dagDto.getAlarm(), AlarmUtils.MEDIA_ALL, "dongfeng-center", "dagName:" + dagDto.getDagName() + " error." + e.getMessage());
                         } else {
                             logger.info("job schedule retry over.jobLog has been handled or jobLog is not belong to " +
                                     "cur center." +
@@ -236,6 +238,8 @@ public class ScheduleServiceFacade {
                         dagTriggerLogDto.setStatus(DagExecStatusEnum.FAIL.getValue());
                         dagTriggerLogDto.setEndTime(new Date());
                         dagTriggerLogDao.updateDagTriggerLog(dagTriggerLogDto);
+
+                        AlarmUtils.sendAlarm(dagDto.getAlarm(), AlarmUtils.MEDIA_ALL, "dongfeng-center", "dagName:" + dagDto.getDagName() + " error." + e.getMessage());
                     }
                     break;
                 }
@@ -318,6 +322,12 @@ public class ScheduleServiceFacade {
      */
     public int updateDagTriggerLog(DagTriggerLogDto dagTriggerLogDto) {
         return dagTriggerLogDao.updateDagTriggerLog(dagTriggerLogDto);
+    }
+
+    public void sendFailedAlarm(DagTriggerLogDto dagTriggerLogDto) {
+        DagDto dagDto = dagDao.selectDagById(dagTriggerLogDto.getDagId());
+        AlarmUtils.sendAlarm(dagDto.getAlarm(), AlarmUtils.MEDIA_ALL, "dongfeng-center", "dagName:" + dagDto.getDagName() + " error.");
+
     }
 
     /**

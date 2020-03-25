@@ -33,6 +33,11 @@
                     <input type="text" class="form-control" id="updateDagParam" name="param" placeholder="Dag param"
                            value="${dagInfo.param}">
                 </div>
+                <div class="form-group">
+                    <label for="dagAlarm">Dag alarm</label>
+                    <input type="text" class="form-control" id="updateDagAlarm" name="alarm" placeholder="Dag alarm"
+                            value="${dagInfo.alarm}">
+                </div>
 
                 <div class="form-group">
                     <label for="status" class="text-danger">* dag开关</label>

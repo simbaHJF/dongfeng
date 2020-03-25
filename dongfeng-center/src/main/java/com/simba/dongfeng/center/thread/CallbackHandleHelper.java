@@ -4,6 +4,7 @@ import com.simba.dongfeng.center.core.CallbackQueue;
 import com.simba.dongfeng.center.core.ScheduleServiceFacade;
 import com.simba.dongfeng.center.enums.DagExecStatusEnum;
 import com.simba.dongfeng.center.enums.JobTypeEnum;
+import com.simba.dongfeng.center.pojo.DagDto;
 import com.simba.dongfeng.center.pojo.DagTriggerLogDto;
 import com.simba.dongfeng.center.pojo.JobDto;
 import com.simba.dongfeng.center.pojo.JobTriggerLogDto;
@@ -135,6 +136,7 @@ public class CallbackHandleHelper {
                                         dagTriggerLog.setEndTime(new Date());
                                         dagTriggerLog.setStatus(DagExecStatusEnum.FAIL.getValue());
                                         scheduleServiceFacade.updateDagTriggerLog(dagTriggerLog);
+                                        scheduleServiceFacade.sendFailedAlarm(dagTriggerLog);
                                         try {
                                             addr = InetAddress.getLocalHost();
                                         } catch (UnknownHostException e) {
@@ -150,6 +152,7 @@ public class CallbackHandleHelper {
                                         dagTriggerLog.setEndTime(new Date());
                                         dagTriggerLog.setStatus(DagExecStatusEnum.FAIL.getValue());
                                         scheduleServiceFacade.updateDagTriggerLog(dagTriggerLog);
+                                        scheduleServiceFacade.sendFailedAlarm(dagTriggerLog);
                                     }
                                 }
 

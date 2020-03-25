@@ -52,6 +52,10 @@
                         <input type="text" class="form-control" id="addDagParam" name="param" placeholder="Dag param">
                     </div>
                     <div class="form-group">
+                        <label for="dagAlarm">Dag alarm</label>
+                        <input type="text" class="form-control" id="addDagAlarm" name="alarm" placeholder="Dag alarm">
+                    </div>
+                    <div class="form-group">
                         <label for="status" class="text-danger">* dag开关</label>
                         <div class="radio">
                             <label>
@@ -129,6 +133,7 @@
                     <th name="triggerTime">triggerTime</th>
                     <th name="param">param</th>
                     <th name="operation">operation</th>
+                    <th name="alarm">alarm</th>
                 </tr>
                 </thead>
                 <tbody id="tbody"></tbody>

@@ -15,6 +15,7 @@ public class DagDto {
     private int status;
     private Date triggerTime;
     private String param;
+    private String alarm;
 
     //非数据库字段,只在调度和手动触发时,区分队列中的dagDto的触发方式
     private int triggerType;
@@ -83,6 +84,14 @@ public class DagDto {
         this.triggerType = triggerType;
     }
 
+    public String getAlarm() {
+        return alarm;
+    }
+
+    public void setAlarm(String alarm) {
+        this.alarm = alarm;
+    }
+
     @Override
     public String toString() {
         return "DagDto{" +
@@ -93,6 +102,7 @@ public class DagDto {
                 ", status=" + status +
                 ", triggerTime=" + triggerTime +
                 ", param='" + param + '\'' +
+                ", alarm='" + alarm + '\'' +
                 ", triggerType=" + triggerType +
                 '}';
     }

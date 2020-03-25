@@ -8,6 +8,7 @@ import com.simba.dongfeng.center.pojo.DagDto;
 import com.simba.dongfeng.center.pojo.DagTriggerLogDto;
 import com.simba.dongfeng.center.pojo.JobDto;
 import com.simba.dongfeng.center.pojo.JobTriggerLogDto;
+import com.simba.dongfeng.center.util.AlarmUtils;
 import com.simba.dongfeng.common.enums.JobStatusEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +46,7 @@ public class DagScheduleHelper {
             public void run() {
                 while (isRunning) {
                     DagDto dagDto = null;
+                    DagTriggerLogDto dagTriggerLogDto = null;
                     try {
                         dagDto = dagQueue.takeHead();
                         logger.info("dagScheduleThread ## dagQueue head dag:" + dagDto);
@@ -54,21 +56,18 @@ public class DagScheduleHelper {
                                 TimeUnit.MILLISECONDS.sleep(dagDto.getTriggerTime().getTime() - now.getTime());
                             }
                         }
-                        logger.info("testA##########");
                         // 写dag调度日志
-                        DagTriggerLogDto dagTriggerLogDto = generateDagTriggerLogDto(dagDto.getId(), dagDto.getDagName(), dagDto.getParam(), dagDto.getTriggerType());
+                        dagTriggerLogDto = generateDagTriggerLogDto(dagDto.getId(), dagDto.getDagName(), dagDto.getParam(), dagDto.getTriggerType());
                         scheduleServiceFacade.insertDagTriggerLog(dagTriggerLogDto);
-                        logger.info("testB##########");
                         // 写start job触发日志
                         JobDto startJob = scheduleServiceFacade.selectStartJobWithDagId(dagDto);
-                        logger.info("testC##########");
+                        if (startJob == null) {
+                            throw new RuntimeException("can not find start job");
+                        }
                         InetAddress addr = InetAddress.getLocalHost();
-                        logger.info("testD##########");
                         JobTriggerLogDto startJobTriggerLog = scheduleServiceFacade.generateJobTriggerLogDto(startJob.getId(),startJob.getJobName(), dagDto.getId(), dagTriggerLogDto.getId(), JobStatusEnum.SUCC.getValue(), addr.getHostAddress(), addr.getHostAddress(), dagDto.getParam());
-                        logger.info("testE###########");
                         startJobTriggerLog.setEndTime(new Date());
                         scheduleServiceFacade.insertJobTriggerLog(startJobTriggerLog);
-                        logger.info("testF##########");
                         //  获取所有子任务,进行调度
                         List<JobDto> childJobList = Optional.ofNullable(scheduleServiceFacade.selectChildJobList(startJob.getId())).orElse(new ArrayList<>());
                         for (JobDto jobDto : childJobList) {
@@ -81,8 +80,12 @@ public class DagScheduleHelper {
                         //TODO alarm
                     } catch (Exception e) {
                         logger.error("DagScheduleHelper ## dagScheduleThread err.dag:" + dagDto, e);
-                        e.printStackTrace();
-                        //TODO alarm
+                        if (dagTriggerLogDto != null) {
+                            dagTriggerLogDto.setEndTime(new Date());
+                            dagTriggerLogDto.setStatus(DagExecStatusEnum.FAIL.getValue());
+                            scheduleServiceFacade.updateDagTriggerLog(dagTriggerLogDto);
+                            AlarmUtils.sendAlarm(dagDto.getAlarm(), AlarmUtils.MEDIA_ALL, "dongfeng-center", "dagName:" + dagDto.getDagName() + " error." + e.getMessage());
+                        }
                     }
                 }
             }
