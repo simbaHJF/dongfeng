@@ -1,0 +1,186 @@
+2019-10-24 15:17:40,096 [main] INFO DongfengCenterApplication:50 - Starting DongfengCenterApplication on bogon with PID 8097 (/Users/simbahjf/IdeaProjects/dongfeng/dongfeng-center/target/classes started by simbahjf in /Users/simbahjf/IdeaProjects/dongfeng)
+2019-10-24 15:17:40,103 [main] INFO DongfengCenterApplication:647 - No active profile set, falling back to default profiles: default
+2019-10-24 15:17:40,983 [main] WARN AnnotationConfigServletWebServerApplicationContext:557 - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.support.BeanDefinitionOverrideException: Invalid bean definition with name 'dataSource' defined in class path resource [com/simba/dongfeng/center/cfg/LuoshuDataSourceCfg.class]: Cannot register bean definition [Root bean: class [null]; scope=; abstract=false; lazyInit=false; autowireMode=3; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=luoshuDataSourceCfg; factoryMethodName=luoshuDataSource; initMethodName=null; destroyMethodName=(inferred); defined in class path resource [com/simba/dongfeng/center/cfg/LuoshuDataSourceCfg.class]] for bean 'dataSource': There is already [Root bean: class [null]; scope=; abstract=false; lazyInit=false; autowireMode=3; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=dataSourceCfg; factoryMethodName=dataSource; initMethodName=null; destroyMethodName=(inferred); defined in class path resource [com/simba/dongfeng/center/cfg/DataSourceCfg.class]] bound.
+2019-10-24 15:17:40,991 [main] INFO ConditionEvaluationReportLoggingListener:136 - 
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+2019-10-24 15:17:40,994 [main] ERROR LoggingFailureAnalysisReporter:40 - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+The bean 'dataSource', defined in class path resource [com/simba/dongfeng/center/cfg/LuoshuDataSourceCfg.class], could not be registered. A bean with that name has already been defined in class path resource [com/simba/dongfeng/center/cfg/DataSourceCfg.class] and overriding is disabled.
+
+Action:
+
+Consider renaming one of the beans or enabling overriding by setting spring.main.allow-bean-definition-overriding=true
+
+2019-10-24 15:18:47,288 [background-preinit] DEBUG ResourceBundleMessageInterpolator:89 - Loaded expression factory via original TCCL
+2019-10-24 15:18:47,480 [main] INFO DongfengCenterApplication:50 - Starting DongfengCenterApplication on bogon with PID 8333 (/Users/simbahjf/IdeaProjects/dongfeng/dongfeng-center/target/classes started by simbahjf in /Users/simbahjf/IdeaProjects/dongfeng)
+2019-10-24 15:18:47,481 [main] INFO DongfengCenterApplication:647 - No active profile set, falling back to default profiles: default
+2019-10-24 15:18:48,327 [main] INFO RepositoryConfigurationDelegate:244 - Multiple Spring Data modules found, entering strict repository configuration mode!
+2019-10-24 15:18:48,328 [main] INFO RepositoryConfigurationDelegate:126 - Bootstrapping Spring Data repositories in DEFAULT mode.
+2019-10-24 15:18:48,357 [main] INFO RepositoryConfigurationDelegate:182 - Finished Spring Data repository scanning in 17ms. Found 0 repository interfaces.
+2019-10-24 15:18:48,645 [main] INFO PostProcessorRegistrationDelegate$BeanPostProcessorChecker:330 - Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$3733a068] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-10-24 15:18:48,894 [main] INFO TomcatWebServer:90 - Tomcat initialized with port(s): 8080 (http)
+2019-10-24 15:18:48,908 [main] INFO Http11NioProtocol:173 - Initializing ProtocolHandler ["http-nio-8080"]
+2019-10-24 15:18:48,917 [main] INFO StandardService:173 - Starting service [Tomcat]
+2019-10-24 15:18:48,917 [main] INFO StandardEngine:173 - Starting Servlet engine: [Apache Tomcat/9.0.22]
+2019-10-24 15:18:48,989 [main] INFO [/dongfeng]:173 - Initializing Spring embedded WebApplicationContext
+2019-10-24 15:18:48,990 [main] INFO ContextLoader:284 - Root WebApplicationContext: initialization completed in 1418 ms
+2019-10-24 15:18:49,667 [main] INFO ThreadPoolTaskExecutor:171 - Initializing ExecutorService 'applicationTaskExecutor'
+2019-10-24 15:18:49,742 [main] INFO WelcomePageHandlerMapping:58 - Adding welcome page template: index
+2019-10-24 15:18:49,974 [DagFetchHelper#dagFetchThread] INFO DruidDataSource:1003 - {dataSource-1} inited
+2019-10-24 15:18:49,979 [DagFetchHelper#dagFetchThread] INFO ScheduleServiceFacade:68 - fetch时间:2019年10月24日15时18分49秒
+2019-10-24 15:18:50,045 [main] INFO Http11NioProtocol:173 - Starting ProtocolHandler ["http-nio-8080"]
+2019-10-24 15:18:50,046 [DagFetchHelper#dagFetchThread] INFO DagFetchHelper:49 - dagFetchThread ## fetch dag list:[]
+2019-10-24 15:18:50,080 [main] INFO TomcatWebServer:202 - Tomcat started on port(s): 8080 (http) with context path '/dongfeng'
+2019-10-24 15:18:50,083 [main] INFO DongfengCenterApplication:59 - Started DongfengCenterApplication in 3.238 seconds (JVM running for 3.872)
+2019-10-24 15:19:05,242 [main] INFO DongfengExecutorApplication:50 - Starting DongfengExecutorApplication on bogon with PID 8397 (/Users/simbahjf/IdeaProjects/dongfeng/dongfeng-executor/target/classes started by simbahjf in /Users/simbahjf/IdeaProjects/dongfeng)
+2019-10-24 15:19:05,246 [main] INFO DongfengExecutorApplication:647 - No active profile set, falling back to default profiles: default
+2019-10-24 15:19:05,970 [main] INFO RepositoryConfigurationDelegate:244 - Multiple Spring Data modules found, entering strict repository configuration mode!
+2019-10-24 15:19:05,972 [main] INFO RepositoryConfigurationDelegate:126 - Bootstrapping Spring Data repositories in DEFAULT mode.
+2019-10-24 15:19:05,995 [main] INFO RepositoryConfigurationDelegate:182 - Finished Spring Data repository scanning in 14ms. Found 0 repository interfaces.
+2019-10-24 15:19:06,396 [main] INFO TomcatWebServer:90 - Tomcat initialized with port(s): 8888 (http)
+2019-10-24 15:19:06,412 [main] INFO Http11NioProtocol:173 - Initializing ProtocolHandler ["http-nio-8888"]
+2019-10-24 15:19:06,422 [main] INFO StandardService:173 - Starting service [Tomcat]
+2019-10-24 15:19:06,422 [main] INFO StandardEngine:173 - Starting Servlet engine: [Apache Tomcat/9.0.22]
+2019-10-24 15:19:06,501 [main] INFO [/dongfengexecutor]:173 - Initializing Spring embedded WebApplicationContext
+2019-10-24 15:19:06,501 [main] INFO ContextLoader:284 - Root WebApplicationContext: initialization completed in 1192 ms
+2019-10-24 15:19:06,714 [HeartbeatHelper#heartbeatThread] INFO ExecutorServiceFacade:25 - send executorHeartbeatInfo:ExecutorHeartbeatInfo{executorName='executor-a', executorIp='172.16.26.15', executorPort='8888', executorGroup='test'}
+2019-10-24 15:19:06,938 [main] INFO ThreadPoolTaskExecutor:171 - Initializing ExecutorService 'applicationTaskExecutor'
+2019-10-24 15:19:07,002 [HeartbeatHelper#heartbeatThread] INFO HttpClient:61 - send post url:http://172.16.26.15:8080/dongfeng/executor/heartbeat,entityJsonStr:{"executorGroup":"test","executorIp":"172.16.26.15","executorName":"executor-a","executorPort":"8888"}
+2019-10-24 15:19:07,077 [http-nio-8080-exec-1] INFO [/dongfeng]:173 - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2019-10-24 15:19:07,077 [http-nio-8080-exec-1] INFO DispatcherServlet:524 - Initializing Servlet 'dispatcherServlet'
+2019-10-24 15:19:07,085 [http-nio-8080-exec-1] INFO DispatcherServlet:546 - Completed initialization in 7 ms
+2019-10-24 15:19:07,148 [main] INFO Http11NioProtocol:173 - Starting ProtocolHandler ["http-nio-8888"]
+2019-10-24 15:19:07,160 [http-nio-8080-exec-1] INFO DongfengCenterController:40 - recv heartbeat info:ExecutorHeartbeatInfo{executorName='executor-a', executorIp='172.16.26.15', executorPort='8888', executorGroup='test'}
+2019-10-24 15:19:07,186 [main] INFO TomcatWebServer:202 - Tomcat started on port(s): 8888 (http) with context path '/dongfengexecutor'
+2019-10-24 15:19:07,191 [main] INFO DongfengExecutorApplication:59 - Started DongfengExecutorApplication in 2.505 seconds (JVM running for 3.11)
+2019-10-24 15:19:07,251 [HeartbeatHelper#heartbeatThread] INFO HttpClient:81 - send post recv resp:{"code":200,"msg":"SUCC","respDto":null}
+2019-10-24 15:19:20,051 [DagFetchHelper#dagFetchThread] INFO ScheduleServiceFacade:68 - fetch时间:2019年10月24日15时19分20秒
+2019-10-24 15:19:20,055 [DagFetchHelper#dagFetchThread] INFO DagFetchHelper:49 - dagFetchThread ## fetch dag list:[]
+2019-10-24 15:19:37,258 [HeartbeatHelper#heartbeatThread] INFO ExecutorServiceFacade:25 - send executorHeartbeatInfo:ExecutorHeartbeatInfo{executorName='executor-a', executorIp='172.16.26.15', executorPort='8888', executorGroup='test'}
+2019-10-24 15:19:37,258 [HeartbeatHelper#heartbeatThread] INFO HttpClient:61 - send post url:http://172.16.26.15:8080/dongfeng/executor/heartbeat,entityJsonStr:{"executorGroup":"test","executorIp":"172.16.26.15","executorName":"executor-a","executorPort":"8888"}
+2019-10-24 15:19:37,266 [http-nio-8080-exec-2] INFO DongfengCenterController:40 - recv heartbeat info:ExecutorHeartbeatInfo{executorName='executor-a', executorIp='172.16.26.15', executorPort='8888', executorGroup='test'}
+2019-10-24 15:19:37,276 [HeartbeatHelper#heartbeatThread] INFO HttpClient:81 - send post recv resp:{"code":200,"msg":"SUCC","respDto":null}
+2019-10-24 15:19:50,058 [DagFetchHelper#dagFetchThread] INFO ScheduleServiceFacade:68 - fetch时间:2019年10月24日15时19分50秒
+2019-10-24 15:19:50,061 [DagFetchHelper#dagFetchThread] INFO DagFetchHelper:49 - dagFetchThread ## fetch dag list:[]
+2019-10-24 15:20:07,281 [HeartbeatHelper#heartbeatThread] INFO ExecutorServiceFacade:25 - send executorHeartbeatInfo:ExecutorHeartbeatInfo{executorName='executor-a', executorIp='172.16.26.15', executorPort='8888', executorGroup='test'}
+2019-10-24 15:20:07,282 [HeartbeatHelper#heartbeatThread] INFO HttpClient:61 - send post url:http://172.16.26.15:8080/dongfeng/executor/heartbeat,entityJsonStr:{"executorGroup":"test","executorIp":"172.16.26.15","executorName":"executor-a","executorPort":"8888"}
+2019-10-24 15:20:07,287 [http-nio-8080-exec-3] INFO DongfengCenterController:40 - recv heartbeat info:ExecutorHeartbeatInfo{executorName='executor-a', executorIp='172.16.26.15', executorPort='8888', executorGroup='test'}
+2019-10-24 15:20:07,296 [HeartbeatHelper#heartbeatThread] INFO HttpClient:81 - send post recv resp:{"code":200,"msg":"SUCC","respDto":null}
+2019-10-24 15:20:20,068 [DagFetchHelper#dagFetchThread] INFO ScheduleServiceFacade:68 - fetch时间:2019年10月24日15时20分20秒
+2019-10-24 15:20:20,071 [DagFetchHelper#dagFetchThread] INFO DagFetchHelper:49 - dagFetchThread ## fetch dag list:[]
+2019-10-24 15:20:37,300 [HeartbeatHelper#heartbeatThread] INFO ExecutorServiceFacade:25 - send executorHeartbeatInfo:ExecutorHeartbeatInfo{executorName='executor-a', executorIp='172.16.26.15', executorPort='8888', executorGroup='test'}
+2019-10-24 15:20:37,301 [HeartbeatHelper#heartbeatThread] INFO HttpClient:61 - send post url:http://172.16.26.15:8080/dongfeng/executor/heartbeat,entityJsonStr:{"executorGroup":"test","executorIp":"172.16.26.15","executorName":"executor-a","executorPort":"8888"}
+2019-10-24 15:20:37,306 [http-nio-8080-exec-4] INFO DongfengCenterController:40 - recv heartbeat info:ExecutorHeartbeatInfo{executorName='executor-a', executorIp='172.16.26.15', executorPort='8888', executorGroup='test'}
+2019-10-24 15:20:37,314 [HeartbeatHelper#heartbeatThread] INFO HttpClient:81 - send post recv resp:{"code":200,"msg":"SUCC","respDto":null}
+2019-10-24 15:20:50,073 [DagFetchHelper#dagFetchThread] INFO ScheduleServiceFacade:68 - fetch时间:2019年10月24日15时20分50秒
+2019-10-24 15:20:50,076 [DagFetchHelper#dagFetchThread] INFO DagFetchHelper:49 - dagFetchThread ## fetch dag list:[]
+2019-10-24 15:21:07,317 [HeartbeatHelper#heartbeatThread] INFO ExecutorServiceFacade:25 - send executorHeartbeatInfo:ExecutorHeartbeatInfo{executorName='executor-a', executorIp='172.16.26.15', executorPort='8888', executorGroup='test'}
+2019-10-24 15:21:07,318 [HeartbeatHelper#heartbeatThread] INFO HttpClient:61 - send post url:http://172.16.26.15:8080/dongfeng/executor/heartbeat,entityJsonStr:{"executorGroup":"test","executorIp":"172.16.26.15","executorName":"executor-a","executorPort":"8888"}
+2019-10-24 15:21:07,322 [http-nio-8080-exec-5] INFO DongfengCenterController:40 - recv heartbeat info:ExecutorHeartbeatInfo{executorName='executor-a', executorIp='172.16.26.15', executorPort='8888', executorGroup='test'}
+2019-10-24 15:21:07,331 [HeartbeatHelper#heartbeatThread] INFO HttpClient:81 - send post recv resp:{"code":200,"msg":"SUCC","respDto":null}
+2019-10-24 15:21:20,077 [DagFetchHelper#dagFetchThread] INFO ScheduleServiceFacade:68 - fetch时间:2019年10月24日15时21分20秒
+2019-10-24 15:21:20,080 [DagFetchHelper#dagFetchThread] INFO DagFetchHelper:49 - dagFetchThread ## fetch dag list:[]
+2019-10-24 15:21:37,336 [HeartbeatHelper#heartbeatThread] INFO ExecutorServiceFacade:25 - send executorHeartbeatInfo:ExecutorHeartbeatInfo{executorName='executor-a', executorIp='172.16.26.15', executorPort='8888', executorGroup='test'}
+2019-10-24 15:21:37,337 [HeartbeatHelper#heartbeatThread] INFO HttpClient:61 - send post url:http://172.16.26.15:8080/dongfeng/executor/heartbeat,entityJsonStr:{"executorGroup":"test","executorIp":"172.16.26.15","executorName":"executor-a","executorPort":"8888"}
+2019-10-24 15:21:37,341 [http-nio-8080-exec-6] INFO DongfengCenterController:40 - recv heartbeat info:ExecutorHeartbeatInfo{executorName='executor-a', executorIp='172.16.26.15', executorPort='8888', executorGroup='test'}
+2019-10-24 15:21:37,350 [HeartbeatHelper#heartbeatThread] INFO HttpClient:81 - send post recv resp:{"code":200,"msg":"SUCC","respDto":null}
+2019-10-24 15:21:50,086 [DagFetchHelper#dagFetchThread] INFO ScheduleServiceFacade:68 - fetch时间:2019年10月24日15时21分50秒
+2019-10-24 15:21:50,089 [DagFetchHelper#dagFetchThread] INFO DagFetchHelper:49 - dagFetchThread ## fetch dag list:[]
+2019-10-24 15:22:07,351 [HeartbeatHelper#heartbeatThread] INFO ExecutorServiceFacade:25 - send executorHeartbeatInfo:ExecutorHeartbeatInfo{executorName='executor-a', executorIp='172.16.26.15', executorPort='8888', executorGroup='test'}
+2019-10-24 15:22:07,352 [HeartbeatHelper#heartbeatThread] INFO HttpClient:61 - send post url:http://172.16.26.15:8080/dongfeng/executor/heartbeat,entityJsonStr:{"executorGroup":"test","executorIp":"172.16.26.15","executorName":"executor-a","executorPort":"8888"}
+2019-10-24 15:22:07,356 [http-nio-8080-exec-7] INFO DongfengCenterController:40 - recv heartbeat info:ExecutorHeartbeatInfo{executorName='executor-a', executorIp='172.16.26.15', executorPort='8888', executorGroup='test'}
+2019-10-24 15:22:07,365 [HeartbeatHelper#heartbeatThread] INFO HttpClient:81 - send post recv resp:{"code":200,"msg":"SUCC","respDto":null}
+2019-10-24 15:22:20,093 [DagFetchHelper#dagFetchThread] INFO ScheduleServiceFacade:68 - fetch时间:2019年10月24日15时22分20秒
+2019-10-24 15:22:20,096 [DagFetchHelper#dagFetchThread] INFO DagFetchHelper:49 - dagFetchThread ## fetch dag list:[]
+2019-10-24 15:22:37,366 [HeartbeatHelper#heartbeatThread] INFO ExecutorServiceFacade:25 - send executorHeartbeatInfo:ExecutorHeartbeatInfo{executorName='executor-a', executorIp='172.16.26.15', executorPort='8888', executorGroup='test'}
+2019-10-24 15:22:37,366 [HeartbeatHelper#heartbeatThread] INFO HttpClient:61 - send post url:http://172.16.26.15:8080/dongfeng/executor/heartbeat,entityJsonStr:{"executorGroup":"test","executorIp":"172.16.26.15","executorName":"executor-a","executorPort":"8888"}
+2019-10-24 15:22:37,370 [http-nio-8080-exec-8] INFO DongfengCenterController:40 - recv heartbeat info:ExecutorHeartbeatInfo{executorName='executor-a', executorIp='172.16.26.15', executorPort='8888', executorGroup='test'}
+2019-10-24 15:22:37,381 [HeartbeatHelper#heartbeatThread] INFO HttpClient:81 - send post recv resp:{"code":200,"msg":"SUCC","respDto":null}
+2019-10-24 15:22:50,100 [DagFetchHelper#dagFetchThread] INFO ScheduleServiceFacade:68 - fetch时间:2019年10月24日15时22分50秒
+2019-10-24 15:22:50,103 [DagFetchHelper#dagFetchThread] INFO DagFetchHelper:49 - dagFetchThread ## fetch dag list:[]
+2019-10-24 15:23:07,384 [HeartbeatHelper#heartbeatThread] INFO ExecutorServiceFacade:25 - send executorHeartbeatInfo:ExecutorHeartbeatInfo{executorName='executor-a', executorIp='172.16.26.15', executorPort='8888', executorGroup='test'}
+2019-10-24 15:23:07,385 [HeartbeatHelper#heartbeatThread] INFO HttpClient:61 - send post url:http://172.16.26.15:8080/dongfeng/executor/heartbeat,entityJsonStr:{"executorGroup":"test","executorIp":"172.16.26.15","executorName":"executor-a","executorPort":"8888"}
+2019-10-24 15:23:07,389 [http-nio-8080-exec-9] INFO DongfengCenterController:40 - recv heartbeat info:ExecutorHeartbeatInfo{executorName='executor-a', executorIp='172.16.26.15', executorPort='8888', executorGroup='test'}
+2019-10-24 15:23:07,397 [HeartbeatHelper#heartbeatThread] INFO HttpClient:81 - send post recv resp:{"code":200,"msg":"SUCC","respDto":null}
+2019-10-24 15:23:20,105 [DagFetchHelper#dagFetchThread] INFO ScheduleServiceFacade:68 - fetch时间:2019年10月24日15时23分20秒
+2019-10-24 15:23:20,108 [DagFetchHelper#dagFetchThread] INFO DagFetchHelper:49 - dagFetchThread ## fetch dag list:[]
+2019-10-24 15:23:37,400 [HeartbeatHelper#heartbeatThread] INFO ExecutorServiceFacade:25 - send executorHeartbeatInfo:ExecutorHeartbeatInfo{executorName='executor-a', executorIp='172.16.26.15', executorPort='8888', executorGroup='test'}
+2019-10-24 15:23:37,400 [HeartbeatHelper#heartbeatThread] INFO HttpClient:61 - send post url:http://172.16.26.15:8080/dongfeng/executor/heartbeat,entityJsonStr:{"executorGroup":"test","executorIp":"172.16.26.15","executorName":"executor-a","executorPort":"8888"}
+2019-10-24 15:23:37,404 [http-nio-8080-exec-10] INFO DongfengCenterController:40 - recv heartbeat info:ExecutorHeartbeatInfo{executorName='executor-a', executorIp='172.16.26.15', executorPort='8888', executorGroup='test'}
+2019-10-24 15:23:37,412 [HeartbeatHelper#heartbeatThread] INFO HttpClient:81 - send post recv resp:{"code":200,"msg":"SUCC","respDto":null}
+2019-10-24 15:23:50,114 [DagFetchHelper#dagFetchThread] INFO ScheduleServiceFacade:68 - fetch时间:2019年10月24日15时23分50秒
+2019-10-24 15:23:50,117 [DagFetchHelper#dagFetchThread] INFO DagFetchHelper:49 - dagFetchThread ## fetch dag list:[]
+2019-10-24 15:24:07,417 [HeartbeatHelper#heartbeatThread] INFO ExecutorServiceFacade:25 - send executorHeartbeatInfo:ExecutorHeartbeatInfo{executorName='executor-a', executorIp='172.16.26.15', executorPort='8888', executorGroup='test'}
+2019-10-24 15:24:07,418 [HeartbeatHelper#heartbeatThread] INFO HttpClient:61 - send post url:http://172.16.26.15:8080/dongfeng/executor/heartbeat,entityJsonStr:{"executorGroup":"test","executorIp":"172.16.26.15","executorName":"executor-a","executorPort":"8888"}
+2019-10-24 15:24:07,422 [http-nio-8080-exec-1] INFO DongfengCenterController:40 - recv heartbeat info:ExecutorHeartbeatInfo{executorName='executor-a', executorIp='172.16.26.15', executorPort='8888', executorGroup='test'}
+2019-10-24 15:24:07,430 [HeartbeatHelper#heartbeatThread] INFO HttpClient:81 - send post recv resp:{"code":200,"msg":"SUCC","respDto":null}
+2019-10-24 15:24:18,517 [Thread-14] INFO ThreadPoolTaskExecutor:208 - Shutting down ExecutorService 'applicationTaskExecutor'
+2019-10-24 15:24:18,519 [executorCheckThread] ERROR ExecutorCheckHelper:46 - ExecutorCheckHelper#checkThread InterruptedException
+java.lang.InterruptedException: sleep interrupted
+	at java.lang.Thread.sleep(Native Method)
+	at java.lang.Thread.sleep(Thread.java:340)
+	at java.util.concurrent.TimeUnit.sleep(TimeUnit.java:386)
+	at com.simba.dongfeng.center.thread.ExecutorCheckHelper$1.run(ExecutorCheckHelper.java:39)
+2019-10-24 15:24:18,520 [DagFetchHelper#dagFetchThread] ERROR DagFetchHelper:65 - DagFetchHelper ## dagFetchThread error.
+java.lang.InterruptedException: sleep interrupted
+	at java.lang.Thread.sleep(Native Method)
+	at java.lang.Thread.sleep(Thread.java:340)
+	at java.util.concurrent.TimeUnit.sleep(TimeUnit.java:386)
+	at com.simba.dongfeng.center.thread.DagFetchHelper$1.run(DagFetchHelper.java:62)
+2019-10-24 15:24:18,520 [DagScheduleHelper#dagScheduleThread] ERROR DagScheduleHelper:79 - DagScheduleHelper ## dagScheduleThread InterruptedException.dag:null
+java.lang.InterruptedException: null
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.reportInterruptAfterWait(AbstractQueuedSynchronizer.java:2014)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2048)
+	at java.util.concurrent.LinkedBlockingDeque.takeFirst(LinkedBlockingDeque.java:492)
+	at com.simba.dongfeng.center.core.DagQueue.takeHead(DagQueue.java:18)
+	at com.simba.dongfeng.center.thread.DagScheduleHelper$1.run(DagScheduleHelper.java:49)
+2019-10-24 15:24:18,521 [CallbackHandleHelper#callBackHandleThread] ERROR CallbackHandleHelper:162 - callBackHandleThread err.
+java.lang.InterruptedException: null
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.reportInterruptAfterWait(AbstractQueuedSynchronizer.java:2014)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2048)
+	at java.util.concurrent.LinkedBlockingDeque.takeFirst(LinkedBlockingDeque.java:492)
+	at com.simba.dongfeng.center.core.CallbackQueue.takeHead(CallbackQueue.java:18)
+	at com.simba.dongfeng.center.thread.CallbackHandleHelper$1.run(CallbackHandleHelper.java:53)
+2019-10-24 15:24:18,521 [ExpireLogClearHelper#expireLogClearThread] ERROR ExpireLogClearHelper:39 - ExpireLogClearHelper#expireLogClearThread InterruptedException
+java.lang.InterruptedException: sleep interrupted
+	at java.lang.Thread.sleep(Native Method)
+	at java.lang.Thread.sleep(Thread.java:340)
+	at java.util.concurrent.TimeUnit.sleep(TimeUnit.java:386)
+	at com.simba.dongfeng.center.thread.ExpireLogClearHelper$1.run(ExpireLogClearHelper.java:36)
+2019-10-24 15:24:18,535 [Thread-14] INFO DruidDataSource:1948 - {dataSource-1} closing ...
+2019-10-24 15:24:18,539 [Thread-14] INFO DruidDataSource:2020 - {dataSource-1} closed
+2019-10-24 15:24:18,551 [Thread-11] INFO ThreadPoolTaskExecutor:208 - Shutting down ExecutorService 'applicationTaskExecutor'
+2019-10-24 15:24:18,555 [HeartbeatHelper#heartbeatThread] ERROR HeartbeatHelper:55 - HeartbeatHelper#heartbeatThread InterruptedException.
+java.lang.InterruptedException: sleep interrupted
+	at java.lang.Thread.sleep(Native Method)
+	at java.lang.Thread.sleep(Thread.java:340)
+	at java.util.concurrent.TimeUnit.sleep(TimeUnit.java:386)
+	at com.simba.dongfeng.executor.thread.HeartbeatHelper$1.run(HeartbeatHelper.java:52)
+2019-10-24 15:24:18,559 [CallbackNotifyHelper#callbackNotifyThread] ERROR CallbackNotifyHelper:70 - CallbackNotifyHelper ## callbackNotifyThread err.
+java.lang.InterruptedException: null
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.reportInterruptAfterWait(AbstractQueuedSynchronizer.java:2014)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2048)
+	at java.util.concurrent.LinkedBlockingDeque.takeFirst(LinkedBlockingDeque.java:492)
+	at com.simba.dongfeng.executor.core.CallbackQueue.takeHead(CallbackQueue.java:18)
+	at com.simba.dongfeng.executor.thread.CallbackNotifyHelper$1.run(CallbackNotifyHelper.java:43)
+2019-10-24 15:24:18,561 [ExpiredJobRecordClearHelper#expiredJobRecordClearThread] ERROR HeartbeatHelper:35 - ExpiredJobRecordClearHelper#expiredJobRecordClearThread InterruptedException.
+java.lang.InterruptedException: sleep interrupted
+	at java.lang.Thread.sleep(Native Method)
+	at java.lang.Thread.sleep(Thread.java:340)
+	at java.util.concurrent.TimeUnit.sleep(TimeUnit.java:386)
+	at com.simba.dongfeng.executor.thread.ExpiredJobRecordClearHelper$1.run(ExpiredJobRecordClearHelper.java:32)
+2019-10-24 15:24:18,564 [CallbackNotifyFailRetryHelper ## callbackNotifyFailRetryThread] ERROR CallbackNotifyFailRetryHelper:72 - CallbackNotifyFailRetryHelper ## callbackNotifyFailRetryThread err.
+java.lang.InterruptedException: null
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.reportInterruptAfterWait(AbstractQueuedSynchronizer.java:2014)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2048)
+	at java.util.concurrent.LinkedBlockingDeque.takeFirst(LinkedBlockingDeque.java:492)
+	at java.util.concurrent.LinkedBlockingDeque.take(LinkedBlockingDeque.java:680)
+	at com.simba.dongfeng.executor.core.CallbackNotifyFailQueue.drain(CallbackNotifyFailQueue.java:17)
+	at com.simba.dongfeng.executor.thread.CallbackNotifyFailRetryHelper$1.run(CallbackNotifyFailRetryHelper.java:44)

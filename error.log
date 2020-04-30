@@ -1,0 +1,2 @@
+2019-11-19 10:13:51,179 [main] WARN EnvDbWolfConfig:55 - init getEnvEndpoints /registry.properties, null
+2019-11-19 10:17:13,110 [main] WARN AnnotationConfigServletWebServerApplicationContext:557 - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanDefinitionStoreException: Failed to parse configuration class [com.simba.dongfeng.center.DongfengCenterApplication]; nested exception is java.io.FileNotFoundException: class path resource [db.properties] cannot be opened because it does not exist
